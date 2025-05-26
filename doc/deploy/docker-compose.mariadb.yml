@@ -1,0 +1,77 @@
+# MariaDB configuration for eXeLearning
+# Use with: docker compose -f docker-compose.mariadb.yml up -d
+
+services:
+  exelearning:
+    image: ghcr.io/exelearning/exelearning:${TAG:-latest}
+    build: ../../    
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    restart: unless-stopped
+    volumes:
+      - exelearning-data:/mnt/data:rw
+    environment:
+      # Symfony settings
+      APP_ENV: prod
+      APP_DEBUG: 0
+      APP_SECRET: "${APP_SECRET:-ChangeThisToASecretForMariaDBDeployment}"
+      APP_PORT: "${APP_PORT:-8080}"
+      APP_ONLINE_MODE: 1
+      XDEBUG_MODE: off
+      
+      # Database settings
+      DB_DRIVER: pdo_mysql
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: "${DB_NAME:-exelearning}"
+      DB_USER: "${DB_USER:-exelearning}"
+      DB_PASSWORD: "${DB_PASSWORD:-exelearning}"
+      DB_CHARSET: "${DB_CHARSET:-utf8mb4}"
+      DB_SERVER_VERSION: 10.6
+      
+      # Files directory
+      FILES_DIR: "/mnt/data/"
+      
+      # Authentication settings
+      APP_AUTH_METHODS: password
+      AUTH_CREATE_USERS: true
+      
+      # Test users
+      TEST_USER_EMAIL: "${TEST_USER_EMAIL:-user@exelearning.net}"
+      TEST_USER_USERNAME: "${TEST_USER_USERNAME:-user}"
+      TEST_USER_PASSWORD: "${TEST_USER_PASSWORD:-1234}"
+      TEST_USER2_EMAIL: "${TEST_USER2_EMAIL:-user2@exelearning.net}"
+      TEST_USER2_USERNAME: "${TEST_USER2_USERNAME:-user2}"
+      TEST_USER2_PASSWORD: "${TEST_USER2_PASSWORD:-1234}"
+      
+      # Mercure settings
+      MERCURE_URL: "http://localhost:${APP_PORT:-8080}/.well-known/mercure"
+      MERCURE_PUBLIC_URL:
+      MERCURE_JWT_SECRET_KEY: "${MERCURE_JWT_SECRET_KEY:-!ChangeThisMercureHubJWTSecretKey!}"
+      MERCURE_PUBLISHER_JWT_KEY: "${MERCURE_JWT_SECRET_KEY:-!ChangeThisMercureHubJWTSecretKey!}"
+      MERCURE_SUBSCRIBER_JWT_KEY: "${MERCURE_JWT_SECRET_KEY:-!ChangeThisMercureHubJWTSecretKey!}"
+      
+      # Post-configuration commands
+      POST_CONFIGURE_COMMANDS: |
+        echo "Setting up eXeLearning with MariaDB..."
+        php bin/console app:create-user ${TEST_USER_EMAIL:-user@exelearning.net} ${TEST_USER_PASSWORD:-1234} ${TEST_USER_USERNAME:-user} --no-fail
+        php bin/console app:create-user ${TEST_USER2_EMAIL:-user2@exelearning.net} ${TEST_USER2_PASSWORD:-1234} ${TEST_USER2_USERNAME:-user2} --no-fail
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:11.7
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD:-root}"
+      MARIADB_DATABASE: "${DB_NAME:-exelearning}"
+      MARIADB_USER: "${DB_USER:-exelearning}"
+      MARIADB_PASSWORD: "${DB_PASSWORD:-exelearning}"
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+
+volumes:
+  exelearning-data:
+  mariadb-data:
