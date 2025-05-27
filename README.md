@@ -49,13 +49,16 @@ This version is built with modern technologies (PHP 8, Symfony 7) and provides a
 To try out eXeLearning instantly, run:
 
 ```bash
-docker run -p 8080:8080 exelearning/exelearning
+docker run -d -p 8080:8080 --name exelearning exelearning/exelearning
 ```
 
-This will start eXeLearning at `http://localhost:8080` with default settings and a demo user:
+Then create a user:
 
-* **User**: `user@exelearning.net`
-* **Password**: `1234`
+```bash
+docker exec -it exelearning php bin/console app:create-user user@exelearning.net 1234 demouser --no-fail
+```
+
+This will start eXeLearning at `http://localhost:8080` with your custom user.
 
 Offline installers for Linux, Windows and macOS are also available on the [Releases page](https://github.com/exelearning/exelearning/releases). The online version is recommended for most use cases.
 
