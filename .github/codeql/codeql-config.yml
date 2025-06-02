@@ -1,0 +1,5 @@
+name: "CodeQL config"
+
+paths-ignore:
+  - public/libs/**
+  - public/app/common/fMath/**
