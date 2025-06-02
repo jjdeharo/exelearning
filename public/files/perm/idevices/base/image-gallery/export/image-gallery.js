@@ -1,0 +1,142 @@
+/**
+ * Image Gallery iDevice
+ *
+ * Released under Attribution-ShareAlike 4.0 International License.
+ * Author: SDWEB - Innovative Digital Solutions
+ *
+ * License: http://creativecommons.org/licenses/by-sa/4.0/
+ */
+var $imagegallery = {
+
+  /**
+   * eXe idevice engine
+   * Json idevice api function
+   * Engine execution order: 1
+   *
+   * Get the base html of the idevice view
+   *
+   * @param {Object} data
+   * @param {Number} accesibility
+   * @param {String} template
+   * @returns {String}
+   */
+  renderView: function (data, accesibility, template) {
+    // Generate html content from data values
+    let ideviceId = data.ideviceId;
+    let idIncremental = 0;
+    let htmlContent = `
+      <div class="imageGallery-IDevice">
+        <div class="imageGallery-body">`;
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== "ideviceId") {
+        let imageURL = value.img;
+        let thumbnailURL = value.thumbnail;
+        let imageTitle = value.title;
+        let imageLinkTitle = value.linktitle;
+        let imageAuthor = value.author;
+        let imageLinkAuthor = value.linkauthor;
+        let imageLicense = value.license;
+        let imageLinkLicense = this.getLinkLicense(value.license);
+        htmlContent += `<div id="imageContainer_${idIncremental}" class="imageContainer">`;
+        htmlContent += ` <a idevice-id="${ideviceId}" title="${imageTitle}" href="${imageURL}" class="imageLink">`;
+        htmlContent += `  <div class="imageElement">`;
+        htmlContent += `   <img src="${thumbnailURL}" height="128" width="128" title="${imageTitle}" alt="${imageTitle}" titlelink="${imageLinkTitle}" author="${imageAuthor}" authorlink="${imageLinkAuthor}" license="${imageLicense}" licenselink="${imageLinkLicense}"/>`;
+        htmlContent += `  </div>`;
+        htmlContent += ` </a>`;
+        htmlContent += `</div>`;
+        idIncremental++;
+      }
+    })
+    htmlContent += `
+        </div>
+      </div>`;
+    // Insert the html content inside the template
+    let html = template.replace("{content}", htmlContent);
+
+    // Save html in database
+    return html;
+  },
+
+  /**
+   * Json idevice api function
+   * Engine execution order: 2
+   *
+   * Add the behavior and other functionalities to idevice
+   *
+   * @param {Object} data
+   * @param {Number} accesibility
+   * @returns {Boolean}
+   */
+  renderBehaviour(data) {
+    // Disabled links
+    document.querySelectorAll(".image-galleryIdevice .imageGallery-IDevice a").forEach(img => {
+      img.addEventListener("click", event => {
+        event.stopPropagation();
+        event.preventDefault();
+      })
+    })
+    // Simplelightbox
+    if (typeof SimpleLightbox !== 'undefined') {
+      this.createSLightboxGallery(data.ideviceId);
+    }
+    else {
+      var interval = setInterval(
+        function () {
+          if (typeof SimpleLightbox !== 'undefined') {
+            $imagegallery.createSLightboxGallery(data.ideviceId);
+            clearInterval(interval);
+          }
+        }, 200);
+    }
+  },
+
+  /**
+   * Json idevice api function
+   * Engine execution order: 3
+   *
+   */
+  init: function () {
+
+  },
+
+  /**
+   * Create a new simple ligthbox gallery
+   *
+   */
+  createSLightboxGallery: function (ideviceId) {
+    let selector = `[id="${ideviceId}"] .imageGallery-IDevice a`;
+    new SimpleLightbox(selector, {
+      // Custom lightbox for exe. Now we can take values from multiple attributes
+      captionsData: ["title", "titlelink", "author", "authorlink", "license", "licenselink"],
+      captionPosition: "outside"
+    });
+  },
+
+  getLinkLicense: function (attrLicense) {
+
+    let linkLicense = '';
+    if (attrLicense === 'pd' || attrLicense === 'copyright' || attrLicense === '') {
+      linkLicense = '';
+    }
+    else if (attrLicense === 'gnu-gpl') {
+      linkLicense = 'http://www.gnu.org/licenses/gpl.html';
+    }
+    else if (attrLicense === 'CC0') {
+      linkLicense = 'http://creativecommons.org/publicdomain/zero/1.0/deed';
+
+    } else if (attrLicense === "CC-BY"
+      || attrLicense === "CC-BY-SA"
+      || attrLicense === "CC-BY-ND"
+      || attrLicense === "CC-BY-NC"
+      || attrLicense === "CC-BY-NC-SA"
+      || attrLicense === "CC-BY-NC-ND") {
+      linkLicense = 'http://creativecommons.org/licenses/';
+    }
+    else {
+      // linkLicense = attrLicense;
+      linkLicense = "";
+    }
+
+    return linkLicense;
+  }
+}

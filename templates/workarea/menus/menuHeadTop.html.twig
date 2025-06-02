@@ -1,0 +1,74 @@
+<div class="top">
+    <div id="exe-logo">
+        <img src="style/workarea/images/exelearning.png" class="exe-logo content" alt="eXeLearning" width="200" height="181">
+    </div>
+    <div id="exe-title">
+        <h2 class="exe-title content">...</h2>
+    </div>
+    <div class="main-menu">
+        <div class="main-menu-left">
+            {# Site navigation #}
+            {% include 'workarea/menus/menuNavbar.html.twig' %}
+        </div>
+        <div class="main-menu-right">
+            {#
+            <button id="head-top-project-properties-button" class="btn" title="{{ "Properties" | trans }}">
+                <span class="auto-icon" aria-hidden="true">article</span>
+                <span class="visually-hidden">{{ "Properties" | trans }}</span>
+            </button>
+            #}
+            <button id="head-bottom-preview" class="btn" title="{{ "Preview" | trans }}">
+                <span class="auto-icon" aria-hidden="true">visibility</span>
+                <span class="btn-label">{{ "Preview" | trans }}</span>        
+            </button>
+            <button id="head-top-save-button" class="btn" title="{{ "Save" | trans }}">
+                <span class="auto-icon" aria-hidden="true">save</span>
+                <span class="btn-label">{{ "Save" | trans }}</span>
+            </button>
+            <button id="head-top-download-button" class="btn" title="{{ "Download" | trans }}">
+                <span class="auto-icon" aria-hidden="true">download</span>
+                <span class="btn-label">{{ "Download" | trans }}</span>
+            </button>
+            <button id="head-top-share-button" class="btn exe-online exe-advanced" title="{{ "Share" | trans }}">
+                <span class="auto-icon" aria-hidden="true">share</span>
+                <span class="btn-label">{{ "Share" | trans }}</span>
+            </button>
+            <div id="exe-last-edition" class="btn">
+                <span class="content"></span>
+            </div>
+            <div id="exe-concurrent-users" class="exe-online">
+                <span id="title-exe-concurrent-users" class="visually-hidden">{{ "Users online" | trans }} </span>
+                <button id="button-more-exe-concurrent-users" class="btn" title="{{ "Users online" | trans }}"><span class="auto-icon" aria-hidden="true">group</span><span class="visually-hidden">{{ "Show online users" | trans }}</span></button>
+            </div>
+            {#
+            <button id="exe-mode-check" class="btn" title="{{ "Mode" | trans }}">
+                <span class="auto-icon" aria-hidden="true">visibility</span>
+                <span class="btn-label">{{ "Mode" | trans }}</span>
+            </button>
+            <button id="head-bottom-logout-button" class="btn exe-online" title="{{ "Logout" | trans }}">
+                <span class="auto-icon" aria-hidden="true">logout</span>
+                <span class="btn-label">{{ "Logout" | trans }}</span>
+            </button>
+            #}
+            {# User menu #}
+            <div id="head-bottom-user-logged" class="dropdown" title="{{ user.username }}">
+                <button class="btn btn-link" type="button" id="exeUserMenuToggler" data-bs-toggle="dropdown" aria-expanded="false" title="{{ "User menu" | trans }}">
+                    {% if user.gravatarUrl %}
+                    <img class="exe-gravatar" src="{{ user.gravatarUrl }}" title="{{ user.username }}" alt="{{ user.username }}" width="50" height="50">
+                    {% else %}
+                    <span class="exe-avatar" title="{{ user.username }}">{{ user.usernameFirsLetter }}</span>
+                    {% endif %}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="exeUserMenuToggler">
+                    <li><a class="dropdown-item" id="navbar-button-preferences" href="#">{{ "Preferences" | trans }}</a></li>
+                    <li class="dropdown-divider"></li>
+                    {% if config.isOfflineInstallation %}
+                    <li><a class="dropdown-item" id="head-bottom-logout-button" href="#">{{ "Exit" | trans }}</a></li>
+                    {% else %}
+                    <li><a class="dropdown-item" id="head-bottom-logout-button" href="#">{{ "Logout" | trans }}</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

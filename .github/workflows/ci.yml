@@ -1,0 +1,173 @@
+name: Build & Test Docker Images
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update APP_VERSION in Constants.php
+        if: github.ref_type == 'tag'
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          sed -i "s|public const APP_VERSION = '.*';|public const APP_VERSION = '${TAG_NAME}';|" src/Constants.php
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            exelearning/exelearning
+            ghcr.io/exelearning/exelearning
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+            type=raw,value=main,enable=${{ github.ref == 'refs/heads/main' }}
+
+      # Verification of unauthorized changes in the workflows
+      - name: Check ci.yml and app.yml
+        if: github.event_name == 'pull_request'
+        run: |
+          git diff --name-only ${{ github.before }} ${{ github.sha }} | grep -Eq "^.github/workflows/(ci.yml|app.yml)$" && echo "Modifying or deleting ci.yml or app.yml is not allowed" && exit 1 || echo "Everything is fine"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+
+      - name: Install Yarn Dependencies
+        run: yarn install
+
+      - name: Set TEST_SCREENSHOTS_DIR for screenshots in GitHub Actions
+        run: echo "TEST_SCREENSHOTS_DIR=./e2e_screenshots" >> $GITHUB_ENV
+
+      - name: Ensure screenshots directory in GH Actions
+        run: |
+          mkdir -p $TEST_SCREENSHOTS_DIR
+          chmod 777 $TEST_SCREENSHOTS_DIR
+
+      - name: Build Docker Image
+        run: make build
+
+      - name: PHP Lint
+        run: make lint-php
+
+      - name: JS Lint
+        run: make lint-js
+
+      - name: PHPUnit Unit Tests
+        run: make test-unit
+
+      - name: PHPUnit E2E Tests
+        run: make test-e2e
+
+      - name: PHPUnit E2E RealTime Tests
+        run: make test-e2e-realtime
+
+      - name: Generate HTML report
+        if: always()
+        run: |
+          REPO_NAME=$(basename "$GITHUB_REPOSITORY")
+          BRANCH_NAME=${GITHUB_REF_NAME//\//-}  # Replace '/' with '-'
+          COMMIT_SHA=${GITHUB_SHA::7}  # First 7 characters
+          REPORT_NAME="e2e-report_${REPO_NAME}_${BRANCH_NAME}_${COMMIT_SHA}.html"
+          
+          echo "<html><head><title>Test Report - $REPO_NAME ($BRANCH_NAME - $COMMIT_SHA)</title></head><body>" > "$REPORT_NAME"
+          echo "<h1 style='text-align:center;'>Test Report</h1>" >> "$REPORT_NAME"
+          echo "<h2 style='text-align:center;'>$REPO_NAME - $BRANCH_NAME - $COMMIT_SHA</h2><hr>" >> "$REPORT_NAME"
+
+          HAS_SCREENSHOTS=false
+          for file in ./e2e_screenshots/*.png; do
+            [ -f "$file" ] || continue
+            HAS_SCREENSHOTS=true
+            echo "<h3>$(basename "$file")</h3><img src='data:image/png;base64,$(base64 -w0 "$file")' style='max-width:100%;'/><hr>" >> "$REPORT_NAME"
+          done
+          
+          echo "</body></html>" >> "$REPORT_NAME"
+          echo "REPORT_NAME=$REPORT_NAME" >> $GITHUB_ENV
+          echo "HAS_SCREENSHOTS=$HAS_SCREENSHOTS" >> $GITHUB_ENV
+
+      - name: Upload HTML report
+        if: always() && env.HAS_SCREENSHOTS == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: ${{ env.REPORT_NAME }}
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          # TO-DO Change for this other lines when release the code in the exelearning/exelearning repo
+          # username: ${{ github.actor }}
+          # password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.EXELEARNING_GH_USERNAME || github.actor }}
+          password: ${{ secrets.EXELEARNING_GH_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            VERSION=${{ steps.meta.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Scan image with Trivy (GHCR) only on main branch
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ghcr.io/exelearning/exelearning:main
+          # TO-DO Change for this other line when release the code in the exelearning/exelearning repo
+          # image-ref: ghcr.io/${{ github.repository }}:main
+          format: 'table'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Hadolint Action
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          format: sarif
+          output-file: hadolint-results.sarif
+          no-fail: true
+
+      # TO-DO Uncomment this block when release the code in the exelearning/exelearning repo
+      # - name: Upload SARIF results
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: hadolint-results.sarif
+      #     category: hadolint-dockerfile
+
+      - name: Docker Hub Description
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          short-description: ${{ github.event.repository.description }}
+          enable-url-completion: true
+          # TO-DO Remove this line when release the code in the exelearning/exelearning repo
+          repository: exelearning/exelearning

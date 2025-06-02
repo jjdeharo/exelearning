@@ -1,0 +1,37 @@
+version: 2
+updates:
+  # PHP dependencies managed via Composer
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # JavaScript/Node dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Dockerfile dependencies (e.g., base images)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Main docker-compose.yml
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Docker Compose variants for different DBs
+  - package-ecosystem: "docker-compose"
+    directory: "/doc/deploy"
+    schedule:
+      interval: "weekly"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

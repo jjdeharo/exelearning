@@ -1,0 +1,38 @@
+# config/packages/framework.yaml
+
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+    #csrf_protection: true
+    http_method_override: false
+
+    # Enables session support. Note that the session will ONLY be started if you read or write from it.
+    # Remove or comment this section to explicitly disable session support.
+    session:
+        handler_id: null
+        cookie_secure: auto
+        cookie_samesite: lax
+        storage_factory_id: session.storage.factory.native
+        gc_probability: null
+
+    #esi: true
+    #fragments: true
+    php_errors:
+        log: true
+
+    error_controller: App\Controller\net\exelearning\Controller\ErrorController::show
+
+    # https://symfony.com/doc/5.4/deployment/proxies.html
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-proto']
+
+    # Desactivamos la caché
+    cache:
+        app: cache.adapter.array      # Usa la caché en memoria que no se persiste
+        system: cache.adapter.array   # Usa la caché en memoria para el sistema
+    router:
+        strict_requirements: null      # Desactiva la caché de rutas dinámicas
+
+    assets:
+        base_path: 'assets/%app.version%'  # Base path for assets based on version for avoid cache
+

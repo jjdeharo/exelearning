@@ -1,0 +1,167 @@
+{
+    "name": "exelearning",
+    "version": "v0.0.0-alpha",
+    "license": "GPL-2.0-or-later",
+    "description": "eXeLearning",
+    "main": "main.js",
+    "homepage": "https://exelearning.net",
+    "scripts": {
+        "start": "yarn electron .",
+        "build": "yarn electron-builder",
+        "js:lint": "eslint 'public/**/*.js'",
+        "js:fix": "eslint 'public/**/*.js' --fix",
+        "check-format": "prettier --check \"public/**/*.js\"",
+        "format": "prettier --write \"public/**/*.js\""
+    },
+    "keywords": [],
+    "author": {
+        "name": "INTEF",
+        "email": "cedec@educacion.gob.es",
+        "url": "https://exelearning.net"
+    },
+    "dependencies": {
+        "adm-zip": "^0.5.16",
+        "chmodr": "^1.2.0",
+        "electron-log": "^5.4.0",
+        "electron-updater": "^6.6.2",
+        "i18n": "^0.15.1"
+    },
+    "devDependencies": {
+        "electron": "^30.5.1",
+        "electron-builder": "^26.0.12",
+        "eslint": "^9.20.0",
+        "eslint-config-prettier": "^10.1.5",
+        "eslint-plugin-prettier": "^5.4.0",
+        "prettier": "^3.5.3"
+    },
+    "build": {
+        "appId": "es.intef.exelearning",
+        "productName": "eXeLearning",
+        "directories": {
+            "output": "dist"
+        },
+        "compression": "store",
+        "publish": null,
+        "asar": true,
+        "disableDefaultIgnoredFiles": true,
+        "files": [
+            "main.js",
+            "composer.json",
+            "composer.lock",
+            ".env.dist",
+            "translations/en.json",
+            "translations/es.json"            
+        ],
+        "extraResources": [
+            {
+                "from": "public/",
+                "to": "public/"
+            },
+            {
+                "from": "bin/",
+                "to": "bin/"
+            },
+            {
+                "from": "vendor/",
+                "to": "vendor/"
+            },
+            {
+                "from": "config/",
+                "to": "config/"
+            },
+            {
+                "from": "src/",
+                "to": "src/"
+            },
+            {
+                "from": "templates/",
+                "to": "templates/"
+            },
+            {
+                "from": "translations/",
+                "to": "translations/"
+            },
+            {
+                "from": "migrations/",
+                "to": "migrations/"
+            },
+            {
+                "from": "composer.json",
+                "to": "composer.json"
+            },
+            {
+                "from": "composer.lock",
+                "to": "composer.lock"
+            },
+            {
+                "from": ".env.dist",
+                "to": ".env.dist"
+            }
+        ],
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64"
+                    ]
+                },
+                {
+                    "target": "msiWrapped",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ],
+            "icon": "public/exelearning.ico",
+            "legalTrademarks": "INTEF",
+            "signAndEditExecutable": true,
+            "verifyUpdateCodeSignature": false
+        },
+        "nsis": {
+            "oneClick": true,
+            "perMachine": false,
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "eXeLearning"
+        },
+        "msiWrapped": {
+            "runAfterFinish": false,
+            "perMachine": false,
+            "oneClick": true
+        },
+        "linux": {
+            "executableArgs": ["--no-sandbox"],
+            "target": [
+                { "target": "AppImage",  "arch": ["x64"] },
+                { "target": "deb",       "arch": ["x64"] },
+                { "target": "rpm",       "arch": ["x64"] }
+            ],
+            "category": "Education",
+            "icon": "public/icons"
+        },
+        "mac": {
+            "category": "public.app-category.education",
+            "hardenedRuntime": false,
+            "gatekeeperAssess": false,
+            "identity": null,
+            "sign": false,
+            "target": [
+                { "target": "dmg", "arch": ["universal"] },
+                { "target": "zip", "arch": ["universal"] }
+            ],
+            "icon": "public/exe_elp.icns"
+        },
+        "publish": [
+        {
+            "provider": "github",
+            "owner": "exelearning",
+            "repo": "exelearning",
+            "releaseType": "prerelease",
+            "private": true
+
+        }
+    ]
+    }
+
+}
