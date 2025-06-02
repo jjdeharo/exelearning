@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Api;
 
 use App\Entity\net\exelearning\Entity\User;
+use App\Repository\net\exelearning\Repository\UserRepository;
 use App\Settings;
 use Firebase\JWT\JWT;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -57,8 +58,27 @@ final class PlatformIntegrationApiControllerTest extends WebTestCase
     {
         $client = self::createClient();
 
-        $em = self::getContainer()->get('doctrine')->getManager();
-        $user = $em->getRepository(User::class)->find(1); // Assumes user ID 1 exists
+        $container = static::getContainer();
+
+        // Ensure test user exists with ID 1
+        $userRepository = $container->get(UserRepository::class);
+        $entityManager = $container->get('doctrine.orm.entity_manager');
+        if (!$userRepository->find(1)) {
+            $user = new User();
+            $user->setUserId("1");
+            $user->setEmail('tests@example.com');
+            $user->setPassword('random-pass');
+            $user->setIsLopdAccepted(true);
+
+            $meta = $entityManager->getClassMetadata(User::class);
+            $meta->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+        }
+
+        // Retrieve user by ID (to simulate your current logic)
+        $user = $entityManager->getRepository(User::class)->find(1);
 
         // Authenticate as the test user (session cookie is set)
         $client->loginUser($user);

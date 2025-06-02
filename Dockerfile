@@ -98,6 +98,9 @@ COPY --chown=nobody composer.json composer.lock ./
 # Copy Symfony configuration script (e.g., migrations and user setup)
 COPY --chown=nobody 02-configure-symfony.sh /docker-entrypoint-init.d/
 
+# Make sure it's executable
+RUN chmod +x /docker-entrypoint-init.d/02-configure-symfony.sh
+
 # Run composer (TODO: consider using --no-dev in production environment)
 RUN composer install --optimize-autoloader --no-interaction --no-progress && \
     composer clear-cache
