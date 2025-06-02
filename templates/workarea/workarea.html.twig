@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}eXeLearning{% endblock %}
+
+{% block stylesheets %}
+    {# eXeLearning styles #}
+    <link class="exe" rel="stylesheet" href="{{ asset('libs/bootstrap/bootstrap.min.css') }}">
+    <link class="exe" rel="stylesheet" href="{{ asset('style/workarea/main.css') }}">
+    <link class="exe" rel="stylesheet" href="{{ asset('style/workarea/base.css') }}">
+    {# Legacy/Common styles #}
+    <link class="exe" rel="stylesheet" href="{{ asset('app/common/exe_effects/exe_effects.css') }}">
+    <link class="exe" rel="stylesheet" href="{{ asset('app/common/exe_games/exe_games.css') }}">
+    <link class="exe" rel="stylesheet" href="{{ asset('app/common/exe_highlighter/exe_highlighter.css') }}">
+    <link class="exe" rel="stylesheet" href="{{ asset('app/common/exe_lightbox/exe_lightbox.css') }}">
+    <link class="exe" rel="stylesheet" href="{{ asset('app/common/exe_media/exe_media.css') }}">
+    <link class="exe" rel="stylesheet" href="{{ asset('app/common/exe_wikipedia/exe_wikipedia.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {# External libs #}
+    <script class="exe" src="{{ asset('libs/jquery/jquery.min.js') }}" defer></script>
+    <script class="exe" src="{{ asset('libs/bootstrap/bootstrap.bundle.min.js') }}" defer></script>
+    <script class="exe" src="{{ asset('libs/multi-dropdown.js') }}" defer></script>
+    <script class="exe" src="{{ asset('libs/interact/interact.min.js') }}" defer></script>
+    <script class="exe" src="{{ asset('libs/showdown/showdown.min.js') }}" defer></script>
+    {# eXeLearning common legacy objects #}
+    <script class="exe" type="module" src="{{ asset('app/common/app_common.js') }}" defer></script>
+    <script class="exe" src="{{ asset('app/common/common_i18n.js') }}" defer></script>
+    <script class="exe" src="{{ asset('app/common/common.js') }}" defer></script>
+    <script class="exe" src="{{ asset('app/common/exe_effects/exe_effects.js') }}" defer></script>
+    <script class="exe" src="{{ asset('app/common/exe_games/exe_games.js') }}" defer></script>
+    <script class="exe" src="{{ asset('app/common/exe_highlighter/exe_highlighter.js') }}" defer></script>
+    <script class="exe" src="{{ asset('app/common/exe_lightbox/exe_lightbox.js') }}" defer></script>
+    <script class="exe" src="{{ asset('app/common/exe_media/exe_media.js') }}" defer></script>
+    <script class="exe" src="{{ asset('app/common/exe_math/tex-mml-svg.js') }}" defer></script>
+    {# To review: Scripts for plugins in development #}
+    <script class="exe" src="{{ asset('app/common/fix_webm_duration/fix_webm_duration.js') }}" defer></script>
+    <script class="exe" src="{{ asset('libs/abcjs/exe_abc_music.js') }}" defer></script>
+    {# Controller JS values #}
+    <script class="exe" defer>
+        window.eXeLearning = {
+            version: "{{ constant('App\\Constants::APP_VERSION' ) }}",
+            expires: "{{ constant('App\\Constants::DEMO_EXPIRATION_DATE' ) }}",
+            user: "{{ user | json_encode }}",
+            config: "{{ config | json_encode }}",
+            symfony: "{{ symfony | json_encode }}",
+            mercure: "{{ mercure | json_encode }}",
+        }
+    </script>
+    {# TinyMCE #}
+    <script class="exe" src="{{ asset('libs/tinymce_5/js/tinymce/tinymce.min.js') }}" defer></script>
+    <script class="exe" src="{{ asset('app/editor/tinymce_5_settings.js') }}" defer></script>
+    {# eXeLearning app #}
+    <script class="exe" type="module" src="{{ asset('app/app.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div id="main">
+        <div id="load-screen-main" class="load-screen loading"><span>eXeLearning {{ constant('App\\Constants::APP_VERSION' )}}</span></div>
+        <div id="head">
+            {% include 'workarea/menus/menuHeadTop.html.twig' %}
+            {% include 'workarea/menus/menuHeadBottom.html.twig' %}
+        </div>
+        <div id="workarea">
+            {% include 'workarea/menus/menuStructure.html.twig' %}
+            {% include 'workarea/menus/menuIdevices.html.twig' %}
+            <div id="node-content-container" class="exe-content js">
+                <div id="load-screen-node-content" class="load-screen hide"></div>
+                <div id="node-content" class="content" drop='["idevice","box"]'>
+                    <header>
+                        <div id="header-node-content" class="header"></div>
+                        <h1 id="page-title-node-content" class="page-title"></h1>
+                    </header>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Modals #}
+    <div class="modals-container">
+        {% include 'workarea/modals/generic/modalAlert.html.twig' %}
+        {% include 'workarea/modals/generic/modalInfo.html.twig' %}
+        {% include 'workarea/modals/generic/modalConfirm.html.twig' %}
+        {% include 'workarea/modals/generic/modalSessionLogout.html.twig' %}
+        {% include 'workarea/modals/pages/uploadtodrive.html.twig' %}
+        {% include 'workarea/modals/pages/uploadtodropbox.html.twig' %}
+        {% include 'workarea/modals/pages/filemanager.html.twig' %}
+        {% include 'workarea/modals/pages/stylemanager.html.twig' %}
+        {% include 'workarea/modals/pages/idevicemanager.html.twig' %}
+        {% include 'workarea/modals/pages/odebrokenlinks.html.twig' %}
+        {% include 'workarea/modals/pages/odeusedfiles.html.twig' %}
+        {% include 'workarea/modals/pages/lopd.html.twig' %}
+        {% include 'workarea/modals/pages/assistant.html.twig' %}
+        {% include 'workarea/modals/pages/releasenotes.html.twig' %}
+        {% include 'workarea/modals/pages/legalnotes.html.twig' %}
+        {% include 'workarea/modals/pages/about.html.twig' %}
+        {% include 'workarea/modals/pages/properties.html.twig' %}
+        {% include 'workarea/modals/pages/openuserodefiles.html.twig' %}
+    </div>
+
+    {# Toasts #}
+    <div class="toasts-container">
+        {% include 'workarea/toast/toastDefault.html.twig' %}
+    </div>
+{% endblock %}

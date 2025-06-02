@@ -1,0 +1,131 @@
+# config/services.yaml
+
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    base_path: '%env(string:BASE_PATH)%'
+
+    app.online_mode: '%env(bool:APP_ONLINE_MODE)%'
+    app.auth_methods: '%env(csv:APP_AUTH_METHODS)%'
+
+    app.version: !php/const App\Constants::APP_VERSION
+    app.expires: !php/const App\Constants::DEMO_EXPIRATION_DATE
+
+    auth_create_users: '%env(bool:AUTH_CREATE_USERS)%'
+
+    cas_url: '%env(CAS_URL)%'
+    cas_validate_path: '%env(CAS_VALIDATE_PATH)%'
+    cas_login_path: '%env(CAS_LOGIN_PATH)%'
+    cas_logout_path: '%env(CAS_LOGOUT_PATH)%'
+    cas_validate_url: '%cas_url%%cas_validate_path%'
+    cas_login_url: '%cas_url%%cas_login_path%'
+    cas_logout_url: '%cas_url%%cas_logout_path%'
+
+    oidc_issuer: '%env(OIDC_ISSUER)%'
+    oidc_client_id: '%env(OIDC_CLIENT_ID)%'
+    oidc_client_secret: '%env(OIDC_CLIENT_SECRET)%'
+    oidc_scope: 'openid email'
+
+    filesdir: '%env(FILES_DIR)%'
+    google_client_id: '%env(GOOGLE_CLIENT_ID)%'
+    google_client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
+    dropbox_client_id: '%env(DROPBOX_CLIENT_ID)%'
+    dropbox_client_secret: '%env(DROPBOX_CLIENT_SECRET)%'
+    openequella_client_id: '%env(OPENEQUELLA_CLIENT_ID)%'
+    openequella_client_secret: '%env(OPENEQUELLA_CLIENT_SECRET)%'
+
+    mercure_url: '%env(MERCURE_URL)%'
+    mercure_public_url: '%env(MERCURE_PUBLIC_URL)%'
+    mercure_jwt_secret_key:  '%env(MERCURE_JWT_SECRET_KEY)%'
+
+    security.firewall_name: 'main'
+
+
+services:
+    Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    Symfony\Component\Security\Core\Security: '@security.helper'
+
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    # we add an extractor that allows us to process .js files
+    App\Translation\net\exelearning\Translation\JsTranslationExtractor:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags:
+            - { name: 'translation.extractor', alias: 'js' }
+
+    App\Util\net\exelearning\Util\SettingsUtil:
+        calls:
+            - ['setContainer', ['@service_container']]
+
+
+    # CAS Authentication
+    security.access_token_extractor.cas:
+        class: Symfony\Component\Security\Http\AccessToken\QueryAccessTokenExtractor
+        arguments:
+            - 'ticket'
+
+    # We must define here the Cas2Handler to pass the $validationUrl to allow autowire
+    Symfony\Component\Security\Http\AccessToken\Cas\Cas2Handler:
+        arguments:
+            $validationUrl: '%cas_validate_url%'
+
+    # OIDC Authentication
+
+    # Uncomment this on Symfony >=7.3
+    # # OIDC UserInfo Handler
+    # Symfony\Component\Security\Http\AccessToken\Oidc\OidcUserInfoTokenHandler:
+    #     alias: security.access_token_handler.oidc_userinfo
+    #     public: false
+
+    # security.access_token_handler.oidc_userinfo:
+    #     class: Symfony\Component\Security\Http\AccessToken\Oidc\OidcUserInfoTokenHandler
+    #     arguments:
+    #         $client: '@http_client'
+    #         $claim: 'sub'
+
+    # Remove this on Symfony >=7.3
+    App\Security\OidcUserInfoTokenHandlerCustom:
+        arguments:
+            $client: '@http_client'
+            $oidcIssuer: '%oidc_issuer%'
+            # $claim: 'email' # we use sub internally
+
+
+    # MultiTokenHandler (combines OIDC, CAS, etc.)
+    App\Security\MultiTokenHandler:
+        arguments:
+            $casHandler: '@Symfony\Component\Security\Http\AccessToken\Cas\Cas2Handler'
+            $authCreateUsers: '%auth_create_users%'
+        tags: ['monolog.logger']
+
+
+    decorating_translator:
+        class:     App\Translation\net\exelearning\Translation\Translator
+        decorates: translator
+        arguments:
+            - '@.inner'
+
+twig:
+    globals:
+        online_mode: '%app.online_mode%'
+        auth_methods: '%app.auth_methods%'
+        app_version: '%app.version%'

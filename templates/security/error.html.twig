@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{# Translation domain #}
+{% trans_default_domain 'messages' %}
+
+{# Set default image using asset() to generate absolute URL #}
+{% set default_image_url = asset('images/default.jpg') %}
+
+{% block stylesheets %}
+    <link class="exe" rel="stylesheet" href="{{ asset('libs/bootstrap/bootstrap.min.css') }}">
+    <style>
+      body { background: #fafafa; }
+      .lead { font-size: 1.8em; }
+      .btn-dark { background-color: #438606; border-color: #2A6D00; }
+      .card { border-radius: 8px; }
+      img { border-radius: 8px 0 0 8px; }
+    </style>
+{% endblock %}
+
+{% block title %}eXeLearning{% endblock %}
+
+{% block body %}
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card shadow">
+          <div class="row g-0">
+            <div class="col-md-6 col-lg-5 d-none d-md-block">
+              <img src="{{ default_image_url }}" alt="" class="img-fluid">
+            </div>
+            <div class="col-md-6 col-lg-7 d-flex text-center text-md-start">
+              <div class="card-body p-4 p-lg-5 text-black">
+                <div class="d-block mt-4 mb-3 pb-1">
+                  <h1 class="lead mb-2">eXeLearning</h1>
+                </div>
+                
+                {# Generic error title #}
+                <h2 class="visually-hidden">Error</h2>
+                
+                {# Show dynamic error message if available #}
+                {% if error is defined and error is not empty %}
+                  <div class="alert alert-danger show mb-4" role="alert">
+                    {{ error }}
+                  </div>
+                {% else %}
+                  <div class="alert alert-danger show mb-4" role="alert">
+                    {{ 'Sorry, but the page cannot be displayed.' | trans }}
+                  </div>
+                  <p>{{ 'The server encountered an error and could not complete your request. Please try again later.' | trans }}</p>
+                {% endif %}
+
+                {# Return button to login page or workarea if user is already authenticated #}
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                  <a href="{{ path('workarea') }}" class="btn btn-dark">{{ 'Return to work area' | trans }}</a>
+                {% else %}
+                  <a href="{{ path('app_login') }}" class="btn btn-dark">{{ 'Return to login' | trans }}</a>
+                {% endif %}
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# Script to remove the "#_=_" fragment from the URL if added by OpenID #}
+<script>
+  if (window.location.hash && window.location.hash === "#_=_") {
+      history.replaceState("", document.title, window.location.pathname + window.location.search);
+  }
+</script>
+
+<script class="exe" src="{{ asset('libs/bootstrap/bootstrap.bundle.min.js') }}" defer></script>
+{% endblock %}

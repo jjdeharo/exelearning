@@ -1,0 +1,10 @@
+# subdir.conf.template
+# --------------------------------------------------------------------
+# Any request beginning with $BASE_PATH/ is rewritten to /
+# This allows, for example, /exelearning/app/... to be searched in /app/ physically.
+# --------------------------------------------------------------------
+location ^~ $BASE_PATH/ {
+    # Use "last" so that, after the rewrite,
+    # the location / block already defined in nginx.conf is re-evaluated
+    rewrite ^$BASE_PATH/(.*)$ /$1 last;
+}

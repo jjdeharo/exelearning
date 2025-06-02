@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="uuid-3817554b-41ab-4602-98a6-c3993704a66d" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" width="250" height="250" viewBox="0 0 250 250">
+  <polygon points="10.07 125 20.52 125.22 120.53 10.07 10.07 10.07 10.07 125" style="fill: #f9a450;"/>
+  <path d="M131.73,10.07h-11.21L20.52,125.22l111.21.23c0-1.79,0-3.6,0-5.39,0-1.03-.02-2.2-.02-3.35,0-35.55.05-71.11.02-106.65Z" style="fill: #ef7f18;"/>
+  <path d="M239.93,125l-3.29.22-100.01,114.71h103.29v-114.93Z" style="fill: #a324aa;"/>
+  <path d="M236.65,125.22l-104.91.23c-.03,38.16.27,76.39-.45,114.48h5.35l100.01-114.71Z" style="fill: #c552ce;"/>
+  <path d="M131.73,125.45l-11.21-.23L20.52,239.93h110.76c.72-38.1.42-76.33.45-114.48Z" style="fill: #0f9fd1;"/>
+  <polygon points="10.07 125 10.07 239.93 20.52 239.93 120.53 125.22 10.07 125" style="fill: #54c3ea;"/>
+  <path d="M47.33,54.06l-.45,18.41h16.16v-18.41h13.47l-.45,48.04h-13.02v-18.86l-16.16.45.24,18.43-12.58.45c-.37.02-1.13-.46-1.13-.7v-47.81h13.92Z" style="fill: #fefefe;"/>
+  <text transform="translate(88.12 54)" style="fill: #fff; font-family: FranklinGothic-Heavy, &apos;Franklin Gothic Heavy&apos;; font-size: 37.65px; font-weight: 800;"><tspan x="0" y="0">1</tspan></text>
+</svg>

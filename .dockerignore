@@ -1,0 +1,58 @@
+.git
+node_modules
+tmp
+log
+# .env
+
+# Ignore VCS configuration directories
+.git
+.gitignore
+# Ignore development and documentation files
+README.md
+doc/
+
+# Ignore development environment configurations
+docker-compose.yml
+# .env
+.env.local
+.env.*.local
+
+# Ignore local dependency directories
+node_modules/
+vendor/
+dist/
+src/var/
+
+package.json
+
+# Ignore lock files
+package-lock.json
+symfony.lock
+yarn.lock
+
+
+# Ignore cache and log files
+var/cache/
+var/log/
+
+# Ignore PHPUnit configuration files
+# phpunit.xml.dist
+
+# Ignore local Symfony configuration files
+config/bootstrap.php
+config/packages/test/
+config/packages/dev/
+config/packages/local/
+config/routes/test/
+config/routes/dev/
+config/routes/local/
+
+# Ignore deployment-specific files
+deploy/
+
+# Ignore Aider files
+.aider*
+
+# Ignore SQLite database
+exelearning.db
+symfony.lock

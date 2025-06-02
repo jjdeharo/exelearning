@@ -1,0 +1,689 @@
+#gameQEIdeviceForm {
+    margin-top: 2em;
+}
+
+#gameQEIdeviceForm input[type=number] {
+    width: 4em;
+}
+
+#gameQEIdeviceForm .exe-form-tab label {
+    margin-right: 0.15em !important;
+}
+
+#gameQEIdeviceForm input:is([type="checkbox"], [type="radio"], [type="number"]) {
+    margin-right: 0.15em !important;
+}
+
+
+#gameQEIdeviceForm input[type="radio"] {
+    cursor: pointer;
+}
+
+/*Panel preguntas */
+.ADVNE-EPanel {
+    margin: 0.7em auto;
+    padding: 0;
+    position: relative;
+    width: 100%;
+}
+
+.ADVNE-EOptionsMedia {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
+    width: 100%;
+}
+
+/* Medias */
+.ADVNE-EMultiMediaOption {
+    height: 100%;
+    min-height: 300px;
+    min-width: 400px;
+    position: relative;
+    width: 50%;
+}
+
+.ADVNE-EMultimedia {
+    background-color: #fff;
+    border-radius: .5em;
+    height: 227px;
+    margin: 40px auto auto auto;
+    position: relative;
+    width: 400px;
+}
+
+.ADVNE-EMultiVideoQuExt {
+    background-color: #fff;
+    height: 300px;
+    margin: 20px auto auto auto;
+    position: relative;
+    max-width: 528px;
+}
+
+.ADVNE-EMedia {
+    border: 1px solid #cccccc;
+    border-radius: .5em;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.ADVNE-EMedia:last-of-type {
+    display: block;
+}
+
+.ADVNE-ECursor {
+    display: none;
+    left: 0;
+    position: absolute;
+}
+
+/* Opciones */
+.ADVNE-Flex {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.ADVNE-ENameTema input[type=text]:last-of-type {
+    width: 100%;
+    margin-left: 0.2em;
+}
+
+.ADVNE-ENameTema {
+    flex-wrap: nowrap;
+}
+
+.ADVNE-EOptionsGame {
+    min-height: 300px;
+    width: 50%;
+}
+
+.ADVNE-EOptionsGame div {
+    margin-bottom: 0.7em;
+}
+
+.ADVNE-EOptionsGame input[type=text] {
+    margin-right: .2em;
+    width: 5em;
+}
+
+.ADVNE-inlineOption,
+.ADVNE-TypeGame,
+.ADVNE-TypeOrder {
+    margin-left: .5em
+}
+
+/* Opciones imagen */
+.ADVNE-EInputImage {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    min-width: 100px;
+    width: 100%;
+}
+
+#gameQEIdeviceForm .ADVNE-EInputImage input[type=text] {
+    flex-flow: 1;
+    margin-right: 0.2em;
+    min-width: 100px;
+    width: 100%;
+}
+
+.ADVNE-EInputImage input[type=button] {
+    flex-shrink: 0;
+}
+
+.ADVNE-EAuthorAlt label {
+    display: block;
+}
+
+.ADVNE-EAuthorAlt input[type=text] {
+    margin-right: 0.2em;
+    width: 100%;
+}
+
+.ADVNE-EAuthorAlt div {
+    width: 100%;
+}
+
+/* Opciones video */
+.ADVNE-EAuthorVideo input[type=text] {
+    width: 85%;
+    max-width: 400px;
+}
+
+.ADVNE-EInputVideo input[type=text] {
+    width: 85%;
+}
+
+.ADVNE-EInputOptionsVideo>div {
+    margin-top: 0.6em;
+}
+
+.ADVNE-EInputOptionsVideo button {
+    font-size: 1em;
+    height: 1.6em;
+}
+
+/* Opciones audio */
+.ADVNE-EInputAudio {
+    align-items: center;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.ADVNE-EInputAudio input[type=text] {
+    flex-flow: 1;
+    margin-right: 0.2em;
+    min-width: 100px;
+    width: 100%;
+}
+
+.ADVNE-EInputAudio input[type=button] {
+    flex-shrink: 0;
+}
+
+.ADVNE-ButtonLink {
+    display: block;
+    height: 1.6em;
+    width: 1.6em;
+}
+
+/*Preguntas*/
+.ADVNE-EQuestionDiv {
+    margin-bottom: .3em;
+    width: 100%;
+}
+
+.ADVNE-EQuestion {
+    width: 98%;
+}
+
+.ADVNE-EAnswers {
+    background: transparent;
+    background-color: transparent;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.ADVNE-EOptionDiv {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 3px 0;
+    min-height: 35px;
+    width: 49%;
+}
+
+.ADVNE-EAnwersOptions {
+    width: 100%;
+}
+
+.ADVNE-SolutionWordDiv {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: .5em auto;
+    width: 100%;
+}
+
+.ADVNE-ESolutionWord {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin-bottom: 0.5em;
+    width: 100%;
+}
+
+.ADVNE-ESolutionWord label {
+    display: inline-block;
+    width: 11em;
+    text-align: right;
+    padding-right: .5em
+}
+
+.ADVNE-SolutionWordDiv input {
+    text-align: left;
+}
+
+.ADVNE-SolitionOptionsDiv {
+    width: 98%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Itinerario */
+.ADVNE-EOrders {
+    margin-top: 0.5em;
+    display: none;
+}
+
+.ADVNE-EOrders>div {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    ;
+}
+
+.ADVNE-EOrders>div {
+    align-items: left;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin-bottom: 0.5em;
+}
+
+.ADVNE-EOrders>div * {
+    margin-right: .2em;
+}
+
+.ADVNE-EOrders input[type=text] {
+    width: 100%;
+}
+
+.ADVNE-EOrders label {
+    white-space: nowrap;
+}
+
+.ADVNE-EHit {
+    background-image: url(quextIEHit.png);
+    background-size: 100% 100%;
+    display: inline-block;
+    height: 1.5em;
+    width: 1.5em;
+}
+
+.ADVNE-EError {
+    background-image: url(quextIEError.png);
+    background-size: 100% 100%;
+    display: inline-block;
+    height: 1.5em;
+    width: 1.5em;
+}
+
+/*Numero Preguntas */
+.ADVNE-ENumQuestionDiv {
+    align-items: center;
+    display: flex;
+    height: 1.5em;
+    justify-content: center;
+    position: absolute;
+    right: 0;
+    top: .3em;
+    width: 3em;
+    z-index: 20;
+}
+
+.ADVNE-ENumQ {
+    background-image: url(quextIENumber.png);
+    background-size: 100% 100%;
+    display: inline-block;
+    height: 1.5em;
+    margin-right: 0px;
+    width: 1.5em;
+}
+
+.ADVNE-ENumQuestions {
+    font-weight: bold;
+    height: 1.5em;
+    text-align: center;
+    width: 2em;
+}
+
+.ADVNE-ECustomMessage {
+    align-items: center;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1em;
+    width: 100%;
+}
+
+.ADVNE-ECustomMessage input[type=text] {
+    width: 100%;
+    margin-right: 0.1em;
+}
+
+.ADVNE-ECustomMessage label {
+    margin: 0 0.1em;
+}
+
+/* barra edición */
+.ADVNE-ENavigationButtons {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+    width: 100%;
+}
+
+.ADVNE-ENavigationButton {
+    height: 1.5em;
+    margin: 0 .3em;
+    min-width: 1.5em;
+    width: 1.5em;
+}
+
+.ADVNE-EButtonImage {
+    height: 100%;
+    transition: all .3s ease-in-out;
+    width: 100%;
+}
+
+.ADVNE-EButtonImage:hover {
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
+}
+
+.ADVNE-NumberQuestion {
+    font-weight: bold;
+    height: 1.5em;
+    line-height: 1.5em;
+    text-align: center;
+    vertical-align: middle;
+    width: 2em;
+}
+
+/* Video introdución */
+.ADVNE-EVIDiv {
+    background-color: #f9f9f9;
+    display: none;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 20;
+}
+
+/* Video introdución */
+.ADVNE-EVIV {
+    width: 100%;
+}
+
+.ADVNE-EMVI {
+    height: 315px;
+    margin: 70px auto;
+    position: relative;
+    width: 560px;
+}
+
+.ADVNE-EVI,
+.ADVNE-ENoVI {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.ADVNE-EVIOptions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    height: 50px;
+    justify-content: flex-start;
+    position: absolute;
+    width: 100%;
+}
+
+.ADVNE-EVIOptions * {
+    margin-left: 0.3em;
+}
+
+.ADVNE-EVIOptions input[type=text] {
+    text-align: left;
+    width: 5em;
+}
+
+.ADVNE-EVIOptions input[type=text]:first-of-type {
+    width: 15em;
+}
+
+.ADVNE-EVideoIntroDiv {
+    border-radius: 10px;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 98%;
+    z-index: 20;
+}
+
+.ADVNE-EVIClose {
+    position: absolute;
+    right: 0.3em;
+    top: 0.3em;
+}
+
+.ADVNE-EVIOptionsVQ {
+    margin-bottom: 0.6em;
+}
+
+.ADVNE-EVIOptionsVQ input[type=text] {
+    text-align: left;
+    width: 5em;
+    margin-right: .2em;
+}
+
+.ADVNE-EVIOptionsVQ #vquextEVIURL {
+    width: 15em;
+}
+
+/* Ocutar elementos */
+.ADVNE-EInputOptionsVideo,
+.ADVNE-DP,
+.ADVNE-EInputImage,
+.ADVNE-EVIDiv,
+.ADVNE-ScoreQuestionDiv,
+.ADVNE-ECoord,
+.ADVNE-EFeedbackP,
+.ADVNE-ETitleImage,
+.ADVNE-ETitleVideo,
+.ADVNE-EInputVideo,
+.ADVNE-EAuthorAlt,
+.ADVNE-ESolutionSelect input[type=number],
+.ADVNE-ESolutionSelect label {
+    display: none;
+}
+
+/* Especificos del juego  selecciona*/
+.ADVNE-ESolutionSelect {
+    margin-bottom: 0.5em;
+}
+
+.ADVNE-ESolutionSelect input[type=number] {
+    margin: auto 0.2em;
+}
+
+#gameQEIdeviceForm .ADVNE-EOptionDiv label {
+    margin-right: 0.2em;
+}
+
+.ADVNE-ESolutionSelect input[type=number],
+.ADVNE-ESolutionSelect label {
+    display: none;
+}
+
+label[for=gameQEScoreQuestion],
+input#gameQEScoreQuestion {
+    display: none;
+}
+
+.ADVNE-EWordDiv {
+    margin: .5em auto;
+    width: 100%;
+}
+
+#gameQEIdeviceForm .ADVNE-ESolutionWord label {
+    display: inline-block;
+}
+
+#gameQEIdeviceForm .ADVNE-ESolutionWord input[type=text] {
+    width: 100%;
+}
+
+/* To review */
+#gameQEIdeviceForm .exe-block-info img {
+    margin-left: .2em;
+    vertical-align: middle;
+}
+
+.exe-block-close {
+    position: absolute;
+    top: 6px;
+    right: 5px;
+}
+
+#gameQEIdeviceFormTab3 p:first-child {
+    margin-top: 0;
+}
+
+#gameQEIdeviceFormTab3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2%;
+}
+
+#gameQEIdeviceFormTab3>* {
+    flex: 0 0 48%;
+}
+
+#gameQEIdeviceFormTab3> :first-child {
+    flex: 0 0 100%;
+}
+
+
+@media screen and (max-width:720px) {
+    #gameQEIdeviceFormTab3>* {
+        flex: 0 0 100%;
+    }
+}
+
+#gameQEIdeviceForm #gameQEIdeviceFormTab3 label {
+    display: block;
+    margin-bottom: .2em;
+    color: #5b810b;
+    font-weight: 500;
+}
+
+#gameQEIdeviceForm #gameQEIdeviceFormTab3 input {
+    width: 100%;
+}
+
+/* Tabs (this should be common) */
+.exe-form-tabs {
+    list-style: none;
+    margin: 0 0 1.5em 0;
+    padding: 0;
+}
+
+#main .exe-form-tabs li {
+    display: inline;
+    list-style: none;
+    list-style-image: none;
+    margin: 0;
+    padding: 0;
+}
+
+.exe-form-tabs li:first-child a {
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+}
+
+.exe-form-tabs li:last-child a {
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.exe-form-tabs a {
+    background: #F9F9F9;
+    border: 1px solid #CCC;
+    color: #666;
+    display: inline-block;
+    padding: .5em 1em;
+}
+
+.exe-form-tabs li:not(:last-child) a {
+    border-right: none;
+}
+
+.exe-form-tabs .exe-form-active-tab {
+    background: #FFF;
+    color: #000;
+    font-weight: 500;
+}
+
+#gameQESCORMoptions {
+    margin-left: 1.5em;
+    visibility: hidden;
+}
+
+label[for=gameQEActivitySCORM] {
+    font-weight: bold;
+}
+
+#gameQESCORMinstructionsButton {
+    color: #777;
+    display: none;
+    margin: 10px 0 0 25px;
+}
+
+#gameQESCORMinstructionsButton ul {
+    list-style: none;
+    margin: 1.5em 0 .7em 0;
+    padding: 0;
+}
+
+#gameQESCORMinstructionsButton ul li {
+    list-style-image: none;
+    margin: 0 0 .5em 0;
+    padding: 0;
+}
+
+#gameQESCORMinstructionsAuto {
+    color: #777;
+    display: none;
+    margin: 10px 0 0 25px;
+}
+
+#gameQESCORMinstructionsAuto ul {
+    list-style: none;
+    margin: 1.5em 0 .7em 0;
+    padding: 0;
+}
+
+/* Ayuda */
+.ADVNE-TypeGameHelp {
+    display: none;
+    margin-bottom: 2em;
+    font-size: .95em
+}
+
+.Games-Reportdiv {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2px;
+}
+
+.GameModeHelpLink {
+    margin: 0 2px;
+    vertical-align: middle;
+}
+
+.GameModeLabel {
+    font-weight: normal
+}

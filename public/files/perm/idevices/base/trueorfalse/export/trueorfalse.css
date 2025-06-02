@@ -1,0 +1,246 @@
+.TOFP-MainContainer a:link,
+.TOFP-MainContainer a:link,
+.TOFP-MainContainer a:visited,
+.TOFP-MainContainer a:focus {
+    border: 0;
+    border-bottom: none;
+    border-width: 0;
+    outline: none;
+    outline-width: 0;
+    text-decoration: none !important;
+}
+
+.TOFP-CheckGameDiv {
+    text-align: center;
+}
+
+.TOFP-MainContainer {
+    font-size: 1em;
+    width: 100%;
+}
+
+.TOFP-instructions,
+.TOFP-Question {
+    margin-bottom: 1em;
+}
+
+
+.TOFP-MainContainer * {
+    box-sizing: border-box;
+}
+
+.TOFP-Answers {
+    font-size: 1.1em;
+    margin: 1em auto;
+}
+
+
+.TOFP-MainContainer p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* Juego */
+
+.TOFP-GameContainer {
+    position: relative;
+    width: 100%;
+}
+
+
+.TOFP-GameScoreBoard {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0.4em auto;
+    width: 98%;
+}
+
+
+.TOFP-TimeNumber {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.TOFP-PTime {
+    font-size: 1.6em;
+    min-width: 7em;
+    text-align: center;
+}
+
+.TOFP-Multimedia {
+    margin: 0.3em auto;
+    overflow: hidden;
+}
+
+
+.TOFP-Suggestion {
+    margin: 0 0 1em 1em;
+    background: #e1f1f9;
+    color: #2b627d;
+    border: 1px solid #c9edf4;
+    border-radius: 4px;
+    padding: .7em;
+
+}
+
+.TOFP-Feedback {
+    margin: .5em 0 0.5em 1em;
+    background: #e1f1f9;
+    border-radius: 4px;
+    padding: .7em;
+}
+
+
+.TOFP-ShowSuggestion {
+    margin: 0 0 0.8em 0;
+    display: flex;
+    align-items: center;
+    text-decoration: none !important;
+    gap: 3px;
+    color: #2b627d;
+    clear: both;
+}
+
+
+.TOFP-SuggestionIcon {
+    display: block;
+    width: 16px;
+    height: 16px;
+}
+
+.TOFP-SuggestionIcon:hover {
+    text-decoration: underline;
+}
+
+.TOFP-CheckTest {
+    margin: 1em;
+    background-color: #eee;
+    border: 1px solid #555;
+    border-radius: 0.3em;
+    color: #333;
+    padding: 0.5em 1em;
+}
+
+.TOFP-QuestionDiv {
+    background-color: #f5f5f5;
+    border-radius: 0.3em;
+    padding: 1em;
+    margin-bottom: 0.5em;
+}
+
+.TOFP-QuestionDivBlack {
+    background-color: #ededed;
+}
+
+.TOFP-StartGameDiv {
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    margin: 0.3em auto;
+    width: 100%;
+}
+
+
+
+.TOFP-CheckTestDiv {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.TOFP-StartGame,
+.TOFP-Message {
+    margin: 0.4em auto;
+    text-align: center;
+}
+
+
+.TOFP-MessageInfo {
+    margin: .3em auto;
+    width: 100%;
+}
+
+.TOFP-MessageInfo p {
+    text-align: center;
+    width: 100%;
+}
+
+.Games-BottonContainer {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0.1em auto;
+    padding: 0;
+    width: 100%;
+}
+
+.Games-GetScore input[type=button] {
+    padding: 0.3em 0.5em;
+    margin-right: .5em;
+    width: auto;
+}
+
+.Games-GetScore span {
+    display: block;
+}
+
+.Games-BottonContainer {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.Games-BottonContainer * {
+    margin: 0;
+    padding: 0;
+}
+
+
+.Games-GetScore {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 1em
+}
+
+
+.Games-GetScore span {
+    display: block;
+}
+
+.Games-ReportIconDiv {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.1em;
+    width: 100%;
+    margin-bottom: 6px;
+
+}
+
+.Games-ReportIconDiv img {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.Games-ReportIconDiv span {
+    font-size: 0.9em;
+}
+
+.TOFP-EHidden {
+    display: none;
+}
+
+
+
+@media screen and (max-width: 760px) {
+    .TOFP-GameContainer {
+        font-size: 0.9rem;
+    }
+
+}

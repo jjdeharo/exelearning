@@ -1,0 +1,16 @@
+/* Text iDevice (export CSS) */
+.textIdeviceContent .inline {
+    display: flex;
+}
+
+.textIdeviceContent dt {
+    margin: 0 0 0 auto;
+}
+
+.textIdeviceContent dd {
+    margin-left: 10px;
+}
+
+.idevice_node.text .iDevice_buttons.feedback-button {
+    margin-bottom: 1em;
+}
