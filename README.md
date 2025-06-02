@@ -6,7 +6,7 @@
   <h1 align="center">eXeLearning</h1>
 
   <p align="center">
-    <strong>eXeLearning</strong> is a GPLv3 free/libre tool to create and publish open educational resources.
+    <strong>eXeLearning</strong> is an AGPL free/libre tool to create and publish open educational resources.
     <br />
     <a href="https://github.com/exelearning/exelearning"><strong>Explore the project »</strong></a>
     <br />
@@ -179,7 +179,7 @@ Distributed under the GNU General Public License v3.0. See `LICENSE` for more in
 
 ---
 
-**eXeLearning** is a GPLv3 free/libre tool to create and publish open educational resources.
+**eXeLearning** is an AGPL free/libre tool to create and publish open educational resources.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
