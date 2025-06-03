@@ -46,6 +46,8 @@ This version is built with modern technologies (PHP 8, Symfony 7) and provides a
 
 ## Quick Start
 
+First install Docker if you don't have it yet. Then...
+
 To try out eXeLearning instantly, run:
 
 ```bash
