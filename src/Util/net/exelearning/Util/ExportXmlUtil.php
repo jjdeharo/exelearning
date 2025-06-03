@@ -1330,7 +1330,7 @@ class ExportXmlUtil
         $exe = $body->addChild('div', ' ');
         $exe->addAttribute('class', 'exe-content exe-export pre-js siteNav-hidden');
 
-        // search inside the structure for visible pages and keep the $visiblesPages array to 
+        // search inside the structure for visible pages and keep the $visiblesPages array to
         // generate the page, navigation menu, page counters, etc.
         $visiblesPages = [];
         $indexNode = 0;
