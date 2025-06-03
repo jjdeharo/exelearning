@@ -46,6 +46,8 @@ This version is built with modern technologies (PHP 8, Symfony 7) and provides a
 
 ## Quick Start
 
+First install Docker if you don't have it yet. Then...
+
 To try out eXeLearning instantly, run:
 
 ```bash
@@ -123,8 +125,12 @@ eXeLearning enables educators to:
 The project supports multiple languages and uses Symfony's Translation component. Currently available:
 
 * English (default)
-* Spanish
-* Catalan
+* Español
+* Català
+* Euskara
+* Galego
+* Valencià
+* Esperanto
 
 For more information on translation management, see the [internationalization documentation](./doc/08-internationalization.md).
 

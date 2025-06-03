@@ -1,5 +1,6 @@
 $exeExport = {
 
+    isTogglingBox: false,
     delayLoadingPageTime: 200,
     delayLoadingIdevicesJson: 50,
     delayLoadScorm: 50,
@@ -187,33 +188,29 @@ $exeExport = {
      * Add functionality to the boxes toggle button
      */
     addBoxToggleEvent: function () {
-        let boxList = document.querySelectorAll('.page-content > .box');
-        boxList.forEach(box => {
-            let boxToggle = box.querySelector('.box-head .box-toggle');
-            if (boxToggle) {
-                boxToggle.addEventListener('click', e => {
-                    if (boxToggle.classList.contains('box-toggle-on')) {
-                        boxToggle.classList.add('box-toggle-off');
-                        boxToggle.classList.remove('box-toggle-on');
-                        box.classList.add('minimized');
-                    } else {
-                        boxToggle.classList.add('box-toggle-on');
-                        boxToggle.classList.remove('box-toggle-off');
-                        box.classList.remove('minimized');
-                    }
+        
+        $('article.box .box-head .box-toggle').on('click', function(){
+            if ($exeExport.isTogglingBox) return;
+            $exeExport.isTogglingBox = true;
+            let box = $(this).parents('article.box');
+            if (box.hasClass("minimized")) {
+                box.removeClass('minimized');
+                $('.box-content', box).slideDown(function(){
+                    $exeExport.isTogglingBox = false;
                 });
-                // Box togglers
-                let boxHead = box.querySelector('.box-head');
-                if (boxHead) {
-                  boxHead.style.cursor = 'pointer';
-                  boxHead.addEventListener('click', e => {
-                      if (e.target.className.indexOf('box-toggle') == -1) {
-                          $(e.target).parents('.box').toggleClass('minimized');
-                      }
-                  });
-                }
+            } else {
+                $('.box-content', box).slideUp(function(){
+                    box.addClass('minimized');
+                    $exeExport.isTogglingBox = false;
+                });
             }
         });
+        $('article.box .box-head').css('cursor', 'pointer').on('click', function(e){
+            let t = $(e.target);
+            if (t.hasClass('box-toggle')) return false;
+            $('.box-toggle', this).trigger('click');
+        });
+        
     },
 
     /**

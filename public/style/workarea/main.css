@@ -1066,6 +1066,7 @@ body[mode="advanced"] #main #head #exe-mode-check {
     position: relative;
     transition: var(--tr-02);
     max-width: calc(100% - 20px);
+    text-decoration: underline;
 }
 
 #workarea #menu_nav #nav_list .nav-element[nav-id="root"].selected>.nav-element-text {
@@ -4672,7 +4673,7 @@ body > .tooltip{
   }
   
   #main {
-    background-color: #f7f7f7;
+    background-color: #f4f4f4;
   }
   
   /* NAVBAR */
