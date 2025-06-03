@@ -1327,9 +1327,10 @@ class ExportXmlUtil
         $exe = $body->addChild('div', ' ');
         $exe->addAttribute('class', 'exe-content exe-export pre-js siteNav-hidden');
 
+        $visiblesPages = [];
         // Nav menu
         if (in_array($exportType, [Constants::EXPORT_TYPE_HTML5])) {
-            $navContent = self::createHTMLPageMenuNav(
+            list($navContent, $visiblesPages)= self::createHTMLPageMenuNav(
                 $odeNavStructureSync,
                 $odeNavStructureSyncs,
                 $pagesFileData,
@@ -1343,6 +1344,7 @@ class ExportXmlUtil
         $page = $exe->addChild('main', ' ');
         $page->addAttribute('id', $odeNavStructureSync->getOdePageId());
         $page->addAttribute('class', 'page');
+        
         /* To review
         if ($exportDynamicPage) {
             foreach ($pagePropertiesDict as $key => $value) {
@@ -1371,7 +1373,7 @@ class ExportXmlUtil
         // Page header
         $pageHeader = self::createHTMLPageHeader(
             $odeNavStructureSync,
-            $pagesFileData,
+            $visiblesPages,
             $odeProperties,
             $translator,
             $theme,
@@ -1402,9 +1404,11 @@ class ExportXmlUtil
                 [Constants::EXPORT_TYPE_HTML5, Constants::EXPORT_TYPE_EPUB3]
             )
         ) {
+            // $visiblesPages
             $navButtons = self::createHTMLNavButtons(
                 $odeNavStructureSync,
                 $pagesFileData,
+                $visiblesPages,
                 $odeProperties,
                 $resourcesPrefix,
                 $isPreview,
@@ -1600,6 +1604,9 @@ class ExportXmlUtil
         $resourcesPrefix,
         $isPreview,
     ) {
+        $visiblesPages = [];
+        //$previousPage = null;
+
         $navMain = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><nav-main></nav-main>');
 
         $nav = $navMain->addChild('nav', ' ');
@@ -1611,37 +1618,63 @@ class ExportXmlUtil
         $navUl = $nav->addChild('ul', ' ');
         $navLi = null;
         $indexNode = 0;
+        $previousPage = null;
+        //$nextPage = null;
         foreach ($pagesFileData as $key => $pageData) {
-            $name = $pageData['name'];
-            $url = $pageData['fileUrl'];
-            $odeParentPageId = $odeNavStructureSyncs[$indexNode]->getOdeParentPageId();
-            // If it has no parent node, it is first-level
-            if (null == $odeParentPageId) {
-                $navLi = $navUl->addChild('li', ' ');
-            } else {
-                //  Search for the parent node of the current one
-                $items = $navUl->xpath('//li[@odePageId="'.$odeParentPageId.'"]');
-                $item = $items[0];
-                // If it is the first child add a ul tag and a child li tag
-                $liChildrens = $item->count();
-                if ($liChildrens < 2) {
-                    $navLi = $item->addChild('ul', ' ')->addChild('li', ' ');
+            if(self::isVisibleExport($odeNavStructureSyncs, $key, $pageData, $indexNode)) {
+                $name = $pageData['name'];
+                $url = $pageData['fileUrl'];
+                
+                /*if (isset($odeNavStructureSyncs[$indexNode-1])) {
+                    $previousPage = $odeNavStructureSyncs[$indexNode-1]->getOdePageId();
                 } else {
-                    $navLi = $item->ul->addChild('li', ' ');
+                    $previousPage = null;
                 }
-            }
-            $navLi->addAttribute('odePageId', $key);
-            $navLink = $navLi->addChild('a', $name);
-            $navLink->addAttribute('href', !$isPreview ? $resourcesPrefix.$url : $url);
-            $class = '';
-            if ($currentOdePageId == $key) {
-                $class .= 'active';
-            }
-            if (0 == $indexNode) {
-                $class .= $class ? ' main-node' : 'main-node';
-            }
-            if (!empty($class)) {
-                $navLink->addAttribute('class', $class);
+                
+                if (isset($odeNavStructureSyncs[$indexNode+1])) {
+                    $nextPage = $odeNavStructureSyncs[$indexNode+1]->getOdePageId();
+                } else {
+                    $nextPage = null;
+                }*/
+
+                $visiblesPages[$key] = [ 'url' => $url, 'previousPage' => $previousPage, 'nextPage' => null ];
+                if ( null != $previousPage )
+                {
+                    $visiblesPages[$previousPage]['nextPage'] = $key;
+                }
+
+                $previousPage = $key;
+
+
+                $odeParentPageId = $odeNavStructureSyncs[$indexNode]->getOdeParentPageId();
+                // If it has no parent node, it is first-level
+                if (null == $odeParentPageId) {
+                    $navLi = $navUl->addChild('li', ' ');
+                } else {
+                    //  Search for the parent node of the current one
+                    $items = $navUl->xpath('//li[@odePageId="'.$odeParentPageId.'"]');
+                    $item = $items[0];
+                    // If it is the first child add a ul tag and a child li tag
+                    $liChildrens = $item->count();
+                    if ($liChildrens < 2) {
+                        $navLi = $item->addChild('ul', ' ')->addChild('li', ' ');
+                    } else {
+                        $navLi = $item->ul->addChild('li', ' ');
+                    }
+                }
+                $navLi->addAttribute('odePageId', $key);
+                $navLink = $navLi->addChild('a', $name);
+                $navLink->addAttribute('href', !$isPreview ? $resourcesPrefix.$url : $url);
+                $class = '';
+                if ($currentOdePageId == $key) {
+                    $class .= 'active';
+                }
+                if (0 == $indexNode) {
+                    $class .= $class ? ' main-node' : 'main-node';
+                }
+                if (!empty($class)) {
+                    $navLink->addAttribute('class', $class);
+                }
             }
             ++$indexNode;
         }
@@ -1703,7 +1736,7 @@ class ExportXmlUtil
             unset($node[0]);
         }
 
-        return $navMain;
+        return [$navMain, $visiblesPages];
     }
 
     /**
@@ -1720,7 +1753,7 @@ class ExportXmlUtil
      */
     public static function createHTMLPageHeader(
         $odeNavStructureSync,
-        $pagesFileData,
+        $visiblesPages,
         $odeProperties,
         $translator,
         $theme,
@@ -1772,7 +1805,7 @@ class ExportXmlUtil
         ) {
             $pageNumber = self::createHTMLPageNumber(
                 $odeNavStructureSync,
-                $pagesFileData,
+                $visiblesPages,
                 $translator
             );
             self::appendSimpleXml($pageHeader, $pageNumber);
@@ -1800,6 +1833,7 @@ class ExportXmlUtil
      *
      * @param OdeNavStructureSync $odeNavStructureSync
      * @param array               $pagesFileData
+     * @param array               $visiblesPages
      * @param array               $odeProperties
      * @param string              $resourcesPrefix
      * @param string              $isPreview
@@ -1810,6 +1844,7 @@ class ExportXmlUtil
     public static function createHTMLNavButtons(
         $odeNavStructureSync,
         $pagesFileData,
+        $visiblesPages,
         $odeProperties,
         $resourcesPrefix,
         $isPreview,
@@ -1835,11 +1870,14 @@ class ExportXmlUtil
         $navButtonsContainer = $navButtons->addChild('div', ' ');
         $navButtonsContainer->addAttribute('class', 'nav-buttons');
 
-        $currentPageData = $pagesFileData[$odeNavStructureSync->getOdePageId()];
-
-        if ($currentPageData['prePageId']) {
-            $prePageData = $pagesFileData[$currentPageData['prePageId']];
-            $leftLink = !$isPreview ? $resourcesPrefix.$prePageData['fileUrl'] : $prePageData['fileUrl'];
+        //$currentPageData = $pagesFileData[$odeNavStructureSync->getOdePageId()];
+        
+        $prePageData = $visiblesPages[$odeNavStructureSync->getOdePageId()]['previousPage'];
+//        if ($currentPageData['prePageId']) {
+        if ( $prePageData ) {
+            //$prePageData = $pagesFileData[$currentPageData['prePageId']];
+            //$prePageData = $visiblesPages[$odeNavStructureSync->getOdePageId()]['previousPage'];
+            $leftLink = !$isPreview ? $resourcesPrefix.$visiblesPages[$prePageData]['url'] : $visiblesPages[$prePageData]['url'];
             $navButtonLeft = $navButtonsContainer->addChild('a', ' ');
             $navButtonLeft->addAttribute('href', $leftLink);
             $navButtonLeft->addAttribute('title', $previousButtonText);
@@ -1852,9 +1890,11 @@ class ExportXmlUtil
             $navButtonLeft->addChild('span', $previousButtonText);
         }
 
-        if ($currentPageData['nextPageId']) {
-            $nextPageData = $pagesFileData[$currentPageData['nextPageId']];
-            $rightLink = !$isPreview ? $resourcesPrefix.$nextPageData['fileUrl'] : $nextPageData['fileUrl'];
+//        if ($currentPageData['nextPageId']) {
+        $nextPageData = $visiblesPages[$odeNavStructureSync->getOdePageId()]['nextPage'];
+        if ( $nextPageData ) {
+            //$nextPageData = $pagesFileData[$currentPageData['nextPageId']];
+            $rightLink = !$isPreview ? $resourcesPrefix.$visiblesPages[$nextPageData]['url'] : $visiblesPages[$nextPageData]['url'];
             $navButtonRight = $navButtonsContainer->addChild('a', ' ');
             $navButtonRight->addAttribute('href', $rightLink);
             $navButtonRight->addAttribute('title', $nextButtonText);
@@ -1874,13 +1914,13 @@ class ExportXmlUtil
      * Generates html of page number.
      *
      * @param OdeNavStructureSync $odeNavStructureSync
-     * @param array               $pagesFileData
+     * @param array               $visiblesPages
      *
      * @return SimpleXMLElement
      */
     public static function createHTMLPageNumber(
         $odeNavStructureSync,
-        $pagesFileData,
+        $visiblesPages,
         $translator,
     ) {
         $pageNumber = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><page-number></page-number>');
@@ -1888,8 +1928,8 @@ class ExportXmlUtil
         $pageNumberContainer = $pageNumber->addChild('p', ' ');
         $pageNumberContainer->addAttribute('class', 'page-counter');
 
-        $currentPage = array_search($odeNavStructureSync->getOdePageId(), array_keys($pagesFileData)) + 1;
-        $totalPages = count($pagesFileData);
+        $currentPage = array_search($odeNavStructureSync->getOdePageId(), array_keys($visiblesPages)) + 1;
+        $totalPages = count($visiblesPages);
 
         $pageNumberLabelText = $translator->trans('Page').' ';
         $pageNumberLabel = $pageNumberContainer->addChild('span', $pageNumberLabelText);
@@ -2500,4 +2540,59 @@ class ExportXmlUtil
             }
         }
     }
+
+    
+    /**
+     * Determines if a page should be visible in the export.
+     *
+     * @param array $odeNavStructureSyncs Collection of OdeNavStructureSyncs
+     * @param mixed $key                  Key of the current page (odePageId)
+     * @param array $pageData             Data of the current page
+     * @param int   $indexNode            Index of the current page in $odeNavStructureSyncs
+     *
+     * @return bool
+     */
+    public static function isVisibleExport($odeNavStructureSyncs, $key, $pageData, $indexNode)
+    {
+        // Get the current OdeNavStructureSync
+        if (!isset($odeNavStructureSyncs[$indexNode])) {
+            return false;
+        }
+        $currentNavSync = $odeNavStructureSyncs[$indexNode];
+
+        // Get properties of the current page
+        $pageProperties = $currentNavSync->getOdeNavStructureSyncProperties();
+        unset($pagePropertiesDict);
+        $pagePropertiesDict = [];
+        foreach ($pageProperties as $property) {
+            if ($property->getKey()) {
+                $pagePropertiesDict[$property->getKey()] = $property;
+            }
+        }
+
+        // If the current page is not visible, return false
+        if (
+            isset($pagePropertiesDict['visibility']) &&
+            method_exists($pagePropertiesDict['visibility'], 'getValue') &&
+            $pagePropertiesDict['visibility']->getValue() === 'false'
+        ) {
+            return false;
+        }
+
+        // Check visibility of parent pages recursively
+        $odeParentPageId = $currentNavSync->getOdeParentPageId();
+        if ($odeParentPageId !== null) {
+            // Find the index of the parent in $odeNavStructureSyncs
+            foreach ($odeNavStructureSyncs as $parentIndex => $navSync) {
+                if ($navSync->getOdePageId() == $odeParentPageId) {
+                    // Recursive call for the parent
+                    return self::isVisibleExport($odeNavStructureSyncs, $odeParentPageId, $pageData, $parentIndex);
+                }
+            }
+        }
+
+        // If there are no restrictions, it is visible
+        return true;
+    }
+
 }
