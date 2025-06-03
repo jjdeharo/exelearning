@@ -367,8 +367,8 @@ class ExportXmlUtil
 
             $visible = 'true';
             if (
-               isset($pagePropertiesDict['visibility'])
-                && 'false' === $pagePropertiesDict['visibility']
+                isset($pagePropertiesDict['visibility'])
+                 && 'false' === $pagePropertiesDict['visibility']
             ) {
                 $visible = 'false';
             }
@@ -1342,8 +1342,7 @@ class ExportXmlUtil
             );
             self::appendSimpleXml($exe, $navContent);
         }
-        
-        
+
         if (isset($visiblesPages[$odeNavStructureSync->getOdePageId()])) {
             // Page
             $page = $exe->addChild('main', ' ');
@@ -1873,7 +1872,6 @@ class ExportXmlUtil
         $navButtonsContainer = $navButtons->addChild('div', ' ');
         $navButtonsContainer->addAttribute('class', 'nav-buttons');
 
-
         $prePageData = $visiblesPages[$odeNavStructureSync->getOdePageId()]['previousPage'];
 
         if ($prePageData) {
@@ -1889,7 +1887,6 @@ class ExportXmlUtil
             $navButtonLeft->addAttribute('aria-hidden', 'true');
             $navButtonLeft->addChild('span', $previousButtonText);
         }
-
 
         $nextPageData = $visiblesPages[$odeNavStructureSync->getOdePageId()]['nextPage'];
         if ($nextPageData) {
