@@ -1330,20 +1330,38 @@ class ExportXmlUtil
         $exe = $body->addChild('div', ' ');
         $exe->addAttribute('class', 'exe-content exe-export pre-js siteNav-hidden');
 
+        // search inside the structure for visible pages and keep the $visiblesPages array to 
+        // generate the page, navigation menu, page counters, etc.
         $visiblesPages = [];
+        $indexNode = 0;
+
+        if (null === $odeNavStructureSyncs) {
+            $odeNavStructureSyncs = [$odeNavStructureSync];
+        }
+
+        foreach ($pagesFileData as $key => $pageData) {
+            if (self::isVisibleExport($odeNavStructureSyncs, $indexNode)) {
+                $url = $pageData['fileUrl'];
+                // Add the page to the visibles pages and link it with the previous page and the next page
+                $visiblesPages[$key] = ['url' => $url, 'previousPage' => null, 'nextPage' => null];
+            }
+            ++$indexNode;
+        }
+
         // Nav menu
         if (in_array($exportType, [Constants::EXPORT_TYPE_HTML5])) {
-            list($navContent, $visiblesPages) = self::createHTMLPageMenuNav(
+            $navContent = self::createHTMLPageMenuNav(
                 $odeNavStructureSync,
                 $odeNavStructureSyncs,
                 $pagesFileData,
+                $visiblesPages,
                 $resourcesPrefix,
                 $isPreview
             );
             self::appendSimpleXml($exe, $navContent);
         }
 
-        if ( !in_array($exportType, [Constants::EXPORT_TYPE_HTML5]) || isset($visiblesPages[$odeNavStructureSync->getOdePageId()])) {
+        if (isset($visiblesPages[$odeNavStructureSync->getOdePageId()])) {
             // Page
             $page = $exe->addChild('main', ' ');
             $page->addAttribute('id', $odeNavStructureSync->getOdePageId());
@@ -1615,11 +1633,10 @@ class ExportXmlUtil
         $odeNavStructureSync,
         $odeNavStructureSyncs,
         $pagesFileData,
+        &$visiblesPages,
         $resourcesPrefix,
         $isPreview,
     ) {
-        $visiblesPages = [];
-
         $navMain = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><nav-main></nav-main>');
 
         $nav = $navMain->addChild('nav', ' ');
@@ -1633,7 +1650,7 @@ class ExportXmlUtil
         $previousPage = null;
 
         foreach ($pagesFileData as $key => $pageData) {
-            if (self::isVisibleExport($odeNavStructureSyncs, $indexNode)) {
+            if (isset($visiblesPages[$key])) {
                 $name = $pageData['name'];
                 $url = $pageData['fileUrl'];
 
@@ -1735,7 +1752,7 @@ class ExportXmlUtil
             unset($node[0]);
         }
 
-        return [$navMain, $visiblesPages];
+        return $navMain;
     }
 
     /**
