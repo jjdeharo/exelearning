@@ -114,11 +114,6 @@ class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUse
         return null;
     }
 
-    public function eraseCredentials(): void
-    {
-        // Clear temporary sensitive data here, if any
-    }
-
     /**
      * A visual identifier that represents this user.
      *
