@@ -366,7 +366,10 @@ class ExportXmlUtil
             $item->addAttribute('identifierref', 'RES-'.$odePageId);
 
             $visible = 'true';
-            if (isset($pagePropertiesDict['visible']) && 'false' == $pagePropertiesDict['visible']->getValue()) {
+            if (
+               isset($pagePropertiesDict['visibility'])
+                && 'false' === $pagePropertiesDict['visibility']
+            ) {
                 $visible = 'false';
             }
 
@@ -1786,7 +1789,10 @@ class ExportXmlUtil
         if (
             isset($odeProperties['pp_addPagination'])
             && 'true' == $odeProperties['pp_addPagination']->getValue()
-            && Constants::EXPORT_TYPE_HTML5_SP != $exportType
+            && in_array(
+                $exportType,
+                [Constants::EXPORT_TYPE_HTML5, Constants::EXPORT_TYPE_EPUB3, Constants::EXPORT_TYPE_ELP]
+            )
         ) {
             $pageNumber = self::createHTMLPageNumber(
                 $odeNavStructureSync,
