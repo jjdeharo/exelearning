@@ -123,8 +123,12 @@ eXeLearning enables educators to:
 The project supports multiple languages and uses Symfony's Translation component. Currently available:
 
 * English (default)
-* Spanish
-* Catalan
+* Español
+* Català
+* Euskara
+* Galego
+* Valencià
+* Esperanto
 
 For more information on translation management, see the [internationalization documentation](./doc/08-internationalization.md).
 
