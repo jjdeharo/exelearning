@@ -114,6 +114,7 @@ class User extends BaseEntity implements UserInterface, PasswordAuthenticatedUse
         return null;
     }
 
+    #[\Deprecated('Not needed as no sensitive temporary data is stored.')]
     public function eraseCredentials(): void
     {
         // Clear temporary sensitive data here, if any
