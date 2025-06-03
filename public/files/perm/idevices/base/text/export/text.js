@@ -11,6 +11,7 @@ var $text = {
 
     ideviceClass: "textIdeviceContent",
 
+    working: false,
     durationId: "textInfoDurationInput",
     durationTextId: "textInfoDurationTextInput",
     participantsId: "textInfoParticipantsInput",
@@ -107,7 +108,18 @@ var $text = {
             $btns.off('click');
             $btns.closest('.feedback-button').removeClass('clearfix');
             $btns.on('click', function () {
-                $(this).parent().next().toggle();
+                if ($text.working) return false;
+                let feedback = $(this).parent().next();
+                $text.working = true;
+                if (feedback.is(':visible')) {
+                    feedback.fadeOut(function(){
+                        $text.working = false;
+                    });
+                } else {
+                    feedback.fadeIn(function(){
+                        $text.working = false;
+                    });
+                }
             });
         }
 
