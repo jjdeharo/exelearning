@@ -41,7 +41,15 @@
             "output": "dist"
         },
         "compression": "store",
-        "publish": null,
+        "publish": [
+            {
+                "provider": "github",
+                "owner": "exelearning",
+                "repo": "exelearning",
+                "releaseType": "prerelease",
+                "private": true
+            }
+        ],
         "asar": true,
         "disableDefaultIgnoredFiles": true,
         "files": [
@@ -50,7 +58,7 @@
             "composer.lock",
             ".env.dist",
             "translations/en.json",
-            "translations/es.json"            
+            "translations/es.json"
         ],
         "extraResources": [
             {
@@ -131,11 +139,28 @@
             "oneClick": true
         },
         "linux": {
-            "executableArgs": ["--no-sandbox"],
+            "executableArgs": [
+                "--no-sandbox"
+            ],
             "target": [
-                { "target": "AppImage",  "arch": ["x64"] },
-                { "target": "deb",       "arch": ["x64"] },
-                { "target": "rpm",       "arch": ["x64"] }
+                {
+                    "target": "AppImage",
+                    "arch": [
+                        "x64"
+                    ]
+                },
+                {
+                    "target": "deb",
+                    "arch": [
+                        "x64"
+                    ]
+                },
+                {
+                    "target": "rpm",
+                    "arch": [
+                        "x64"
+                    ]
+                }
             ],
             "category": "Education",
             "icon": "public/icons"
@@ -147,21 +172,21 @@
             "identity": null,
             "sign": false,
             "target": [
-                { "target": "dmg", "arch": ["universal"] },
-                { "target": "zip", "arch": ["universal"] }
+                {
+                    "target": "dmg",
+                    "arch": [
+                        "universal"
+                    ]
+                },
+                {
+                    "target": "zip",
+                    "arch": [
+                        "universal"
+                    ]
+                }
             ],
             "icon": "public/exe_elp.icns"
-        },
-        "publish": [
-        {
-            "provider": "github",
-            "owner": "exelearning",
-            "repo": "exelearning",
-            "releaseType": "prerelease",
-            "private": true
-
         }
-    ]
-    }
-
+    },
+    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
