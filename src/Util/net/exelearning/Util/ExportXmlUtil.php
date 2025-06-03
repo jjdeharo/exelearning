@@ -1369,6 +1369,7 @@ class ExportXmlUtil
             ) {
                 $clientSearch = self::createHTMLClientSearch(
                     $pagesFileData,
+                    $visiblesPages,
                     $odeProperties,
                     $translator
                 );
@@ -1571,9 +1572,17 @@ class ExportXmlUtil
      */
     public static function createHTMLClientSearch(
         $pagesFileData,
+        $visiblesPages,
         $odeProperties,
         $translator,
     ) {
+        $pagesFileDataAux = [];
+        foreach ($pagesFileData as $pageId => $pageData) {
+            if (isset($visiblesPages[$pageId])) {
+                $pagesFileDataAux[$pageId] = $pageData;
+            }
+        }
+
         $localeODE = isset($odeProperties['pp_lang']) ? $odeProperties['pp_lang']->getValue() : '';
 
         try {
@@ -1584,7 +1593,7 @@ class ExportXmlUtil
             $searchContainer->addAttribute('id', 'exe-client-search');
             $searchContainer->addAttribute('data-block-order-string', $translator->trans('Block %e'));
             $searchContainer->addAttribute('data-no-results-string', $translator->trans('No results.'));
-            $searchContainer->addAttribute('data-pages', json_encode($pagesFileData));
+            $searchContainer->addAttribute('data-pages', json_encode($pagesFileDataAux));
         } finally {
             // Restore locale GUI
             $translator->restorePreviousLocale();
