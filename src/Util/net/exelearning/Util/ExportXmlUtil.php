@@ -1343,7 +1343,7 @@ class ExportXmlUtil
             self::appendSimpleXml($exe, $navContent);
         }
 
-        if (isset($visiblesPages[$odeNavStructureSync->getOdePageId()])) {
+        if ( !in_array($exportType, [Constants::EXPORT_TYPE_HTML5]) || isset($visiblesPages[$odeNavStructureSync->getOdePageId()])) {
             // Page
             $page = $exe->addChild('main', ' ');
             $page->addAttribute('id', $odeNavStructureSync->getOdePageId());
