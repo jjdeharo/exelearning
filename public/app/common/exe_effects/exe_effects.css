@@ -21,8 +21,8 @@ html .js .fx-accordion-title{text-decoration:none}
 .exe-tabs .fx-tabs li{display:inline}
 .exe-tabs .fx-tabs a{display:block;padding:10px 15px;outline:none;float:left;text-decoration:none}
 .exe-tabs .fx-tabs a:hover,.exe-tabs .fx-tabs a:focus{text-decoration:underline}
-.fx-tabs .fx-current a{background:#f5f5f5;border-top-left-radius:5px;border-top-right-radius:5px}
-.exe-tabs .fx-tab-content{display:none;background:#f5f5f5;padding:15px;border-radius:5px}
+.fx-tabs .fx-current a{background:#efefef;border-top-left-radius:5px;border-top-right-radius:5px}
+.exe-tabs .fx-tab-content{display:none;background:#efefef;padding:15px;border-radius:5px}
 .exe-tabs .fx-default-panel{border-top-left-radius:0}
 .exe-tabs .fx-tab-content.fx-current{display:block}
 /* Pagination */
@@ -33,13 +33,13 @@ html .js .fx-accordion-title{text-decoration:none}
 .js .exe-paginated h2{margin-top:1em}
 .fx-pagination li{display:inline;padding:0;margin:0 3px}
 .fx-pagination .fx-prev{margin-right:6px}
-.fx-pagination a{outline:none;display:inline-block;padding:3px 11px;cursor:pointer;border-radius:5px;background:#f5f5f5;text-decoration:none}
+.fx-pagination a{outline:none;display:inline-block;padding:3px 11px;cursor:pointer;border-radius:5px;background:#efefef;text-decoration:none}
 .fx-pagination a:hover,.fx-pagination a:focus{color:inherit;text-decoration:underline}
 .fx-prev-next a{font-family:Arial,Verdana,Helvetica,sans-serif}
 .fx-pagination .fx-disabled{filter:alpha(opacity=30);opacity:.3}
 .fx-pagination .fx-disabled,.fx-pagination .fx-disabled a,.fx-pagination .fx-disabled a:hover{cursor:text;text-decoration:none}
 .fx-pagination .fx-current a{background:#333;color:#fff}
-.fx-page-content{display:none;background:#f5f5f5;padding:1px 15px .5em 15px;border-radius:5px}
+.fx-page-content{display:none;background:#efefef;padding:1px 15px .5em 15px;border-radius:5px}
 .fx-page-content.fx-current{display:block}
 /* Carousel */
 .exe-carousel{margin:2em auto;width:90%;position:relative}
@@ -48,12 +48,12 @@ html .js .fx-accordion-title{text-decoration:none}
 .exe-carousel h2{margin-top:2em}
 .js .exe-carousel h2{margin-top:1em}
 .fx-carousel-pagination li{display:inline;padding:0;margin:0 3px}
-.fx-carousel-pagination a{outline:none;display:inline-block;padding:3px 11px;border-radius:5px;background:#f5f5f5;text-decoration:none}
+.fx-carousel-pagination a{outline:none;display:inline-block;padding:3px 11px;border-radius:5px;background:#efefef;text-decoration:none}
 .fx-carousel-pagination a:hover,.fx-carousel-pagination a:focus{text-decoration:underline}
 .fx-carousel-pagination .fx-disabled{filter:alpha(opacity=30);opacity:.3}
 .fx-carousel-pagination .fx-disabled,.fx-carousel-pagination .fx-disabled a,.fx-carousel-pagination .fx-disabled a:hover{cursor:text;text-decoration:none}
 .fx-carousel-pagination .fx-current a{background:#333;color:#fff}
-.fx-carousel-content{display:none;background:#f5f5f5;padding:1px 15px .5em 15px;border-radius:5px;margin:0 65px}
+.fx-carousel-content{display:none;background:#efefef;padding:1px 15px .5em 15px;border-radius:5px;margin:0 65px}
 .fx-carousel-content.fx-current{display:block}
 .fx-carousel-pagination li{font-size:.85em}
 .fx-carousel-pagination .fx-carousel-prev-next{position:absolute;top:15px;left:0;*left:-10px} /* IE6, IE7 */
