@@ -1342,82 +1342,85 @@ class ExportXmlUtil
             );
             self::appendSimpleXml($exe, $navContent);
         }
+        
+        
+        if (isset($visiblesPages[$odeNavStructureSync->getOdePageId()])) {
+            // Page
+            $page = $exe->addChild('main', ' ');
+            $page->addAttribute('id', $odeNavStructureSync->getOdePageId());
+            $page->addAttribute('class', 'page');
 
-        // Page
-        $page = $exe->addChild('main', ' ');
-        $page->addAttribute('id', $odeNavStructureSync->getOdePageId());
-        $page->addAttribute('class', 'page');
-
-        /* To review
-        if ($exportDynamicPage) {
-            foreach ($pagePropertiesDict as $key => $value) {
-                $page->addAttribute('data-'.$key, $value);
+            /* To review
+            if ($exportDynamicPage) {
+                foreach ($pagePropertiesDict as $key => $value) {
+                    $page->addAttribute('data-'.$key, $value);
+                }
             }
-        }
-        */
+            */
 
-        // Search input
-        if (
-            isset($odeProperties['pp_addSearchBox'])
-            && 'true' == $odeProperties['pp_addSearchBox']->getValue()
-            && in_array(
-                $exportType,
-                [Constants::EXPORT_TYPE_HTML5]
-            )
-        ) {
-            $clientSearch = self::createHTMLClientSearch(
-                $pagesFileData,
-                $odeProperties,
-                $translator
-            );
-            self::appendSimpleXml($page, $clientSearch);
-        }
+            // Search input
+            if (
+                isset($odeProperties['pp_addSearchBox'])
+                && 'true' == $odeProperties['pp_addSearchBox']->getValue()
+                && in_array(
+                    $exportType,
+                    [Constants::EXPORT_TYPE_HTML5]
+                )
+            ) {
+                $clientSearch = self::createHTMLClientSearch(
+                    $pagesFileData,
+                    $odeProperties,
+                    $translator
+                );
+                self::appendSimpleXml($page, $clientSearch);
+            }
 
-        // Page header
-        $pageHeader = self::createHTMLPageHeader(
-            $odeNavStructureSync,
-            $visiblesPages,
-            $odeProperties,
-            $translator,
-            $theme,
-            $pagePropertiesDict,
-            $exportType,
-            $resourcesPrefix
-        );
-        self::appendSimpleXml($page, $pageHeader);
-
-        // Page content
-        $pageContent = self::createHTMLPageContent(
-            $odeNavStructureSync,
-            $odeProperties,
-            $idevicesMapping,
-            $idevicesTypesData,
-            $userPreferencesDtos,
-            $theme,
-            $resourcesPrefix,
-            $exportDynamicPage,
-            $translator
-        );
-        self::appendSimpleXml($page, $pageContent);
-
-        // Page nav buttons
-        if (
-            $exportDynamicPage && in_array(
-                $exportType,
-                [Constants::EXPORT_TYPE_HTML5, Constants::EXPORT_TYPE_EPUB3]
-            )
-        ) {
-            // $visiblesPages
-            $navButtons = self::createHTMLNavButtons(
+            // Page header
+            $pageHeader = self::createHTMLPageHeader(
                 $odeNavStructureSync,
-                $pagesFileData,
                 $visiblesPages,
                 $odeProperties,
+                $translator,
+                $theme,
+                $pagePropertiesDict,
+                $exportType,
+                $resourcesPrefix
+            );
+            self::appendSimpleXml($page, $pageHeader);
+
+            // Page content
+            $pageContent = self::createHTMLPageContent(
+                $odeNavStructureSync,
+                $odeProperties,
+                $idevicesMapping,
+                $idevicesTypesData,
+                $userPreferencesDtos,
+                $theme,
                 $resourcesPrefix,
-                $isPreview,
+                $exportDynamicPage,
                 $translator
             );
-            self::appendSimpleXml($exe, $navButtons);
+            self::appendSimpleXml($page, $pageContent);
+
+            // Page nav buttons
+            if (
+                $exportDynamicPage && in_array(
+                    $exportType,
+                    [Constants::EXPORT_TYPE_HTML5, Constants::EXPORT_TYPE_EPUB3]
+                )
+            ) {
+                // $visiblesPages
+                $navButtons = self::createHTMLNavButtons(
+                    $odeNavStructureSync,
+                    $pagesFileData,
+                    $visiblesPages,
+                    $odeProperties,
+                    $resourcesPrefix,
+                    $isPreview,
+                    $translator
+                );
+                self::appendSimpleXml($exe, $navButtons);
+            }
         }
 
         $pageFooter = $exe->addChild('footer', '');
