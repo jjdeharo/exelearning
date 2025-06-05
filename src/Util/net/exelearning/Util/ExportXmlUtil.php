@@ -1817,10 +1817,7 @@ class ExportXmlUtil
         if (
             isset($odeProperties['pp_addPagination'])
             && 'true' == $odeProperties['pp_addPagination']->getValue()
-            && in_array(
-                $exportType,
-                [Constants::EXPORT_TYPE_HTML5, Constants::EXPORT_TYPE_EPUB3, Constants::EXPORT_TYPE_ELP]
-            )
+            && Constants::EXPORT_TYPE_HTML5_SP != $exportType
         ) {
             $pageNumber = self::createHTMLPageNumber(
                 $odeNavStructureSync,
