@@ -1878,7 +1878,7 @@ class ExportXmlUtil
             $translator->switchTemporaryLocale($localeODE);
             $previousButtonText = $translator->trans('Previous');
             $nextButtonText = $translator->trans('Next');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log('Error changing locale: '.$e->getMessage());
             throw $e;
         } finally {
