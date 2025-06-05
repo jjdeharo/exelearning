@@ -281,6 +281,7 @@ export default class IdeviceNode {
                 this.addBehaviourSaveIdeviceButton();
                 this.addBehaviourUndoIdeviceButton();
                 this.addBehaviourDeleteIdeviceButton();
+                this.addNoTranslateForGoogle();
                 // Check links (disabled) this.addBehaviouCheckBrokenLinksIdeviceButton();
                 break;
             case 'export':
@@ -317,6 +318,7 @@ export default class IdeviceNode {
                 this.addBehaviouCloneIdeviceButton();
                 this.addBehaviourMoveToPageIdeviceButton();
                 this.addBehaviourExportIdeviceButton();
+                this.addNoTranslateForGoogle();
                 // Check links (disabled) this.addBehaviouCheckBrokenLinksIdeviceButton();
                 break;
         }
@@ -864,6 +866,13 @@ export default class IdeviceNode {
                         }
                     });
             });
+    }
+
+    /**
+     *
+     */
+    addNoTranslateForGoogle() {
+        $('.auto-icon', this.ideviceButtons).addClass('notranslate');
     }
 
     /**

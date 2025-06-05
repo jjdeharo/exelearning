@@ -343,6 +343,7 @@ export default class IdeviceBlockNode {
         this.addBehaviourExportBlockButton();
         this.addBehaviourToggleBlockButton();
         this.addTooltips();
+        this.addNoTranslateForGoogle();
         // Check links (disabled) this.addBehaviourCheckBlockLinksButton();
 
         return this.blockButtons;
@@ -786,6 +787,14 @@ export default class IdeviceBlockNode {
             'exe-app-tooltip',
         );
         eXeLearning.app.common.initTooltips(this.blockButtons);
+    }
+
+    /**
+     * Icons should not be translated
+     *
+     */
+    addNoTranslateForGoogle() {
+        $('.auto-icon', this.ideviceButtons).addClass('notranslate');
     }
 
     /**
