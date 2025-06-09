@@ -333,6 +333,18 @@ class ExportXmlUtil
         $titleValue = isset($titleElement) ? $titleElement->getValue() : 'eXe-p-'.$odeId;
         $title = $organization->addChild('title', $titleValue);
 
+        $visiblesPages = [];
+        $indexNode = 0;
+
+        foreach ($pagesFileData as $key => $pageData) {
+            if (self::isVisibleExport($odeNavStructureSyncs, $indexNode)) {
+                $url = $pageData['fileUrl'];
+                // Add the page to the visibles pages and link it with the previous page and the next page
+                $visiblesPages[$key] = ['url' => $url];
+            }
+            ++$indexNode;
+        }
+
         // Pages organization
         foreach ($odeNavStructureSyncs as $odeNavStructureSync) {
             // Page properties
@@ -367,8 +379,9 @@ class ExportXmlUtil
 
             $visible = 'true';
             if (
-                isset($pagePropertiesDict['visibility'])
-                 && 'false' === $pagePropertiesDict['visibility']
+                (isset($pagePropertiesDict['visibility'])
+                 && 'false' === $pagePropertiesDict['visibility'])
+                 || !isset($visiblesPages[$odePageId])
             ) {
                 $visible = 'false';
             }
