@@ -347,48 +347,51 @@ class ExportXmlUtil
 
         // Pages organization
         foreach ($odeNavStructureSyncs as $odeNavStructureSync) {
-            // Page properties
-            $pageProperties = $odeNavStructureSync->getOdeNavStructureSyncProperties();
-            $pagePropertiesDict = [];
-            foreach ($pageProperties as $property) {
-                if ($property->getValue()) {
-                    $pagePropertiesDict[$property->getKey()] = $property->getValue();
+            
+            if(isset($visiblesPages[$odeNavStructureSync->getOdePageId()]))
+                {
+                // Page properties
+                $pageProperties = $odeNavStructureSync->getOdeNavStructureSyncProperties();
+                $pagePropertiesDict = [];
+                foreach ($pageProperties as $property) {
+                    if ($property->getValue()) {
+                        $pagePropertiesDict[$property->getKey()] = $property->getValue();
+                    }
                 }
+
+                // Page data
+                $odePageId = $odeNavStructureSync->getOdePageId();
+                $odePageName = $odeNavStructureSync->getPageName();
+                $pageData = $pagesFileData[$odePageId];
+
+                // Add item to XML manifest
+
+                $odeParentPageId = $odeNavStructureSync->getOdeParentPageId();
+                // If it has no parent node, it is first-level
+                if (null == $odeParentPageId) {
+                    $item = $organization->addChild('item');
+                } else {
+                    //  Search for the parent node of the current one
+                    $parentNodes = $organization->xpath('//item[@identifier="ITEM-'.$odeParentPageId.'"]');
+                    $parentNode = $parentNodes[0];
+                    $item = $parentNode->addChild('item');
+                }
+
+                $item->addAttribute('identifier', 'ITEM-'.$odePageId);
+                $item->addAttribute('identifierref', 'RES-'.$odePageId);
+
+                $visible = 'true';
+                if (
+                    isset($pagePropertiesDict['visibility'])
+                    && 'false' === $pagePropertiesDict['visibility']
+                ) {
+                    $visible = 'false';
+                }
+
+                $item->addAttribute('isvisible', $visible);
+
+                $title = $item->addChild('title', $odePageName);
             }
-
-            // Page data
-            $odePageId = $odeNavStructureSync->getOdePageId();
-            $odePageName = $odeNavStructureSync->getPageName();
-            $pageData = $pagesFileData[$odePageId];
-
-            // Add item to XML manifest
-
-            $odeParentPageId = $odeNavStructureSync->getOdeParentPageId();
-            // If it has no parent node, it is first-level
-            if (null == $odeParentPageId) {
-                $item = $organization->addChild('item');
-            } else {
-                //  Search for the parent node of the current one
-                $parentNodes = $organization->xpath('//item[@identifier="ITEM-'.$odeParentPageId.'"]');
-                $parentNode = $parentNodes[0];
-                $item = $parentNode->addChild('item');
-            }
-
-            $item->addAttribute('identifier', 'ITEM-'.$odePageId);
-            $item->addAttribute('identifierref', 'RES-'.$odePageId);
-
-            $visible = 'true';
-            if (
-                (isset($pagePropertiesDict['visibility'])
-                 && 'false' === $pagePropertiesDict['visibility'])
-                 || !isset($visiblesPages[$odePageId])
-            ) {
-                $visible = 'false';
-            }
-
-            $item->addAttribute('isvisible', $visible);
-
-            $title = $item->addChild('title', $odePageName);
         }
 
         if (Constants::EXPORT_TYPE_SCORM2004 == $exportType) {
