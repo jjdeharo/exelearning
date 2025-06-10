@@ -39,8 +39,8 @@ var $exe = {
         this.hasMultimediaGalleries = false;
         this.setMultimediaGalleries();
         this.setModalWindowContentSize(); // To review
-        // No MediaElement in ePub3
-        if (!bod.hasClass("exe-epub3")) {
+        // No MediaElement in ePub
+        if (!bod.hasClass("exe-epub")) {
             var n = document.body.innerHTML;
             if (this.hasMultimediaGalleries || $(".mediaelement").length > 0) {
                 $exe.loadMediaPlayer.init();
@@ -53,6 +53,7 @@ var $exe = {
         $exe.hasTooltips();
         $exe.math.init();
         $exe.dl.init();
+        $exe.sfHover();
         // Add a zoom icon to the images using CSS
         $("a.exe-enlarge").each(function (i) {
             var e = $(this);
@@ -61,33 +62,13 @@ var $exe = {
                 e.prepend('<span class="exe-enlarge-icon"><b></b></span>');
             }
         });
-        $exe.sfHover();
         // Disable autocomplete
         $("INPUT.autocomplete-off").attr("autocomplete", "off");
-
-        // Cloze Activity iDevice
-        $('form.cloze-activity-form').submit(function () {
-            try {
-                var e = $(this);
-                var id = e.attr('name').replace('cloze-form-', '');
-                $exe.cloze.submit(id);
-            } catch (e) {
-                // Due to G. Chrome's Content Security Policy
-                var txt = $exe_i18n.dataError;
-                if ($('body').hasClass('exe-epub3')) txt += '<br /><br />' + $exe_i18n.epubJSerror;
-                if ($exe.cloze.hasBeenTested == false) {
-                    $exe.cloze.hasBeenTested = true;
-                    $('form.cloze-activity-form input[type=submit]').hide().before(txt);
-                }
-            }
-            return false;
-        });
-
     },
     
-    // Math options (MathJax, etc.)
+    // Math options (MathJax, etc.) - To review (some options might not be needed)
     math: {
-        // Change this from your Style or your elp using $exe.math.engine="..."
+        // MathJax script path
         engine: $("html").prop("id") == "exe-index" ? "./libs/exe_math/tex-mml-svg.js" : "../libs/exe_math/tex-mml-svg.js",
         // Create links to the code and the image (different possibilities)
         createLinks: function (math) {
@@ -118,7 +99,6 @@ var $exe = {
                 });
             });
         },
-
         // Open a new window with the LaTeX or MathML code
         showCode: function (e) {
             var tit = e.innerHTML;
@@ -136,7 +116,7 @@ var $exe = {
         },
         // Load MathJax or just create the links to the code and/or image
         init: function () {
-            $("body").addClass("exe-auto-math");
+            $("body").addClass("exe-auto-math"); // Always load it
             var math = $(".exe-math");
             var mathjax = false;
             if (math.length > 0 || $("body").hasClass("exe-auto-math")) {
@@ -270,7 +250,7 @@ var $exe = {
             // See issue #258
             var eXeGalleries = $('.GalleryIdevice');
             if (lightboxLinks.length == 0 && eXeGalleries.length > 0 && typeof (exe_editor_mode) == "undefined") {
-                // We execute this code only outside eXe or the Image Gallary edition will fail (see issue #317)
+                // We execute this code only outside eXe or the Image Gallery edition will fail (see issue #317)
                 $('.exeImageGallery a').each(function () {
                     this.title += " ~ [" + this.href + "]";
                     this.href = "#";
@@ -290,7 +270,7 @@ var $exe = {
         }
     },
 
-    // Load MediaElement if required
+    // Load MediaElement if required - To review (Shall eXe still use MediaElement?)
     loadMediaPlayer: {
         isCalledInBox: false, // Box = prettyPhoto with video or audio
         isReady: false,
@@ -317,7 +297,7 @@ var $exe = {
     },
 
     // Apply the 'sfhover' class to li elements when they are 'moused over'
-    // Old browsers need this because they don't support li:hover
+    // Very old browsers need this because they don't support li:hover
     sfHover: function () {
         var e = document.getElementById("siteNav");
         if (e) {
@@ -432,7 +412,7 @@ var $exe = {
         }
     },
 
-    // Internet Explorer?
+    // Internet Explorer? - To review (Export this function?)
     isIE: function () {
         var e = navigator.userAgent.toLowerCase();
         return e.indexOf("msie") != -1 ? parseInt(e.split("msie")[1]) : false
@@ -484,28 +464,17 @@ var $exe = {
         document.getElementsByTagName("head")[0].appendChild(s)
     },
 
-    /**
-     * eXeLearning 3.0
-     * Inside eXe app
-     */
+    // Check if you're in eXe
     isInExe: function () {
         return typeof eXeLearning !== "undefined";
     },
 
-    /**
-     * eXeLearning 3.0
-     * Is preview
-     */
+    // Check if you're in preview
     isPreview: function () {
         return $('body').hasClass('preview');
     },
 
-    /**
-     * eXeLearning 3.0
-     * Export idevice path
-     *
-     * @param {*} ideviceType
-     */
+    // Export idevice path - To review
     getIdeviceInstalledExportPath: function (ideviceType) {
         let ideviceNode;
         if (this.isInExe()) {
@@ -519,7 +488,7 @@ var $exe = {
 
 };
 
-// eXeDevices new
+// iDevices common code - To review (Part of this code should not be exported)
 var $exeDevices = {
     iDevice: {
         init: function () {
