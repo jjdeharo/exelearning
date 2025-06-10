@@ -347,9 +347,7 @@ class ExportXmlUtil
 
         // Pages organization
         foreach ($odeNavStructureSyncs as $odeNavStructureSync) {
-            
-            if(isset($visiblesPages[$odeNavStructureSync->getOdePageId()]))
-                {
+            if (isset($visiblesPages[$odeNavStructureSync->getOdePageId()])) {
                 // Page properties
                 $pageProperties = $odeNavStructureSync->getOdeNavStructureSyncProperties();
                 $pagePropertiesDict = [];
