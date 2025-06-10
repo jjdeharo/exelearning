@@ -23,29 +23,6 @@
     2015. Refactored and completed by Ignacio Gros (http://www.gros.es) for http://exelearning.net/
 */
 
-/* To review (see #266)
-if (typeof ($exe_i18n) == 'undefined') {
-    var $exe_i18n = {
-        previous: "Previous",
-        next: "Next",
-        show: "Show",
-        hide: "Hide",
-        showFeedback: "Show Feedback",
-        hideFeedback: "Hide Feedback",
-        correct: "Correct",
-        incorrect: "Incorrect",
-        menu: "Menu",
-        download: "Download",
-        yourScoreIs: "Your score is ",
-        dataError: "Error recovering data",
-        epubJSerror: "This might not work in this ePub reader.",
-        solution: "Solution",
-        epubDisabled: "This activity does not work in ePub.",
-        print: "Print"
-    }
-}
-*/
-
 var $exe = {
 
     options: {
@@ -57,27 +34,8 @@ var $exe = {
         }
     },
 
-    // Called right after the <body> tag
-    /* To do
-    setBodyClass: function(){
-        var c=" js";
-        var b = $("body");
-        if(b.hasClass("exe-atools")&&typeof(localStorage)=='object'){
-            var x=localStorage.getItem('exeAtoolsMode');
-            if(x&&x=="dark") c+=" exe-atools-dm"};
-        document.body.className+=c;
-    },
-    */
-
     init: function () {
         var bod = $('body');
-        $exe.addRoles();
-        if (!bod.hasClass("exe-single-page")) {
-            var t = $exe.isIE();
-            if (t) {
-                if (t > 7) $exe.iDeviceToggler.init()
-            } else $exe.iDeviceToggler.init()
-        }
         this.hasMultimediaGalleries = false;
         this.setMultimediaGalleries();
         this.setModalWindowContentSize(); // To review
@@ -91,11 +49,8 @@ var $exe = {
             // No inline SCRIPT tags in ePub (due to Chrome app Content Security Policy)
             bod.addClass("js");
         }
-        $exe.hint.init();
         $exe.setIframesProperties();
         $exe.hasTooltips();
-        $exe.hasExeNodeLinks();
-        $exe.math.init();
         $exe.dl.init();
         // Add a zoom icon to the images using CSS
         $("a.exe-enlarge").each(function (i) {
@@ -109,75 +64,7 @@ var $exe = {
         // Disable autocomplete
         $("INPUT.autocomplete-off").attr("autocomplete", "off");
 
-        // No inline JavaScript (see issue #258)
-        // Common feedback
-        $('.feedbackbutton.feedback-toggler').click(function () {
-            var changeText = false;
-            if (this.value == $exe_i18n.showFeedback || this.value == $exe_i18n.hideFeedback) changeText = true;
-            $exe.toggleFeedback(this, changeText);
-        });
-
-        // Text and Tasks
-        $(".textIdevice,.pblIdevice").each(function (i) {
-
-            // Feedback toggler
-            $(".feedbackbutton", this).each(function () {
-                var buttonTxt = this.value.split("|");
-                // The button might have 2 texts (Show|Hide)
-                if (buttonTxt.length == 2) {
-                    // Remove spaces before and after the text
-                    buttonTxt = [
-                        $.trim(buttonTxt[0]),
-                        $.trim(buttonTxt[1])
-                    ]
-                    this.value = buttonTxt[0];
-                    window['$exeTextIdeviceButtonText' + i] = buttonTxt;
-                }
-                $(this).click(function () {
-                    var feedback = $(this).parent().next('.feedback');
-                    var hasCustomText = typeof (window['$exeTextIdeviceButtonText' + i]) != 'undefined';
-                    if (feedback.is(":visible")) {
-                        if (hasCustomText) this.value = window['$exeTextIdeviceButtonText' + i][0];
-                        feedback.slideUp();
-                    } else {
-                        if (hasCustomText) this.value = window['$exeTextIdeviceButtonText' + i][1];
-                        feedback.slideDown();
-                    }
-                    return false;
-                });
-            });
-
-            // Task iDevice: Fade in each DL
-            $(".pbl-task-info", this).delay(1500).css({
-                "opacity": 0,
-                "visibility": "visible"
-            }).fadeTo("slow", 1).each(function () {
-                var dts = $("dt", this);
-                // Set the DT width so the text can be properly aligned
-                var tA = $(this).css("text-align");
-                if (tA == "right") {
-                    var width = 0;
-                    dts.css("width", "auto").each(function () {
-                        var w = $(this).width();
-                        if (w > width) width = w;
-                    });
-                    if (width != 0) {
-                        dts.css("width", width + "px");
-                        $("dd", this).css("margin-left", width + "px");
-                    }
-                } else if (tA == "left") {
-                    var width = 0;
-                    dts.css("width", "auto").each(function () {
-                        $(this).next("dd").css("margin-left", $(this).width() + "px");
-                    });
-                }
-                // Add a title (just in case the Style displays an icon instead of the text)
-                dts.each(function () {
-                    $("span", this).attr("title", $(this).text());
-                });
-            });
-
-        });
+        // To do now
 
         // Cloze iDevice
         $('.cloze-feedback-toggler').click(function () {
@@ -570,37 +457,6 @@ var $exe = {
     loadMediaPlayer: {
         isCalledInBox: false, // Box = prettyPhoto with video or audio
         isReady: false,
-        /*
-        getPlayer: function() {
-            $exe.mediaelements = $(".mediaelement");
-            $exe.mediaelements.each(function() {
-                if (typeof this.localName != "undefined" && this.localName == "video") {
-                    var e = this.width;
-                    var t = $(window).width();
-                    if (e > t) {
-                        var n = t - 20;
-                        var r = parseInt(this.height * n / e);
-                        this.width = n;
-                        this.height = r
-                    }
-                }
-            }).hide();
-            var e = "exe_media.js";
-            if (typeof eXe != "undefined") {
-                e = "../scripts/mediaelement/" + e
-            }
-            // Load the JS file and then load the CSS
-            $exe.loadScript(e, "$exe.loadMediaPlayer.getCSS()")
-        },
-        // Load the CSS file and start MediaElement
-        getCSS: function() {
-            var e = "exe_media.css";
-            if (typeof eXe != "undefined") {
-                e = "../scripts/mediaelement/" + e
-            }
-            $exe.loadScript(e, "$exe.loadMediaPlayer.init()")
-        },
-        */
         // Start MediaElement
         init: function () {
             // Multimedia galleries
@@ -766,8 +622,6 @@ var $exe = {
 
     // If the page has tooltips we load the JS file
     hasTooltips: function () {
-        // if (!this.isInExe()) return;
-
         if ($("A.exe-tooltip").length > 0) {
             var p = "";
             if (typeof (eXeLearning) !== 'undefined') {
@@ -782,157 +636,6 @@ var $exe = {
         }
     },
 
-    // Math options (MathJax, etc.)
-    math: {
-        // Change this from your Style or your elp using $exe.math.engine="..."
-        engine: $("html").prop("id") == "exe-index" ? "./libs/exe_math/tex-mml-svg.js" : "../libs/exe_math/tex-mml-svg.js",
-        // Create links to the code and the image (different possibilities)
-        createLinks: function (math) {
-            var mathjax = false;
-            if (!math) {
-                var math = $(".exe-math");
-                mathjax = true;
-            }
-            math.each(function () {
-                var e = $(this);
-                if ($(".exe-math-links", e).length > 0) return;
-                var img = $(".exe-math-img img", e);
-                var txt = "LaTeX";
-                if (e.html().indexOf("<math") != -1) txt = "MathML";
-                var html = '';
-                if (img.length == 1) html += '<a href="' + img.attr("src") + '" target="_blank">GIF</a>';
-                if (!mathjax) {
-                    if (html != "") html += '<span> - </span>';
-                    html += '<a href="#" class="exe-math-code-lnk">' + txt + '</a>';
-                }
-                if (html != "") {
-                    html = '<p class="exe-math-links">' + html + '</p>';
-                    e.append(html);
-                }
-                $(".exe-math-code-lnk").click(function () {
-                    $exe.math.showCode(this);
-                    return false;
-                });
-            });
-        },
-
-        // Open a new window with the LaTeX or MathML code
-        showCode: function (e) {
-            var tit = e.innerHTML;
-            var block = $(e).parent().parent();
-            var code = $(".exe-math-code", block);
-            var a = window.open(tit);
-            a.document.open("text/html");
-            var html = '<!DOCTYPE html><html><head><title>' + tit + '</title>';
-            html += '<style type="text/css">body{font:10pt/1.5 Verdana,Arial,Helvetica,sans-serif;margin:10pt;padding:0}</style>';
-            html += '</head><body><pre><code>';
-            html += code.html();
-            html += '</code></pre></body></html>';
-            a.document.write(html);
-            a.document.close();
-        },
-        // Load MathJax or just create the links to the code and/or image
-        init: function () {
-            $("body").addClass("exe-auto-math");
-            var math = $(".exe-math");
-            var mathjax = false;
-            if (math.length > 0 || $("body").hasClass("exe-auto-math")) {
-                if ($("body").hasClass("exe-auto-math")) {
-                    var hasLatex = /(?:\\\(|\\\[|\\begin\{.*?})/.test($('body').html());
-                    if (hasLatex) mathjax = true;
-                }
-                math.each(function () {
-                    var e = $(this);
-                    if (e.hasClass("exe-math-engine")) {
-                        mathjax = true;
-                    }
-                });
-                if (mathjax) {
-                    math.each(function () {
-                        var isInline = false;
-                        var codeW = $(".exe-math-code", this);
-                        var code = codeW.html().trim();
-                        if (code.indexOf("\\(") == 0 || (code.indexOf("$") == 0 && code.indexOf("$$") != 0)) isInline = true;
-                        if (isInline) $(this).addClass("exe-math-inline");
-                        if (code.indexOf("<math") == -1) {
-                            if (isInline) {
-                                if (code.indexOf("$") == 0 && code.substr(code.length - 1) == "$") {
-                                    // $x$ is valid inline
-                                } else {
-                                    if (code.indexOf("\\(") != 0 && code.substr(code.length - 2) != "\\)") {
-                                        // Wrap the code: \( ... \)
-                                        codeW.html("\\(" + code + "\\)");
-                                    }
-                                }
-                            } else {
-                                if (code.indexOf("$$") == 0 && code.substr(code.length - 2) == "$$") {
-                                    // $$x$$ is valid block
-                                } else {
-                                    if (code.indexOf("\\[") != 0 && code.substr(code.length - 2) != "\\]") {
-                                        // Wrap the code: \[ ... \]
-                                        codeW.html("\\[" + code + "\\]");
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    if (typeof (window.MathJax) == 'object' && typeof (MathJax.typesetPromise) == 'function') {
-                        if (typeof (eXeLearning) != 'undefined') MathJax.typesetPromise();
-                        $exe.math.createLinks();
-                    }
-                } else {
-                    $exe.math.createLinks(math);
-                }
-            }
-        }
-    },
-
-    // If the page has links we load the JS file
-    hasExeNodeLinks: function () {
-        if (!this.isInExe()) return;
-
-        let eXeNodeLinks = document.querySelectorAll("a[href^='exe-node']");
-        if (eXeNodeLinks.length > 0) {
-
-            let pages = eXeLearning.app.project.structure.data;
-            let buttonsPages = document.querySelectorAll("span.nav-element-text");
-
-            eXeNodeLinks.forEach(link => {
-                let pageElement = null;
-                let pageName = "nopage";
-                let pageId = link.href.replace("exe-node:", "");
-
-                pages.forEach(page => {
-                    if (page.pageId === pageId) {
-                        pageName = page.pageName;
-                    }
-                });
-
-                buttonsPages.forEach(button => {
-                    if (button.innerText.includes(pageName)) {
-                        pageElement = button;
-                    }
-                });
-
-                if (pageElement) {
-                    link.onclick = function (event) {
-                        event.preventDefault();
-                        pageElement.click();
-                    }
-                }
-            });
-        }
-    },
-
-    // Add WAI-ARIA roles
-    addRoles: function () {
-        $("#header").attr("role", "banner");
-        $("#siteNav").attr("role", "navigation");
-        $("#main").attr("role", "main");
-        $("#siteFooter").attr("role", "contentinfo");
-        $(".js-feedback").attr("role", "status")
-    },
-
     // Internet Explorer?
     isIE: function () {
         var e = navigator.userAgent.toLowerCase();
@@ -943,107 +646,6 @@ var $exe = {
     imageGallery: {
         init: function (e) {
             $("A", "#" + e).attr("rel", "lightbox[" + e + "]")
-        }
-    },
-
-    // Show/Hide tips
-    hint: {
-        init: function () {
-            $(".iDevice_hint").each(function (e) {
-                // To review (this should be in base.css)
-                if (typeof ($exe.hint.imgs) == 'undefined') {
-                    $exe.hint.imgs = ['panel-amusements.png', 'stock-stop.png'];
-                }
-                var t = e + 1;
-                var n = "hint-" + t;
-                var r = $(".iDevice_hint_content", this);
-                var i = $(".iDevice_hint_title", this);
-                if (r.length == 1 && i.length == 1) {
-                    r.eq(0).attr("id", n);
-                    var s = i.eq(0);
-                    var o = s.html();
-                    s.html('<a href="#' + n + '" title="' + $exe_i18n.show + '" class="hint-toggler show-hint" id="toggle-' + n + '" style="background-image:url(' + $exe.hint.imgs[0] + ')">' + o + "</a>")
-                }
-                $('.hint-toggler', this).click(function () {
-                    $exe.hint.toggle(this);
-                    return false;
-                });
-            });
-        },
-        toggle: function (e) {
-            var t = e.id.replace("toggle-", "");
-            if (e.title == $exe_i18n.show) {
-                $("#" + t).fadeIn("slow");
-                e.title = $exe_i18n.hide;
-                e.className = "hint-toggler hide-hint";
-                e.style.backgroundImage = "url(" + $exe.hint.imgs[1] + ")"
-            } else {
-                $("#" + t).fadeOut();
-                e.title = $exe_i18n.show;
-                e.className = "hint-toggler show-hint";
-                e.style.backgroundImage = "url(" + $exe.hint.imgs[0] + ")"
-            }
-        }
-    },
-
-    // Hide/Show iDevices (base.css hides this)
-    iDeviceToggler: {
-        init: function () {
-            var isEdition = typeof (exe_editor_mode) != "undefined" && $("#activeIdevice").length == 1;
-            if ($(".iDevice").length < 2 && isEdition == false) return false;
-            var t = $(".iDevice_header,.iDevice.emphasis0");
-            t.each(function () {
-                var t = $exe_i18n.hide;
-                e = $(this), c = e.hasClass("iDevice_header") ? "em1" : "em0", eP = e.parents(".iDevice_wrapper");
-                if (eP.length) {
-                    var n = '<p class="toggle-idevice toggle-' + c + '"><a href="#" id="toggle-idevice-' + eP.attr("id") + '-' + c + '" title="' + t + '"><span>' + t + "</span></a></p>";
-                    if (c == "em1") {
-                        var r = e.html();
-                        e.html(r + n)
-                    } else e.before(n)
-                }
-            });
-            $(".toggle-idevice a").click(function () {
-                var id = this.id.replace("toggle-idevice-", "");
-                id = id.split("-");
-                $exe.iDeviceToggler.toggle(this, id[0], id[1]);
-                return false;
-            });
-            if (isEdition) {
-                $(".toggle-idevice a").trigger("click");
-                $(".iDevice_wrapper").css("opacity", .5).hover(function () {
-                    $(this).animate({ opacity: 1 });
-                }, function () {
-                    $(this).animate({ opacity: .5 });
-                });
-            }
-        },
-        toggle: function (e, t, n) {
-            var r = $exe_i18n.hide;
-            var i = $("#" + t);
-            var s = ".iDevice_content";
-            if (n == "em1") s = ".iDevice_inner";
-            var o = $(s, i);
-            var u = i.attr("class");
-            if (typeof u == "undefined") return false;
-            if (u.indexOf(" hidden-idevice") == -1) {
-                r = $exe_i18n.show;
-                u += " hidden-idevice";
-                o.slideUp("fast", function () {
-                    e.className = "show-idevice";
-                    e.title = r;
-                    e.innerHTML = "<span>" + r + "</span>"
-                    i.attr("class", u);
-                });
-            } else {
-                u = u.replace(" hidden-idevice", "");
-                o.slideDown("fast", function () {
-                    e.className = "hide-idevice";
-                    e.title = r;
-                    e.innerHTML = "<span>" + r + "</span>";
-                });
-                i.attr("class", u);
-            }
         }
     },
 
@@ -1061,23 +663,20 @@ var $exe = {
 
     // Add "http" to the IFRAMES without protocol in local pages and create a hidden link for the print version
     setIframesProperties: function () {
-        // setTimeout is provisional. We use it because some Styles were already adding the "external-iframe" class.
-        setTimeout(function () {
-            var p = window.location.protocol;
-            var t = false;
-            if (p != "http" && p != "https") t = true;
-            $("iframe").each(function () {
-                var i = $(this);
-                var s = i.attr("src");
-                if (typeof (s) == "string") {
-                    if (t && s.indexOf("//") == 0) $(this).attr("src", "http:" + s);
-                    s = i.attr("src");
-                    if (!i.hasClass("external-iframe") && s.indexOf("http") == 0) {
-                        i.addClass("external-iframe").before("<span class='external-iframe-src' style='display:none'><a href='" + s + "'>" + s + "</a></span>");
-                    }
+        var p = window.location.protocol;
+        var t = false;
+        if (p != "http" && p != "https") t = true;
+        $("iframe").each(function () {
+            var i = $(this);
+            var s = i.attr("src");
+            if (typeof (s) == "string") {
+                if (t && s.indexOf("//") == 0) $(this).attr("src", "http:" + s);
+                s = i.attr("src");
+                if (!i.hasClass("external-iframe") && s.indexOf("http") == 0) {
+                    i.addClass("external-iframe").before("<span class='external-iframe-src' style='display:none'><a href='" + s + "'>" + s + "</a></span>");
                 }
-            });
-        }, 1000);
+            }
+        });
     },
 
     // Load a JavaScript or CSS file (in HEAD)
