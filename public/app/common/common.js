@@ -51,6 +51,7 @@ var $exe = {
         }
         $exe.setIframesProperties();
         $exe.hasTooltips();
+        $exe.math.init();
         $exe.dl.init();
         // Add a zoom icon to the images using CSS
         $("a.exe-enlarge").each(function (i) {
@@ -63,68 +64,6 @@ var $exe = {
         $exe.sfHover();
         // Disable autocomplete
         $("INPUT.autocomplete-off").attr("autocomplete", "off");
-
-        // To do now
-
-        // Cloze iDevice
-        $('.cloze-feedback-toggler').click(function () {
-            var e = $(this);
-            var id = e.attr('name').replace('feedback', '');
-            $exe.cloze.toggleFeedback(id, this);
-        });
-        $('.cloze-score-toggler').click(function () {
-            var e = $(this);
-            var id = e.attr('name').replace('getScore', '');
-            $exe.cloze.showScore(id, 1);
-        });
-        $('form.cloze-form').submit(function () {
-            var e = $(this);
-            var id = e.attr('name').replace('cloze-form-', '');
-            try {
-                $exe.cloze.showScore(id, 1);
-            } catch (e) {
-                // Due to G. Chrome's Content Security Policy ('unsafe-eval' is not allowed)
-                var txt = $exe_i18n.dataError;
-                if ($('body').hasClass('exe-epub3')) txt += '<br /><br />' + $exe_i18n.epubJSerror;
-                $("#clozeScore" + id).html(txt);
-            }
-            return false;
-        });
-
-        // SCORM Quiz iDevice
-        $('form.quiz-test-form').submit(function () {
-            try {
-                calcScore2();
-            } catch (e) {
-                // Due to G. Chrome's Content Security Policy ('unsafe-eval' is not allowed)
-                var txt = $exe_i18n.dataError;
-                if ($('body').hasClass('exe-epub3')) txt += '<br /><br />' + $exe_i18n.epubJSerror;
-                $('form.quiz-test-form input[type=submit]').hide().before(txt);
-            }
-            return false;
-        });
-
-        // Multi-choice iDevice and True-False Question
-        $('.exe-radio-option').change(function () {
-            var c = this.className.split(" ");
-            if (c.length != 2) return;
-            c = c[1];
-            c = c.replace("exe-radio-option-", "");
-            c = c.split("-");
-            if (c.length != 4) return;
-            $exe.getFeedback(c[0], c[1], c[2], c[3]);
-        });
-
-        // Multi-select iDevice
-        $('form.multi-select-form').submit(function () {
-            return false;
-        });
-        $('.multi-select-feedback-toggler').click(function () {
-            var i = this.id.replace("multi-select-feedback-toggler-", "");
-            i = i.split("-");
-            if (i.length != 2) return;
-            $exe.showFeedback(this, i[0], i[1]);
-        });
 
         // Cloze Activity iDevice
         $('form.cloze-activity-form').submit(function () {
@@ -144,213 +83,111 @@ var $exe = {
             return false;
         });
 
-        // Search form
-        if (window.DOMParser) this.clientSearch.init(bod); // IE8- do not support the DOMParser object
-
     },
-
-    // Search engine in exports
-    clientSearch: {
-
-        init: function (bod) {
-            // Search form
-            if (bod.hasClass("exe-web-site") && bod.hasClass("exe-search-bar")) {
-                $.ajax({
-                    type: "GET",
-                    url: "contentv3.xml",
-                    dataType: "xml",
-                    success: function (xml) {
-                        $exe.clientSearch.main = $("#main");
-                        $exe.contentv3 = xml;
-                        var sF = '<div id="exe-client-search">\
-                            <form id="exe-client-search-form" action="#" method="GET">\
-                                <p><label for="exe-client-search-text" class="sr-av">'+ $exe_i18n.fullSearch + ': </label><input type="text" id="exe-client-search-text" /> \
-                                <input type="submit" id="exe-client-search-submit" value="'+ $exe_i18n.search + '" />\
-                                <a href="#main" id="exe-client-search-reset" title="'+ $exe_i18n.hideResults + '"><span>' + $exe_i18n.hideResults + '</span></a></p>\
-                            </form>\
-                        </div>\
-                        <div id="exe-client-search-results"></div>';
-                        $exe.clientSearch.main.prepend(sF);
-                        $("#exe-client-search-form").submit(function () {
-                            $exe.clientSearch.search($("#exe-client-search-text").val());
-                            return false;
-                        });
-                        $("#exe-client-search-text").prop("placeholder", $exe_i18n.fullSearch + "...");
-                        $("#exe-client-search-reset").click(function () {
-                            $("#exe-client-search-text").val("")
-                            $exe.clientSearch.search("");
-                            return false;
-                        });
-                        $exe.clientSearch.results = $("#exe-client-search-results");
-                        $exe.clientSearch.results.css("min-height", $exe.clientSearch.main.height() + "px");
-                        $("#skipNav").append(' <a href="#exe-client-search-text" id="exe-client-search-lnk" class="sr-av">' + $exe_i18n.fullSearch + '</a>');
-                        $("#exe-client-search-lnk").click(function () {
-                            $("#exe-client-search-text").focus();
-                            return false;
-                        });
-                    },
-                    error: function () {
-
-                    }
-                });
+    
+    // Math options (MathJax, etc.)
+    math: {
+        // Change this from your Style or your elp using $exe.math.engine="..."
+        engine: $("html").prop("id") == "exe-index" ? "./libs/exe_math/tex-mml-svg.js" : "../libs/exe_math/tex-mml-svg.js",
+        // Create links to the code and the image (different possibilities)
+        createLinks: function (math) {
+            var mathjax = false;
+            if (!math) {
+                var math = $(".exe-math");
+                mathjax = true;
             }
-        },
-
-        strip: function (html) {
-            html = html.trim();
-            var splitter = "~exe-activity-results~: ";
-            // Check if it's an activity with results (#468)
-            if (html.indexOf('<div class="adivina-IDevice') == 0 || html.indexOf('<div class="quext-IDevice') == 0 || html.indexOf('<div class="rosco-IDevice') == 0 || html.indexOf('<div class="vquext-IDevice') == 0) {
-                html = html.replace('{', splitter + '{');
-            } else if (html.indexOf('<div class="exe-interactive-video') == 0) {
-                html = splitter + html;
-            } else if (html.indexOf('<div class="exe-sortableList') == 0) {
-                html = html.replace('<ul', splitter + '<ul');
-            } else if (html.indexOf('<u>') != -1) {
-                // Dropdown activity, etc.
-                html = html.replace('<u>', '...' + splitter + '<u>');
-            }
-            var regex = /(<([^>]+)>)/ig
-            html = html.replace(regex, "");
-            html = html.replace(/</g, "&lt;");
-            html = html.replace(/>/g, "&gt;");
-            return html;
-        },
-
-        getNodeHTML: function (nodeNo, sTitle, query, html) {
-            query = query.toLowerCase();
-            // Create a tmp wprapper
-            var div = $("<div />");
-            // Fill it
-            div.html(html);
-            // Remove the nested nodes (children nodes)
-            $("instance", div).each(function () {
-                if ($(this).attr("class") == "exe.engine.node.Node" || $(this).attr("class") == "exe.engine.notaidevice.NotaIdevice") {
-                    $(this).remove();
+            math.each(function () {
+                var e = $(this);
+                if ($(".exe-math-links", e).length > 0) return;
+                var img = $(".exe-math-img img", e);
+                var txt = "LaTeX";
+                if (e.html().indexOf("<math") != -1) txt = "MathML";
+                var html = '';
+                if (img.length == 1) html += '<a href="' + img.attr("src") + '" target="_blank">GIF</a>';
+                if (!mathjax) {
+                    if (html != "") html += '<span> - </span>';
+                    html += '<a href="#" class="exe-math-code-lnk">' + txt + '</a>';
                 }
-            });
-            // Get the content of those iDevices
-            var res = "";
-            var currHTML;
-            var as = $("#siteNav a");
-            var currTit = sTitle.toLowerCase();
-            div.find('unicode').each(function () {
-                if ($(this).attr("content") == "true") {
-                    currHTML = $(this).attr("value");
-                    if (typeof currHTML == 'string') currHTML = $exe.clientSearch.strip(currHTML);
-                    if (currTit.indexOf(query) != -1 || currHTML.toLowerCase().indexOf(query) != -1) {
-                        var a = as.eq(nodeNo);
-                        // Test. Find a siteNav href by Title instead of nodeNo in case the titles do not match
-                        a_by_title = $("#siteNav a:contains('" + sTitle + "')")
-                        if (a.html() != sTitle && a_by_title) {
-                            a = a_by_title;
-                        }
-                        if (a.length == 1) {
-                            // Remove the results from the visible text (#468)
-                            currHTML = currHTML.split("~exe-activity-results~: ");
-                            currHTML = currHTML[0];
-                            if (currHTML == "") currHTML = "...";
-                            else res += '<li><strong><a href="' + a.attr("href") + '" \
-                            class="exe-client-search-result-link">'+ sTitle + '</a> &rarr; </strong>\
-                            <span class="exe-client-search-result-detail">'+ currHTML + "</span></li>";
-                        }
-                    }
+                if (html != "") {
+                    html = '<p class="exe-math-links">' + html + '</p>';
+                    e.append(html);
                 }
-            });
-
-            return res;
-        },
-
-        splitByWords: function (text, startFrom, lengthFrom) {
-            var len = text.length,
-                re = /[ ,.]/, // Search any of those characters
-                fr = (startFrom <= 0) ? 0 : text.substr(startFrom).search(re) + startFrom + 1,
-                to = (lengthFrom >= len) ? len : text.substr(lengthFrom).search(re) + lengthFrom;
-            // If we don't find any character
-            if (fr === -1) fr = 0;
-            if (to === (lengthFrom - 1)) to = len;
-
-            return text.substr(fr, to);
-        },
-
-        search: function (query) {
-            if (query.length < 3) {
-                $("body").removeClass("exe-client-search-results");
-                return;
-            }
-            var xml = $exe.contentv3;
-            var nodeNo = 0;
-            $("body").addClass("exe-client-search-results");
-            $exe.clientSearch.results.html("");
-            var results = "";
-            $(xml).find('instance').each(function () {
-                if ($(this).attr("class") == "exe.engine.node.Node") {
-                    var currentNode = $(this);
-                    // Get the node title and HTML
-                    var sTitle = currentNode.find('unicode').eq(0).attr("value");
-                    // Get the content
-                    var str = "";
-                    try {
-                        // This won't work in some old browsers (not even in IE11)
-                        str = currentNode.html();
-                    } catch (e) {
-                        var s = new XMLSerializer();
-                        var d = this;
-                        str = s.serializeToString(d);
-                        var tmp = $("<div></div>");
-                        tmp.html(str);
-                        var html = $("instance", tmp).eq(0).html();
-                        str = html;
-                    }
-                    results += $exe.clientSearch.getNodeHTML(nodeNo, sTitle, query, str.replace(/script/g, "script_"));
-                    nodeNo++;
-                }
-            });
-            if (results != "") {
-                results = '<p>' + $exe_i18n.searchResults.replace("%", "<strong>" + query + "</strong>") + ':</p><ul>' + results + '</ul>';
-                $exe.clientSearch.results.html(results);
-                // Underline the search text in the title
-                $(".exe-client-search-result-link", $exe.clientSearch.results).html(function (_, html) {
-                    html = html.replace(/script_/g, "script");
-                    var re = new RegExp('(' + query + ')', "gi");
-                    return html.replace(re, '<mark class="exe-client-search-result">$1</mark>');
-                });
-                $(".exe-client-search-result-detail", $exe.clientSearch.results).each(function (i) {
-                    // Add a "Read more" link if needed
-                    var max = 200;
-                    var c = $(this).text();
-                    c = $exe.clientSearch.strip(c); // This will prevent some JavaScript code to be executed
-                    var n = "";
-                    if (c.length > (max + 100)) {
-                        var start = $exe.clientSearch.splitByWords(c, 0, max);
-                        var end = c.replace(start, " ");
-                        n += start;
-                        n += '<a href="#exe-client-search-text-' + i + '" title="' + $exe_i18n.more + '" class="exe-client-search-read-more">[&hellip;]</a>';
-                        n += '<span class="js-hidden" id="exe-client-search-text-' + i + '">';
-                        n += end;
-                        n += '</span>';
-                        this.innerHTML = n;
-                    }
-                    // Underline the search text in the HTML
-                    $(this).html(function (_, html) {
-                        html = html.replace(/script_/g, "script");
-                        var re = new RegExp('(' + query + ')', "gi");
-                        return html.replace(re, '<mark class="exe-client-search-result">$1</mark>');
-                    });
-                });
-                // Make the "Read more" link work
-                $(".exe-client-search-read-more").click(function () {
-                    var e = $(this);
-                    $(e.attr("href")).fadeIn();
-                    e.remove();
+                $(".exe-math-code-lnk").click(function () {
+                    $exe.math.showCode(this);
                     return false;
                 });
-            } else {
-                // No results for that search
-                $exe.clientSearch.results.html('<p>' + $exe_i18n.noSearchResults.replace("%", "<strong>" + query + "</strong>") + '</p>')
+            });
+        },
+
+        // Open a new window with the LaTeX or MathML code
+        showCode: function (e) {
+            var tit = e.innerHTML;
+            var block = $(e).parent().parent();
+            var code = $(".exe-math-code", block);
+            var a = window.open(tit);
+            a.document.open("text/html");
+            var html = '<!DOCTYPE html><html><head><title>' + tit + '</title>';
+            html += '<style type="text/css">body{font:10pt/1.5 Verdana,Arial,Helvetica,sans-serif;margin:10pt;padding:0}</style>';
+            html += '</head><body><pre><code>';
+            html += code.html();
+            html += '</code></pre></body></html>';
+            a.document.write(html);
+            a.document.close();
+        },
+        // Load MathJax or just create the links to the code and/or image
+        init: function () {
+            $("body").addClass("exe-auto-math");
+            var math = $(".exe-math");
+            var mathjax = false;
+            if (math.length > 0 || $("body").hasClass("exe-auto-math")) {
+                if ($("body").hasClass("exe-auto-math")) {
+                    var hasLatex = /(?:\\\(|\\\[|\\begin\{.*?})/.test($('body').html());
+                    if (hasLatex) mathjax = true;
+                }
+                math.each(function () {
+                    var e = $(this);
+                    if (e.hasClass("exe-math-engine")) {
+                        mathjax = true;
+                    }
+                });
+                if (mathjax) {
+                    math.each(function () {
+                        var isInline = false;
+                        var codeW = $(".exe-math-code", this);
+                        var code = codeW.html().trim();
+                        if (code.indexOf("\\(") == 0 || (code.indexOf("$") == 0 && code.indexOf("$$") != 0)) isInline = true;
+                        if (isInline) $(this).addClass("exe-math-inline");
+                        if (code.indexOf("<math") == -1) {
+                            if (isInline) {
+                                if (code.indexOf("$") == 0 && code.substr(code.length - 1) == "$") {
+                                    // $x$ is valid inline
+                                } else {
+                                    if (code.indexOf("\\(") != 0 && code.substr(code.length - 2) != "\\)") {
+                                        // Wrap the code: \( ... \)
+                                        codeW.html("\\(" + code + "\\)");
+                                    }
+                                }
+                            } else {
+                                if (code.indexOf("$$") == 0 && code.substr(code.length - 2) == "$$") {
+                                    // $$x$$ is valid block
+                                } else {
+                                    if (code.indexOf("\\[") != 0 && code.substr(code.length - 2) != "\\]") {
+                                        // Wrap the code: \[ ... \]
+                                        codeW.html("\\[" + code + "\\]");
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    if (typeof (window.MathJax) == 'object' && typeof (MathJax.typesetPromise) == 'function') {
+                        if (typeof (eXeLearning) != 'undefined') MathJax.typesetPromise();
+                        $exe.math.createLinks();
+                    }
+                } else {
+                    $exe.math.createLinks(math);
+                }
             }
         }
-
     },
 
     // Modal Window: Height problem in some browsers #328
