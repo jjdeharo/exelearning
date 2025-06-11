@@ -794,9 +794,6 @@ class ExportXmlUtil
         return $package;
     }
 
-    // ///////////////////////////////////////////////////////////////////////////////////
-    // HTML
-    // ///////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Generate ePub3 package.opf file.
@@ -820,38 +817,56 @@ class ExportXmlUtil
         $resourcesPrefix,
         $exportType,
     ) {
-        $html = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><html></html>');
+        $title = $odeProperties["pp_title"] ? $odeProperties["pp_title"]->getValue() : "";
+        $lang = $odeProperties["pp_lang"] ? $odeProperties["pp_lang"]->getValue() : "es";
 
-        // html attributes
-        $html->addAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
-        $html->addAttribute('xmlns:xmlns:epub', 'http://www.idpf.org/2007/ops');
+        $html = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:epub=\"http://www.idpf.org/2007/ops\" xml:lang=\"".$lang."\" lang=\"".$lang."\">";
+        $html .= "<head><title>{$title}</title></head>";
+        $html .= "<body><nav epub:type=\"toc\" id=\"toc\"><ol>";
 
-        $lang = isset($odeProperties['pp_lang']) ? $odeProperties['pp_lang']->getValue() : Settings::DEFAULT_LOCALE;
-        $html->addAttribute('xml:xml:lang', $lang);
-        $html->addAttribute('lang', $lang);
-
-        // html -> head
-        $head = $html->addChild('head', '');
-        $meta = $head->addChild('meta', ' ');
-        $meta->addAttribute('charset', 'utf-8');
-
-        // html -> body
-        $body = $html->addChild('body', '');
-
-        // html -> body -> nav
-        $nav = $body->addChild('nav', '');
-        $nav->addAttribute('epub:epub:type', 'toc');
-        $nav->addAttribute('id', 'toc');
-
-        $ol = $nav->addChild('ol', ' ');
-        foreach ($odeNavStructureSyncs as $odeNavStructureSync) {
-            $odePageId = $odeNavStructureSync->getOdePageId();
-            $pageData = $pagesFileData[$odePageId];
-            $li = $ol->addChild('li', ' ');
-            $a = $li->addChild('a', $odeNavStructureSync->getPageName());
-            $a->addAttribute('href', $pageData['fileUrl']);
+        // Build a tree from the flat list
+        $tree = [];
+        $nodes = [];
+        foreach ($odeNavStructureSyncs as $node) {
+            $nodes[$node->getOdePageId()] = [
+                "id" => $node->getOdePageId(),
+                "parent" => $node->getOdeParentPageId(),
+                "name" => $node->getPageName(),
+                "children" => []
+            ];
         }
 
+        foreach ($nodes as $nodeId => &$node) {
+            if ($node["parent"] !== null && isset($nodes[$node["parent"]])) {
+                $nodes[$node["parent"]]["children"][] = &$node;
+            } else {
+                $tree[] = &$node;
+            }
+        }
+
+        $html .= self::buildEpub3NavList($tree, $pagesFileData);
+
+        $html .= "</ol></nav></body></html>";
+
+        // Convert the HTML string to a SimpleXMLElement before returning
+        libxml_use_internal_errors(true);
+        $simpleXml = simplexml_load_string($html);
+        libxml_clear_errors();
+        return $simpleXml;
+    }
+
+    private static function buildEpub3NavList($nodes, $pagesFileData) {
+        $html = "";
+        foreach ($nodes as $node) {
+            $pageFile = $pagesFileData[$node["id"]]["fileUrl"];
+            $html .= "<li><a href=\"{$pageFile}\">{$node["name"]}</a>";
+            if (!empty($node["children"])) {
+                $html .= "<ol>";
+                $html .= self::buildEpub3NavList($node["children"], $pagesFileData);
+                $html .= "</ol>";
+            }
+            $html .= "</li>";
+        }
         return $html;
     }
 
