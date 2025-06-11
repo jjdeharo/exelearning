@@ -783,6 +783,18 @@ class ExportXmlUtil
         $item->addAttribute('properties', 'nav');
         $item->addAttribute('media-type', 'application/xhtml+xml');
 
+        $visiblesPages = [];
+        $indexNode = 0;
+
+        foreach ($pagesFileData as $key => $pageData) {
+            if (self::isVisibleExport($odeNavStructureSyncs, $indexNode)) {
+                $url = $pageData['fileUrl'];
+                // Add the page to the visibles pages and link it with the previous page and the next page
+                $visiblesPages[$key] = ['url' => $url];
+            }
+            ++$indexNode;
+        }
+
         // manifest -> item [pages]
         foreach ($odeNavStructureSyncs as $odeNavStructureSync) {
             $odePageId = $odeNavStructureSync->getOdePageId();
@@ -791,7 +803,12 @@ class ExportXmlUtil
             $item->addAttribute('id', 'PAGE-'.$odePageId);
             $item->addAttribute('href', $pageData['fileUrl']);
             $item->addAttribute('media-type', 'application/xhtml+xml');
-            $item->addAttribute('properties', 'scripted');
+
+            if (isset($visiblesPages[$odePageId])) {
+                $item->addAttribute('properties', 'scripted');
+            } else {
+                $item->addAttribute('fallback', 'fallback');
+            }
         }
 
         $directoriesToCopy = ['content', 'custom', 'idevices', 'libs', 'theme'];
@@ -817,8 +834,10 @@ class ExportXmlUtil
         // spine -> itemref [pages]
         foreach ($odeNavStructureSyncs as $odeNavStructureSync) {
             $odePageId = $odeNavStructureSync->getOdePageId();
-            $itemref = $spine->addChild('itemref', ' ');
-            $itemref->addAttribute('idref', 'PAGE-'.$odePageId);
+            if (isset($visiblesPages[$odePageId])) {
+                $itemref = $spine->addChild('itemref', ' ');
+                $itemref->addAttribute('idref', 'PAGE-'.$odePageId);
+            }
         }
 
         return $package;
@@ -853,16 +872,31 @@ class ExportXmlUtil
         $html .= "<head><title>{$title}</title></head>";
         $html .= '<body><nav epub:type="toc" id="toc"><ol>';
 
+        $visiblesPages = [];
+        $indexNode = 0;
+
+        foreach ($pagesFileData as $key => $pageData) {
+            if (self::isVisibleExport($odeNavStructureSyncs, $indexNode)) {
+                $url = $pageData['fileUrl'];
+                // Add the page to the visibles pages and link it with the previous page and the next page
+                $visiblesPages[$key] = ['url' => $url];
+            }
+            ++$indexNode;
+        }
+
         // Build a tree from the flat list
         $tree = [];
         $nodes = [];
-        foreach ($odeNavStructureSyncs as $node) {
-            $nodes[$node->getOdePageId()] = [
-                'id' => $node->getOdePageId(),
-                'parent' => $node->getOdeParentPageId(),
-                'name' => $node->getPageName(),
-                'children' => [],
-            ];
+        foreach ($odeNavStructureSyncs as $odeNavStructureSync) {
+            $odePageId = $odeNavStructureSync->getOdePageId();
+            if (isset($visiblesPages[$odePageId])) {
+                $nodes[$odePageId] = [
+                    'id' => $odePageId,
+                    'parent' => $odeNavStructureSync->getOdeParentPageId(),
+                    'name' => $odeNavStructureSync->getPageName(),
+                    'children' => [],
+                ];
+            }
         }
 
         foreach ($nodes as $nodeId => &$node) {
