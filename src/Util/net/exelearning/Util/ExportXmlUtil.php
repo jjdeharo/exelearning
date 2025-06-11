@@ -2664,37 +2664,7 @@ class ExportXmlUtil
                     $item = $manifest->addChild('item', ' ');
                     $item->addAttribute('id', $dir.'/'.$relativePath);
                     $item->addAttribute('href', $dir.'/'.$relativePath);
-                    // Determine media-type based on file extension
-                    $ext = strtolower(pathinfo($relativePath, PATHINFO_EXTENSION));
-                    $mediaTypes = [
-                        'jpg' => 'image/jpeg',
-                        'jpeg' => 'image/jpeg',
-                        'png' => 'image/png',
-                        'gif' => 'image/gif',
-                        'svg' => 'image/svg+xml',
-                        'svgz' => 'image/svg+xml',
-                        'webp' => 'image/webp',
-                        'css' => 'text/css',
-                        'js' => 'application/javascript',
-                        'html' => 'application/xhtml+xml',
-                        'xhtml' => 'application/xhtml+xml',
-                        'xml' => 'application/xml',
-                        'mp3' => 'audio/mpeg',
-                        'mp4' => 'video/mp4',
-                        'ogg' => 'audio/ogg',
-                        'ogv' => 'video/ogg',
-                        'json' => 'application/json',
-                        'woff' => 'font/woff',
-                        'woff2' => 'font/woff2',
-                        'ttf' => 'font/ttf',
-                        'otf' => 'font/otf',
-                        'eot' => 'application/vnd.ms-fontobject',
-                        'pdf' => 'application/pdf',
-                        'zip' => 'application/zip',
-                        'txt' => 'text/plain',
-                    ];
-                    $mediaType = isset($mediaTypes[$ext]) ? $mediaTypes[$ext] : 'application/octet-stream';
-                    $item->addAttribute('media-type', $mediaType);
+                    $item->addAttribute('media-type', mime_content_type($file->getPathname()));
                     $item->addAttribute('fallback', 'fallback');
                 }
             }
