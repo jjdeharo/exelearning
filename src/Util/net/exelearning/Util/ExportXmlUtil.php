@@ -740,21 +740,33 @@ class ExportXmlUtil
         $metadata->addAttribute('xmlns:xmlns:dc', 'http://purl.org/dc/elements/1.1/');
 
         // metadata -> language
-        $lang = isset($odeProperties['pp_lang']) ?
-            $odeProperties['pp_lang']->getValue() : Settings::DEFAULT_LOCALE;
+        $lang = isset($odeProperties['pp_lang']) ? $odeProperties['pp_lang']->getValue() : Settings::DEFAULT_LOCALE;
         $languageDC = $metadata->addChild('dc:dc:language', $lang);
 
         // metadata -> identifier
-        $id = isset($odeProperties['lom_general_identifier_entry'])
-            ? $odeProperties['lom_general_identifier_entry']->getValue() : 'ODE-'.$odeId;
+        $id = isset($odeProperties['lom_general_identifier_entry']) ? $odeProperties['lom_general_identifier_entry']->getValue() : 'ODE-'.$odeId;
         $identifierDC = $metadata->addChild('dc:dc:identifier', $id);
         $identifierDC->addAttribute('id', 'pub-id');
 
         // metadata -> title
-        $title = isset($odeProperties['pp_title']) ?
-            $odeProperties['pp_title']->getValue() : 'eXe-p-'.$odeId;
+        $title = isset($odeProperties['pp_title']) ? $odeProperties['pp_title']->getValue() : 'eXe-p-'.$odeId;
         $titleDC = $metadata->addChild('dc:dc:title', $title);
+        $titleDC->addAttribute('xml:lang', $lang);
 
+        // metadata -> description
+        $descriptionValue = isset($odeProperties['pp_description']) ? $odeProperties['pp_description']->getValue() : '';
+        $descriptionDC = $metadata->addChild('dc:dc:description', $descriptionValue);
+        $descriptionDC->addAttribute('xml:lang', $lang);
+
+        // metadata -> license
+        $licenseValue = isset($odeProperties['license']) ? $odeProperties['license']->getValue() : '';
+        $licenseDC = $metadata->addChild('dc:dc:license', $licenseValue);
+        $licenseDC->addAttribute('xml:lang', $lang);
+
+        // metadata -> creator
+        $authorValue = isset($odeProperties['pp_author']) ? $odeProperties['pp_author']->getValue() : '';
+        $creatorDC = $metadata->addChild('dc:dc:creator', $authorValue);
+        
         // metadata -> meta
         $date = new \DateTime('now');
         $meta = $metadata->addChild('meta', $date->format('Y-m-d\TH:i:s\Z'));
@@ -2564,6 +2576,28 @@ class ExportXmlUtil
      * @param string           $dir           the directory to add files from
      */
     public static function addCommonExportedFilesToImsManifest($resource, $exportDirPath, $dir)
+    {
+        $resourcesDir = $exportDirPath.$dir;
+        if (is_dir($resourcesDir)) {
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($resourcesDir));
+            foreach ($iterator as $file) {
+                if ($file->isFile()) {
+                    $relativePath = str_replace($resourcesDir.'/', '', $file->getPathname());
+                    $fileElement = $resource->addChild('file');
+                    $fileElement->addAttribute('href', $dir.'/'.$relativePath);
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds exported files to the OPF manifest.
+     *
+     * @param SimpleXMLElement $resource      the XML resource to add files to
+     * @param string           $exportDirPath the path to the export directory
+     * @param string           $dir           the directory to add files from
+     */
+    public static function addCommonExportedFilesToOpfManifest($resource, $exportDirPath, $dir)
     {
         $resourcesDir = $exportDirPath.$dir;
         if (is_dir($resourcesDir)) {
