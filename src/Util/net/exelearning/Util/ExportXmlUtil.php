@@ -713,7 +713,6 @@ class ExportXmlUtil
      * @param OdeNavStructureSync $odeNavStructureSyncs
      * @param array               $pagesFileData
      * @param array               $odeProperties
-     * @param string              $elpFileName
      * @param string              $resourcesPrefix
      * @param string              $exportType
      *
@@ -724,10 +723,12 @@ class ExportXmlUtil
         $odeNavStructureSyncs,
         $pagesFileData,
         $odeProperties,
-        $elpFileName,
+        $exportDirPath,
         $resourcesPrefix,
         $exportType,
     ) {
+        $exportDirPath = $exportDirPath.Constants::EXPORT_EPUB3_EXPORT_DIR_EPUB.DIRECTORY_SEPARATOR;
+
         $package = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><package></package>');
 
         // package attributes
@@ -766,7 +767,7 @@ class ExportXmlUtil
         // metadata -> creator
         $authorValue = isset($odeProperties['pp_author']) ? $odeProperties['pp_author']->getValue() : '';
         $creatorDC = $metadata->addChild('dc:dc:creator', $authorValue);
-        
+
         // metadata -> meta
         $date = new \DateTime('now');
         $meta = $metadata->addChild('meta', $date->format('Y-m-d\TH:i:s\Z'));
@@ -793,6 +794,23 @@ class ExportXmlUtil
             $item->addAttribute('properties', 'scripted');
         }
 
+        $directoriesToCopy = ['content', 'custom', 'idevices', 'libs', 'theme'];
+        foreach ($directoriesToCopy as $directory) {
+            ExportXmlUtil::addCommonExportedFilesToOpfManifest($manifest, $exportDirPath, $directory);
+        }
+
+        // add all files in root directory exept index.html
+        $files = scandir($exportDirPath);
+        foreach ($files as $file) {
+            if ('.' !== $file && '..' !== $file) {
+                $filePath = $exportDirPath.'/'.$file;
+                if (is_file($filePath) && !preg_match('/index\.html$/', $file)) {
+                    $fileElement = $manifest->addChild('file');
+                    $fileElement->addAttribute('href', $file);
+                }
+            }
+        }
+
         // spine
         $spine = $package->addChild('spine', '');
 
@@ -805,7 +823,6 @@ class ExportXmlUtil
 
         return $package;
     }
-
 
     /**
      * Generate ePub3 package.opf file.
@@ -829,28 +846,28 @@ class ExportXmlUtil
         $resourcesPrefix,
         $exportType,
     ) {
-        $title = $odeProperties["pp_title"] ? $odeProperties["pp_title"]->getValue() : "";
-        $lang = $odeProperties["pp_lang"] ? $odeProperties["pp_lang"]->getValue() : "es";
+        $title = $odeProperties['pp_title'] ? $odeProperties['pp_title']->getValue() : '';
+        $lang = $odeProperties['pp_lang'] ? $odeProperties['pp_lang']->getValue() : 'es';
 
-        $html = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:epub=\"http://www.idpf.org/2007/ops\" xml:lang=\"".$lang."\" lang=\"".$lang."\">";
+        $html = '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="'.$lang.'" lang="'.$lang.'">';
         $html .= "<head><title>{$title}</title></head>";
-        $html .= "<body><nav epub:type=\"toc\" id=\"toc\"><ol>";
+        $html .= '<body><nav epub:type="toc" id="toc"><ol>';
 
         // Build a tree from the flat list
         $tree = [];
         $nodes = [];
         foreach ($odeNavStructureSyncs as $node) {
             $nodes[$node->getOdePageId()] = [
-                "id" => $node->getOdePageId(),
-                "parent" => $node->getOdeParentPageId(),
-                "name" => $node->getPageName(),
-                "children" => []
+                'id' => $node->getOdePageId(),
+                'parent' => $node->getOdeParentPageId(),
+                'name' => $node->getPageName(),
+                'children' => [],
             ];
         }
 
         foreach ($nodes as $nodeId => &$node) {
-            if ($node["parent"] !== null && isset($nodes[$node["parent"]])) {
-                $nodes[$node["parent"]]["children"][] = &$node;
+            if (null !== $node['parent'] && isset($nodes[$node['parent']])) {
+                $nodes[$node['parent']]['children'][] = &$node;
             } else {
                 $tree[] = &$node;
             }
@@ -858,27 +875,30 @@ class ExportXmlUtil
 
         $html .= self::buildEpub3NavList($tree, $pagesFileData);
 
-        $html .= "</ol></nav></body></html>";
+        $html .= '</ol></nav></body></html>';
 
         // Convert the HTML string to a SimpleXMLElement before returning
         libxml_use_internal_errors(true);
         $simpleXml = simplexml_load_string($html);
         libxml_clear_errors();
+
         return $simpleXml;
     }
 
-    private static function buildEpub3NavList($nodes, $pagesFileData) {
-        $html = "";
+    private static function buildEpub3NavList($nodes, $pagesFileData)
+    {
+        $html = '';
         foreach ($nodes as $node) {
-            $pageFile = $pagesFileData[$node["id"]]["fileUrl"];
-            $html .= "<li><a href=\"{$pageFile}\">{$node["name"]}</a>";
-            if (!empty($node["children"])) {
-                $html .= "<ol>";
-                $html .= self::buildEpub3NavList($node["children"], $pagesFileData);
-                $html .= "</ol>";
+            $pageFile = $pagesFileData[$node['id']]['fileUrl'];
+            $html .= "<li><a href=\"{$pageFile}\">{$node['name']}</a>";
+            if (!empty($node['children'])) {
+                $html .= '<ol>';
+                $html .= self::buildEpub3NavList($node['children'], $pagesFileData);
+                $html .= '</ol>';
             }
-            $html .= "</li>";
+            $html .= '</li>';
         }
+
         return $html;
     }
 
@@ -2593,11 +2613,10 @@ class ExportXmlUtil
     /**
      * Adds exported files to the OPF manifest.
      *
-     * @param SimpleXMLElement $resource      the XML resource to add files to
-     * @param string           $exportDirPath the path to the export directory
-     * @param string           $dir           the directory to add files from
+     * @param string $exportDirPath the path to the export directory
+     * @param string $dir           the directory to add files from
      */
-    public static function addCommonExportedFilesToOpfManifest($resource, $exportDirPath, $dir)
+    public static function addCommonExportedFilesToOpfManifest($manifest, $exportDirPath, $dir)
     {
         $resourcesDir = $exportDirPath.$dir;
         if (is_dir($resourcesDir)) {
@@ -2605,8 +2624,41 @@ class ExportXmlUtil
             foreach ($iterator as $file) {
                 if ($file->isFile()) {
                     $relativePath = str_replace($resourcesDir.'/', '', $file->getPathname());
-                    $fileElement = $resource->addChild('file');
-                    $fileElement->addAttribute('href', $dir.'/'.$relativePath);
+                    $item = $manifest->addChild('item', ' ');
+                    $item->addAttribute('id', $dir.'/'.$relativePath);
+                    $item->addAttribute('href', $dir.'/'.$relativePath);
+                    // Determine media-type based on file extension
+                    $ext = strtolower(pathinfo($relativePath, PATHINFO_EXTENSION));
+                    $mediaTypes = [
+                        'jpg' => 'image/jpeg',
+                        'jpeg' => 'image/jpeg',
+                        'png' => 'image/png',
+                        'gif' => 'image/gif',
+                        'svg' => 'image/svg+xml',
+                        'svgz' => 'image/svg+xml',
+                        'webp' => 'image/webp',
+                        'css' => 'text/css',
+                        'js' => 'application/javascript',
+                        'html' => 'application/xhtml+xml',
+                        'xhtml' => 'application/xhtml+xml',
+                        'xml' => 'application/xml',
+                        'mp3' => 'audio/mpeg',
+                        'mp4' => 'video/mp4',
+                        'ogg' => 'audio/ogg',
+                        'ogv' => 'video/ogg',
+                        'json' => 'application/json',
+                        'woff' => 'font/woff',
+                        'woff2' => 'font/woff2',
+                        'ttf' => 'font/ttf',
+                        'otf' => 'font/otf',
+                        'eot' => 'application/vnd.ms-fontobject',
+                        'pdf' => 'application/pdf',
+                        'zip' => 'application/zip',
+                        'txt' => 'text/plain',
+                    ];
+                    $mediaType = isset($mediaTypes[$ext]) ? $mediaTypes[$ext] : 'application/octet-stream';
+                    $item->addAttribute('media-type', $mediaType);
+                    $item->addAttribute('fallback', 'fallback');
                 }
             }
         }
