@@ -822,8 +822,11 @@ class ExportXmlUtil
             if ('.' !== $file && '..' !== $file) {
                 $filePath = $exportDirPath.'/'.$file;
                 if (is_file($filePath) && !preg_match('/index\.html$/', $file)) {
-                    $fileElement = $manifest->addChild('file');
-                    $fileElement->addAttribute('href', $file);
+                    $item = $manifest->addChild('item', ' ');
+                    $item->addAttribute('id', $file);
+                    $item->addAttribute('href', $file);
+                    $item->addAttribute('media-type', mime_content_type($filePath));
+                    $item->addAttribute('fallback', 'fallback');
                 }
             }
         }
