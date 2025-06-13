@@ -729,7 +729,7 @@ var $exeDevices = {
             itinerary: {
                 getContents: function () {
                     return '\
-                        <div class="exe-info">'+ _("You might create an itinerary of challenges where players won't be able to access a new game or challenge until they get a key in a previous activity. For this purpose, you might establish an access code as well as a message that may be displayed to players when they get a fixed percentage of hits, and be used as a password to a new challenge or a following activity.") + '</div>\
+                        <div class="exe-info">'+ _("You might create a sequence of challenges where players won't be able to access a new game or challenge until they obtain a key from previous activity. For this purpose, you might set up an access code as well as a message that will be displayed to players when they reach a fixed percentage of correct answers, which they can use as a password for a new challenge or a following activity.") + '</div>\
                         <p>\
                             <label for="eXeGameShowCodeAccess"><input type="checkbox" id="eXeGameShowCodeAccess" >' + _("Access code is required") + '</label>\
                         </p>\
@@ -740,7 +740,7 @@ var $exeDevices = {
                             <input type="text" name="eXeGameMessageCodeAccess" id="eXeGameMessageCodeAccess" maxlength="200"/ disabled> \
                         </p>\
                         <p>\
-                            <label for="eXeGameShowClue"><input type="checkbox" id="eXeGameShowClue" >'+ _("Show a message or password when reaching the objective") + '</label>\
+                            <label for="eXeGameShowClue"><input type="checkbox" id="eXeGameShowClue" >'+ _("Display a message or password upon reaching the defined objective") + '</label>\
                         </p>\
                         <div style="margin-left:1.4em;margin-bottom:1.5em;display:none" id="eXeGameShowClueOptions">\
                             <p>\
@@ -748,7 +748,7 @@ var $exeDevices = {
                                 <input type="text" name="eXeGameClue" id="eXeGameClue"    maxlength="50" disabled>\
                             </p>\
                             <p>\
-                                <label for="eXeGamePercentajeClue" id="labelPercentajeClue">'+ _("Percentage of hits needed to display the message") + ':</label>\
+                                <label for="eXeGamePercentajeClue" id="labelPercentajeClue">'+ _("Percentage of correct answers required to display the message") + ':</label>\
                                 <select id="eXeGamePercentajeClue" disabled>\
                                     <option value="10">10%</option>\
                                     <option value="20">20%</option>\
@@ -847,7 +847,7 @@ var $exeDevices = {
                 getTab: function (hidebutton = false, hiderepeat = false, onlybutton = false) {
                     const displaybutton = hidebutton ? `style="display:none;"` : '';
                     const displayrepeat = hiderepeat ? `style="display:none;"` : '';
-                    const message = onlybutton ? ("Save the score") : ("Automatically save the score");
+                    const message = onlybutton ? _("Save the score") : _("Automatically save the score");
                     return `
                         <div class="exe-form-tab" title="${_('SCORM')}">
                             <p id="eXeGameSCORMNoSave">
@@ -884,13 +884,13 @@ var $exeDevices = {
                             </p>
                             <div id="eXeGameSCORMinstructionsAuto">
                                 <ul>
-                                    <li>${_("This will only work when exporting as SCORM ")}</li>
+                                    <li>${_("This will only work when exported as SCORM")}</li>
                                     <li ${displaybutton}>${_("The score will be automatically saved after answering each question and at the end of the game.")}</li>
                                 </ul>
                             </div>
                             <div id="eXeGameSCORMinstructionsButton">
                                 <ul>
-                                    <li>${_("The button will only be displayed when exporting as SCORM.")}</li>
+                                    <li>${_("The button will only be displayed when exported as SCORM.")}</li>
                                 </ul>
                             </div>
                             <div id="eXeGameSCORMPercentaje">
@@ -1400,14 +1400,14 @@ var $exeDevices = {
                                             </ul>
                                             <div class="eXeE-LightboxContent p-2">
                                                 <textarea class="form-control font-monospace fs-6" style="min-height:350px;" id="eXeEPromptArea">
-                                                    ${c_("Act as a teacher with many years of experience.")}
+                                                    ${c_("Act as a highly experienced teacher.")}
                                                     ${fprompt.prompt}
                                                     ${c_('Formats')}:
                                                     ${fprompt.format.join('\n')} 
                                                     ${fprompt.explanation}
                                                     ${c_('Examples')}:
                                                     ${fprompt.examples.join('\n')}
-                                                    ${c_('You must return only the questions without numbering and without classification or bullet points, inside a code block, and do not include any additional HTML elements like buttons.')}, 
+                                                    ${c_('You must return only the questions without numbering, categorization or bullet points, inside a code block, and do not include any additional HTML elements such as buttons.')}, 
                                                 </textarea>
                                                 <textarea id="eXeEQuestionsArea" class="form-control font-monospace fs-6" style="min-height:350px;display:none"></textarea>
                                                 <div  class="form-control font-monospace fs-6" id="eXeEIADiv"  style="display:none">
@@ -1495,7 +1495,7 @@ var $exeDevices = {
                                 `${c_('Word')}#${c_('Definition')}`,
                                 `${c_('Word')}#${c_('Definition')}#${c_('Type')}#${c_('Letter')}`
                             ],
-                            explanation: `${c_('Type will be 0 if the word starts with the letter and 1 if the word contains the letter')}`,
+                            explanation: `${c_('The type will be 0 if the word starts with the letter and 1 if the word contains the letter')}`,
                             examples: [
                                 `${c_('Atom')}#${c_('The basic unit of a chemical element')}`,
                                 `${c_('Biology')}#${c_('The study of living organisms')}#0#${c_('B')}`
@@ -1512,7 +1512,7 @@ var $exeDevices = {
                             explanation: `${c_('Solution: 0, 1, 2 or 3')}`,
                             examples: [
                                 `1#${c_('What is the largest planet in the solar system?')}#${c_('Earth')}#${c_('Jupiter')}#${c_('Mars')}#${c_('Venus')}`,
-                                `0#${c_('What is the process of plants making food?')}#${c_('Photosynthesis')}#${c_('Respiration')}#${c_('Digestion')}`
+                                `0#${c_('What process do plants use to produce energy?')}#${c_('Photosynthesis')}#${c_('Respiration')}#${c_('Digestion')}`
                             ],
                             allowRegex: /^(0|1|2|3)#([^#]+)#([^#]+)#([^#]+)(#[^#]+){0,2}$/,
                             prompt: c_(`Create 10 multiple-choice questions with 2 to 4 options. Start with the correct solution (0, 1, 2, or 3), followed by the question and each option, all separated by #.`)
@@ -1530,7 +1530,7 @@ var $exeDevices = {
                                 `${c_('AB')}#${c_('Which gases are involved in photosynthesis?')}#${c_('Oxygen')}#${c_('Carbon dioxide')}#${c_('Nitrogen')}`
                             ],
                             allowRegex: /^(([0-3]|[A-D]{1,4})#[^#]+#[^#]+(?:#[^#]*){0,3}|[^#]+#[^#]+)$/,
-                            prompt: c_(`Generate 10 questions with multiple-choice options. Provide the correct solution as letters (e.g., A, AB), followed by the question and the options, all separated by #.`)
+                            prompt: c_(`Generate 10 multiple-choice questions. Provide the correct answer as letters (e.g., A, AB), followed by the question and the options, all separated by #.`)
                         },
                         4: { // Identify
                             prompt: c_(`Create 5 solution words followed by 3 to 9 clues that describe each one. Separate each clue with #.`),
@@ -1558,7 +1558,7 @@ var $exeDevices = {
                             explanation: `${c_('The format requires a question (non-empty string), a solution (0 or 1), a suggestion (mandatory, can be empty), and feedback (mandatory, can be empty).')}`,
                             examples: [
                                 `${c_('Is the Earth round?')}#1#${c_('Think about the horizon.')}#${c_('The Earth is not flat.')}`,
-                                `${c_('Does water boil at 100 degrees Celsius?')}#0##${c_('It depends on altitude.')}`
+                                `${c_('Does water boil at 100 degrees Celsius?')}#0##${c_('It depends on the altitude.')}`
                             ],
                             allowRegex: /^vof#[^\s#].*?#(0|1)#.*?#.*?|[^\s#].*?#(0|1)#.*?#.*?$/,
                         },
@@ -1570,7 +1570,7 @@ var $exeDevices = {
                                 `${c_('Solution')}#${c_('Question')}#${c_('OptionA')}#${c_('OptionB')}#${c_('OptionC')}`,
                                 `${c_('Solution')}#${c_('Question')}#${c_('OptionA')}#${c_('OptionB')}`,
                             ],
-                            explanation: `${c_('Solution can be:')} 
+                            explanation: `${c_('The solution can be:')} 
                               - ${c_('0 or 1 for True/False')}. Format: ${c_('Solution')}#${c_('Question')}
                               - ${c_('any digit from 0 to 3 for single-choice (up to 4 options)')} 
                               - ${c_('any combination of A-D for multiple-choice (up to 4 options).')}
@@ -1583,7 +1583,7 @@ var $exeDevices = {
                             allowRegex: /^(?:[01]#[^#]+|[0-5]#[^#]+(?:#[^#]+){2,6}|[A-F]{1,6}#[^#]+(?:#[^#]+){2,6})$/,
                         },
                         8: { // scrabled list
-                            prompt: c_(`Provide only a single ordered list of steps or items, each separated by '#'.`),
+                            prompt: c_(`Provide only one ordered list of steps or items, each separated by '#'.`),
                             format: [`${c_('first element')}#${c_('second element')}#${c_('third element')}#${c_('fourth element')}#${c_('fourth element')}...`],
                             explanation: `Ensure the list includes at least five elements.`,
                             examples: [
@@ -1753,7 +1753,7 @@ var $exeDevices = {
                     const $course = $('#eXeCourseIA');
                     const $numQuestions = $('#eXeNumberOfQuestionsIA');
                     const $theme = $('#eXeThemeIA');
-                    let promptText = `${_("Act as a teacher with many years of experience.")}`;
+                    let promptText = `${_("Act as a highly experienced teacher.")}`;
 
                     if ($specialty.length) {
                         const sp = $specialty.val().trim();
@@ -1806,11 +1806,11 @@ var $exeDevices = {
                                 const correctsQuestions = $exeDevices.iDevice.gamification.share.validateQuesionsIA(type, questions);
                                 saveQuestions(correctsQuestions);
                             } else {
-                                sdata = _('Could not generate the questions');
+                                sdata = _('The questions could not be generated');
                                 $('#eXeIAMessage').text(_(sdata)).show();
                             }
                         } else {
-                            sdata = _('Could not generate the questions. Incorrect format');
+                            sdata = _('The questions could not be generated. Incorrect format');
                             $('#eXeIAMessage').text(_(sdata)).show();
                         }
                         $('#eXeFormIAContainer').find('input, textarea, button, select').prop('disabled', false);
