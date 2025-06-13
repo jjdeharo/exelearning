@@ -1530,7 +1530,7 @@ var $exeDevices = {
                                 `${c_('AB')}#${c_('Which gases are involved in photosynthesis?')}#${c_('Oxygen')}#${c_('Carbon dioxide')}#${c_('Nitrogen')}`
                             ],
                             allowRegex: /^(([0-3]|[A-D]{1,4})#[^#]+#[^#]+(?:#[^#]*){0,3}|[^#]+#[^#]+)$/,
-                            prompt: c_(`Generate 10 questions with multiple-choice options. Provide the correct solution as letters (e.g., A, AB), followed by the question and the options, all separated by #.`)
+                            prompt: c_(`Generate 10 multiple-choice questions. Provide the correct answer as letters (e.g., A, AB), followed by the question and the options, all separated by #.`)
                         },
                         4: { // Identify
                             prompt: c_(`Create 5 solution words followed by 3 to 9 clues that describe each one. Separate each clue with #.`),
