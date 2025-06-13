@@ -1583,7 +1583,7 @@ var $exeDevices = {
                             allowRegex: /^(?:[01]#[^#]+|[0-5]#[^#]+(?:#[^#]+){2,6}|[A-F]{1,6}#[^#]+(?:#[^#]+){2,6})$/,
                         },
                         8: { // scrabled list
-                            prompt: c_(`Provide only a single ordered list of steps or items, each separated by '#'.`),
+                            prompt: c_(`Provide only one ordered list of steps or items, each separated by '#'.`),
                             format: [`${c_('first element')}#${c_('second element')}#${c_('third element')}#${c_('fourth element')}#${c_('fourth element')}...`],
                             explanation: `Ensure the list includes at least five elements.`,
                             examples: [
