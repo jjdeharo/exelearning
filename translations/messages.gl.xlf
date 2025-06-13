@@ -9419,15 +9419,15 @@
       </trans-unit>
       <trans-unit id="9iMmg7m" resname="Save the score">
         <source>Save the score</source>
-        <target></target>
+        <target>~Gardar a puntuación</target>
       </trans-unit>
       <trans-unit id="qpfRXBy" resname="Automatically save the score">
         <source>Automatically save the score</source>
-        <target></target>
+        <target>~Gardar a puntuación automaticamente</target>
       </trans-unit>
       <trans-unit id="dGiBumO" resname="Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|">
         <source>Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|</source>
-        <target></target>
+        <target>~Escribe ou pega o texto da actividade de completar ocos no campo. Selecciona as palabras e usa o botón de embaixo para ocultalas. Podes definir máis dunha resposta posible usando barras verticais para rodealas e separalas. Por exemplo: |can|gato|paxaro|</target>
       </trans-unit>
     </body>
   </file>

@@ -9419,15 +9419,15 @@
       </trans-unit>
       <trans-unit id="9iMmg7m" resname="Save the score">
         <source>Save the score</source>
-        <target></target>
+        <target>~Gorde puntuazioa</target>
       </trans-unit>
       <trans-unit id="qpfRXBy" resname="Automatically save the score">
         <source>Automatically save the score</source>
-        <target></target>
+        <target>~Gorde puntuazioa automatikoki</target>
       </trans-unit>
       <trans-unit id="dGiBumO" resname="Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|">
         <source>Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|</source>
-        <target></target>
+        <target>~Idatzi edo jo espazio zuria zelaian bete behar den jardueraren testua. Aukeratu hitzak eta erabili beheko botoia horiek ezkutatzeko. Erantzun posible bat baino gehiago defini dezakezu, barra bertikalak erabiliz, horiek inguratu eta bereizteko. Ej.: |perro| gato| pájaro|</target>
       </trans-unit>
     </body>
   </file>

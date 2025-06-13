@@ -9479,15 +9479,15 @@
       </trans-unit>
       <trans-unit id="9iMmg7m" resname="Save the score">
         <source>Save the score</source>
-        <target></target>
+        <target>Guardar la puntuación</target>
       </trans-unit>
       <trans-unit id="qpfRXBy" resname="Automatically save the score">
         <source>Automatically save the score</source>
-        <target></target>
+        <target>Guardar la puntuación automáticamente</target>
       </trans-unit>
       <trans-unit id="dGiBumO" resname="Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|">
         <source>Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|</source>
-        <target></target>
+        <target>Escribe o pega el texto de la actividad en el campo. Para ocultar una palabra, selecciónala y pulsa el botón de abajo. Puedes definir varias respuestas válidas rodeándolas y separándolas con barras verticales. Ejemplo: |perro|gato|pájaro|</target>
       </trans-unit>
     </body>
   </file>

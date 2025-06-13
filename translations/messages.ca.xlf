@@ -9419,15 +9419,15 @@
       </trans-unit>
       <trans-unit id="9iMmg7m" resname="Save the score">
         <source>Save the score</source>
-        <target></target>
+        <target>~Desa la puntuació</target>
       </trans-unit>
       <trans-unit id="qpfRXBy" resname="Automatically save the score">
         <source>Automatically save the score</source>
-        <target></target>
+        <target>~Desa la puntuació automàticament</target>
       </trans-unit>
       <trans-unit id="dGiBumO" resname="Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|">
         <source>Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|</source>
-        <target></target>
+        <target>~Escriviu o enganxeu el text de l'activitat d'omplir espais en blanc al camp. Seleccioneu les paraules i utilitzeu el botó de sota per ocultar-les. Podeu definir més d'una resposta possible utilitzant barres verticals per envoltar-les i separar-les. P. ex.: |gos|gat|ocell|</target>
       </trans-unit>
     </body>
   </file>

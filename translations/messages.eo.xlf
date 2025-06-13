@@ -9419,15 +9419,15 @@
       </trans-unit>
       <trans-unit id="9iMmg7m" resname="Save the score">
         <source>Save the score</source>
-        <target></target>
+        <target>~Konservi la poentaron</target>
       </trans-unit>
       <trans-unit id="qpfRXBy" resname="Automatically save the score">
         <source>Automatically save the score</source>
-        <target></target>
+        <target>~Aŭtomate konservi la poentaron</target>
       </trans-unit>
       <trans-unit id="dGiBumO" resname="Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|">
         <source>Type or paste the text for the fill-in-the-blank activity into the field. Select the words and use the button below to hide them. You can define more than one possible answer using vertical bars to surround and separate them. E.g.: |dog|cat|bird|</source>
-        <target></target>
+        <target>~Tajpu aŭ algluu la tekston por la pleniga agado en la kampon. Elektu la vortojn kaj uzu la butonon sube por kaŝi ilin. Vi povas difini pli ol unu eblan respondon uzante vertikalajn stangojn por ĉirkaŭi kaj apartigi ilin. Ekz.: |hundo|kato|birdo|</target>
       </trans-unit>
     </body>
   </file>
