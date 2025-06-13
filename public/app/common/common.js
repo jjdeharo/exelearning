@@ -847,7 +847,7 @@ var $exeDevices = {
                 getTab: function (hidebutton = false, hiderepeat = false, onlybutton = false) {
                     const displaybutton = hidebutton ? `style="display:none;"` : '';
                     const displayrepeat = hiderepeat ? `style="display:none;"` : '';
-                    const message = onlybutton ? ("Save the score") : ("Automatically save the score");
+                    const message = onlybutton ? _("Save the score") : _("Automatically save the score");
                     return `
                         <div class="exe-form-tab" title="${_('SCORM')}">
                             <p id="eXeGameSCORMNoSave">
