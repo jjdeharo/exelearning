@@ -837,10 +837,10 @@ var $exeDevice = {
             this.strings.msgEInstructions = _("Instructions");
             this.strings.msgEActivity = _("Activity");
             this.strings.msgEQuestion = _("Question");
-            this.strings.msgEAddDropdownQuestion = _("Add dropdown question to form");
-            this.strings.msgEAddFillQuestion = _("Add fill question to form");
-            this.strings.msgEAddTrueFalseQuestion = _("Add true-false question to form");
-            this.strings.msgEAddSelectionQuestion = _("Add selection question to form");
+            this.strings.msgEAddDropdownQuestion = _("Add a dropdown question to form");
+            this.strings.msgEAddFillQuestion = _("Add a fill question to form");
+            this.strings.msgEAddTrueFalseQuestion = _("Add a true-false question to form");
+            this.strings.msgEAddSelectionQuestion = _("Add a selection question to form");
             this.strings.msgEAddQuestion = _("Add this question to form");
             this.strings.msgESaveQuestion = _("Save");
             this.strings.msgECancelQuestion = _("Cancel");
@@ -856,7 +856,7 @@ var $exeDevice = {
             this.strings.msgETrue = _("True");
             this.strings.msgEFalse = _("False");
             this.strings.msgNoQuestions = _("No questions in the form");
-            this.strings.msgPassRate = _("Select pass rate");
+            this.strings.msgPassRate = _("Set the pass mark");
             this.strings.msgAddBtnAnswers = _("Include a button to display the answers");
             this.strings.msgCapitalization = _("Check capitalization");
             this.strings.msgStrictQualification = _("Strict qualification");
@@ -922,7 +922,7 @@ var $exeDevice = {
          */
         createForm(ideviceBody) {
             const html = `<div id="formIdeviceForm">
-                <p class="exe-block-info exe-block-dismissible">${_("Create quizzes with multiple-choice, true/false, and fill-in-the-blank questions..")} <a style="display:none;" href="https://youtu.be/xHhrBZ_66To" hreflang="es" target="_blank">${_("Use Instructions")}</a></p>
+                <p class="exe-block-info exe-block-dismissible">${_("Create quizzes with multiple-choice, true/false and fill-in-the-blank questions.")} <a style="display:none;" href="https://youtu.be/xHhrBZ_66To" hreflang="es" target="_blank">${_("Usage Instructions")}</a></p>
                 <div class="exe-form-tab" title="${_('General settings')}">
                     ${$exeDevices.iDevice.gamification.instructions.getFieldset(c_("Complete the questions in the following quiz"))}
                     <fieldset class="exe-fieldset exe-fieldset-closed">
@@ -1062,7 +1062,7 @@ var $exeDevice = {
          */
         getDefaultLangValues() {
             let defaultLang = {};
-            defaultLang[_("True False Help Text:")] = [$exeDevice.langTrueFalseHelpId, this.strings.msgLangTrueFalseHelp];
+            defaultLang[_("True/False Help Text:")] = [$exeDevice.langTrueFalseHelpId, this.strings.msgLangTrueFalseHelp];
             defaultLang[_("Fill Help Text:")] = [$exeDevice.langFillHelpId, this.strings.msgLangFillHelp];
             defaultLang[_("Dropdown Help Text:")] = [$exeDevice.langDropdownHelpId, this.strings.msgLangDropdownHelp];
             defaultLang[_("Single Selection Help Text:")] = [$exeDevice.langSingleSelectionHelpId, this.strings.msgLangSingleSelectionHelp];
