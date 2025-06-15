@@ -6021,9 +6021,9 @@
         <source>Phrase</source>
         <target>Esaldi</target>
       </trans-unit>
-      <trans-unit id="rbTrbqE" resname="Task information">
-        <source>Task information</source>
-        <target>Atazaren informazioa</target>
+      <trans-unit id="rbTrbqE" resname="Task information (optional)">
+        <source>Task information (optional)</source>
+        <target>Atazaren informazioa (hautazkoa)</target>
       </trans-unit>
       <trans-unit id="d5DnJBX" resname="Estimated duration">
         <source>Estimated duration</source>
