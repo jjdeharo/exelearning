@@ -4459,7 +4459,7 @@
       </trans-unit>
       <trans-unit id="ry23WQ6" resname="Allow negative">
         <source>Allow negative</source>
-        <target>Permitir negativos\n</target>
+        <target>Permitir negativos</target>
       </trans-unit>
       <trans-unit id="mgJoMQC" resname="Allow zero as a result">
         <source>Allow zero as a result</source>
