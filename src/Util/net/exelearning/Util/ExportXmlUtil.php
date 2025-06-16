@@ -1814,12 +1814,12 @@ class ExportXmlUtil
             $link['class'] = isset($link['class']) ? $link['class'].' daddy' : 'daddy';
         }
 
-        // Add class other-section to all ul which first child is a li ant li class is not active
+        // Add class other-section to all ul which first child is li and li class is not active
         $ulNodesCounter = 0;
         $ulNodes = $navUl->xpath('//ul');
         foreach ($ulNodes as $ulNode) {
             // Check the ancestors
-            $liNodes = $ulNode->xpath('./li/ancestor::li');
+            $liNodes = $ulNode->xpath('./parent::li');
             $allInactive = true;
             foreach ($liNodes as $liNode) {
                 if (isset($liNode['class']) && false !== strpos($liNode['class'], 'active')) {
