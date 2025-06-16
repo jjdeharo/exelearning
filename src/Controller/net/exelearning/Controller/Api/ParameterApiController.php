@@ -202,6 +202,7 @@ class ParameterApiController extends DefaultApiController
      */
     private function getProcessedPropertiesOdeConfigTranslations()
     {
+        /*
         $this->translator->trans('Access');
         $this->translator->trans('Access Type');
         $this->translator->trans('active');
@@ -458,6 +459,41 @@ class ParameterApiController extends DefaultApiController
         $this->translator->trans('skill level');
         $this->translator->trans('security level');
         $this->translator->trans('competency');
+        */
+        // USER PREFERENCES
+        // General settings
+        $this->translator->trans('General settings');
+        $this->translator->trans('Language');
+        $this->translator->trans('You can choose a different language for the current project.');
+        $this->translator->trans('License for the new documents');
+        $this->translator->trans('You can choose a different licence for the current project.');
+        $this->translator->trans('Style theme');
+        $this->translator->trans('title' => self::TRANS_PREFIX.'Version control');
+        // PACKAGE PROPERTIES
+        // Content metadata
+        $this->translator->trans('Content metadata');
+        $this->translator->trans('Title');
+        $this->translator->trans('Title');
+        $this->translator->trans('The name given to the resource.');
+        $this->translator->trans('Language');
+        $this->translator->trans('Select a language.');
+        $this->translator->trans('Authorship');
+        $this->translator->trans('Primary author/s of the resource.');
+        $this->translator->trans('License');
+        $this->translator->trans('Description');
+        // Export options
+        $this->translator->trans('Editable export');
+        $this->translator->trans('The exported content will be editable with eXeLearning.');
+        $this->translator->trans('"Made with eXeLearning" link');
+        $this->translator->trans('Help us spreading eXeLearning. Checking this option, a "Made with eXeLearning" link will be displayed in your pages.');
+        $this->translator->trans('Include a copy of the source file');
+        $this->translator->trans('A copy of the eXeLearning file will be included when exporting the content.');
+        $this->translator->trans('Page counter');
+        $this->translator->trans('A text with the page number will be added on each page.');
+        $this->translator->trans('Search bar (Website export only)');
+        $this->translator->trans('A search box will be added to every page of the website.');
+        $this->translator->trans('Accessibility toolbar');
+        $this->translator->trans('The accessibility toolbar allows visitors to manipulate some aspects of your site, such as font and text size.');
         // Custom code
         $this->translator->trans('Custom code');
         $this->translator->trans('HEAD');

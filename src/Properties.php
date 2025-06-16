@@ -379,6 +379,7 @@ class Properties
      * OPTIONS - PROPERTIES
      *********************************************************************************/
 
+    /*
     public const METADATA_TYPES = [
         'lom' => 'LOM',
         'lomes' => 'LOM-ES',
@@ -620,6 +621,7 @@ class Properties
         'security level' => self::TRANS_PREFIX.'security level',
         'competency' => self::TRANS_PREFIX.'competency',
     ];
+    */
 
     /*********************************************************************************
      * GROUPS
@@ -628,11 +630,12 @@ class Properties
     public const GROUPS_TITLE = [
         // To review (see #290) 'properties_package' => self::TRANS_PREFIX.'Package',
         'properties_package' => self::TRANS_PREFIX.'Content metadata',
-        'properties_package_description' => self::TRANS_PREFIX.'Description',
-        'properties_package_usage' => self::TRANS_PREFIX.'Usage',
+        // 'properties_package_description' => self::TRANS_PREFIX.'Description',
+        // 'properties_package_usage' => self::TRANS_PREFIX.'Usage',
         // To review (see #290) 'export' => self::TRANS_PREFIX.'Export',
         'export' => self::TRANS_PREFIX.'Export options',
         'custom_code' => self::TRANS_PREFIX.'Custom code',
+        /*
         'lom_general' => self::TRANS_PREFIX.'General',
         'lom_general_identifier' => self::TRANS_PREFIX.'Identifier',
         'lom_general_title' => self::TRANS_PREFIX.'Title',
@@ -689,11 +692,12 @@ class Properties
         'lom_classification_taxonPath' => self::TRANS_PREFIX.'Taxon Path',
         'lom_classification_description' => self::TRANS_PREFIX.'Description',
         'lom_classification_keyword' => self::TRANS_PREFIX.'Keyword',
+        */
     ];
 
     public const PROPERTIES_CATEGORIES_TITLE = [
-        'properties' => self::TRANS_PREFIX.'Properties',
-        'cataloguing' => self::TRANS_PREFIX.'Cataloguing',
+        // 'properties' => self::TRANS_PREFIX.'Properties',
+        // 'cataloguing' => self::TRANS_PREFIX.'Cataloguing',
     ];
 
     /*********************************************************************************
@@ -884,6 +888,7 @@ class Properties
      * PROJECT PROPERTIES - CATALOGUING
      *********************************************************************************/
 
+    /*
     // METADATA TYPE
     public const ODE_CATALOGUING_STANDARD_CONFIG = [
         'pp_exportMetadataType' => [
@@ -1597,8 +1602,10 @@ class Properties
             'multiple' => true,
         ],
     ];
+    */
 
     // CLASSIFICATION
+    /*
     public const ODE_CATALOGUING_CLASSIFICATION_CONFIG = [
         'lom_classification_purpose_value' => [
             'title' => self::TRANS_PREFIX.'Purpose',
@@ -1674,6 +1681,7 @@ class Properties
             'multiple' => true,
         ],
     ];
+    */
 
     // CATALOGUING TAB CONFIG
     public const ODE_CATALOGUING_CONFIG = [
@@ -1693,6 +1701,7 @@ class Properties
      * PROPERTIES RELATIONS
      *********************************************************************************/
 
+    /*
     // Property relationships: Properties -> Cataloguing
     public const PROPERTIES_SIBLING_KEYS_BY_PROPERTIES = [
         'pp_title' => 'lom_general_title_string',
@@ -1721,4 +1730,5 @@ class Properties
         'license' => 'defaultLicense',
         'lom_rights_copyrightAndOtherRestrictions_value' => 'defaultLicense',
     ];
+    */
 }
