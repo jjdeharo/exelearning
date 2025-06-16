@@ -737,6 +737,7 @@ class Properties
             'category' => 'properties',
             'groups' => ['properties_package'],
         ],
+        /*
         'pp_learningResourceType' => [
             'title' => self::TRANS_PREFIX.'Learning Resource Type',
             'alwaysVisible' => true,
@@ -745,6 +746,7 @@ class Properties
             'category' => 'properties',
             'groups' => ['properties_package'],
         ],
+        */
         'pp_description' => [
             'title' => self::TRANS_PREFIX.'Description',
             'alwaysVisible' => true,
@@ -753,6 +755,7 @@ class Properties
             // To review (see #290) 'groups' => ['properties_package', 'properties_package_description'],
             'groups' => ['properties_package'],
         ],
+        /*
         'pp_objectives' => [
             'title' => self::TRANS_PREFIX.'Objectives',
             'alwaysVisible' => true,
@@ -800,6 +803,7 @@ class Properties
             'category' => 'properties',
             'groups' => ['properties_package', 'properties_package_usage'],
         ],
+        */
     ];
 
     // EXPORT
@@ -1673,16 +1677,16 @@ class Properties
 
     // CATALOGUING TAB CONFIG
     public const ODE_CATALOGUING_CONFIG = [
-        'standard' => self::ODE_CATALOGUING_STANDARD_CONFIG,
-        'general' => self::ODE_CATALOGUING_GENERAL_CONFIG,
-        'lifecycle' => self::ODE_CATALOGUING_LIFECYCLE_CONFIG,
-        'metametadata' => self::ODE_CATALOGUING_METAMETADATA_CONFIG,
-        'technical' => self::ODE_CATALOGUING_TECHNICAL_CONFIG,
-        'educational' => self::ODE_CATALOGUING_EDUCATIONAL_CONFIG,
-        'rights' => self::ODE_CATALOGUING_RIGHTS_CONFIG,
-        'relation' => self::ODE_CATALOGUING_RELATION_CONFIG,
-        'annotation' => self::ODE_CATALOGUING_ANNOTATION_CONFIG,
-        'classification' => self::ODE_CATALOGUING_CLASSIFICATION_CONFIG,
+        // 'standard' => self::ODE_CATALOGUING_STANDARD_CONFIG,
+        // 'general' => self::ODE_CATALOGUING_GENERAL_CONFIG,
+        // 'lifecycle' => self::ODE_CATALOGUING_LIFECYCLE_CONFIG,
+        // 'metametadata' => self::ODE_CATALOGUING_METAMETADATA_CONFIG,
+        // 'technical' => self::ODE_CATALOGUING_TECHNICAL_CONFIG,
+        // 'educational' => self::ODE_CATALOGUING_EDUCATIONAL_CONFIG,
+        // 'rights' => self::ODE_CATALOGUING_RIGHTS_CONFIG,
+        // 'relation' => self::ODE_CATALOGUING_RELATION_CONFIG,
+        // 'annotation' => self::ODE_CATALOGUING_ANNOTATION_CONFIG,
+        // 'classification' => self::ODE_CATALOGUING_CLASSIFICATION_CONFIG,
     ];
 
     /*********************************************************************************
