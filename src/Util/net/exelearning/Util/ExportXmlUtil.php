@@ -1537,16 +1537,21 @@ class ExportXmlUtil
             self::appendSimpleXml($exe, $navButtons);
         }
 
-        $pageFooter = $exe->addChild('footer', '');
-        $pageFooter->addAttribute('id', 'siteFooter');
+        // Add a page footer if it requires a license and/or has custom footer
+        $license = $odeProperties['license']->getValue();
+        $extraFooter = $odeProperties['footer']->getValue();
+        if ('not appropriate' != $license || '' != $extraFooter) {
+            $pageFooter = $exe->addChild('footer', '');
+            $pageFooter->addAttribute('id', 'siteFooter');
 
-        // Page license and custom code
-        $pageLicense = self::createHTMLPageFooter(
-            $odeProperties,
-            $exportDynamicPage,
-        );
+            // Page license and custom code
+            $pageLicense = self::createHTMLPageFooter(
+                $odeProperties,
+                $exportDynamicPage,
+            );
 
-        self::appendSimpleXml($pageFooter, $pageLicense);
+            self::appendSimpleXml($pageFooter, $pageLicense);
+        }
 
         // Made with eXe
         if (
@@ -1625,36 +1630,36 @@ class ExportXmlUtil
         $pageFooterContent = $pageFooterWrapper->addChild('div', ' ');
         $pageFooterContent->addAttribute('id', 'siteFooterContent');
 
-        $pageFooterLicense = $pageFooterContent->addChild('div', ' ');
-        $pageFooterLicense->addAttribute('id', 'packageLicense');
-        $pageFooterLicenseP = $pageFooterLicense->addChild('p', ' ');
-        $pageFooterLicenseTitle = $pageFooterLicenseP->addChild('span', 'Licencia: ');
-        $pageFooterLicenseTitle->addAttribute('class', 'license-label');
-
         // License
         if (isset($odeProperties['license'])) {
             $license = $odeProperties['license']->getValue();
-            $licensesLinks = Properties::LICENSES_LINKS;
-            if (array_key_exists($license, $licensesLinks)) {
-                $licenseLink = $licensesLinks[$license];
-                $pageFooterLicenseClass = str_replace('https://creativecommons.org/licenses/', '', $licenseLink);
-                $pageFooterLicenseClass = explode('/', $pageFooterLicenseClass);
-                $pageFooterLicenseClass = 'cc cc-'.$pageFooterLicenseClass[0];
-                $pageFooterLicense->addAttribute('class', $pageFooterLicenseClass);
-                $pageFooterLicenseA = $pageFooterLicenseP->addChild('a', $license);
-                $pageFooterLicenseA->addAttribute('href', $licenseLink);
-                $pageFooterLicenseA->addAttribute('class', 'license');
-            } else {
-                $pageFooterLicenseText = $pageFooterLicenseP->addChild('span', $license);
-                $pageFooterLicenseText->addAttribute('class', 'license');
+            if ('not appropriate' != $license) {
+                $pageFooterLicense = $pageFooterContent->addChild('div', ' ');
+                $pageFooterLicense->addAttribute('id', 'packageLicense');
+                $pageFooterLicenseP = $pageFooterLicense->addChild('p', ' ');
+                $pageFooterLicenseTitle = $pageFooterLicenseP->addChild('span', 'Licencia: ');
+                $pageFooterLicenseTitle->addAttribute('class', 'license-label');
+                $licensesLinks = Properties::LICENSES_LINKS;
+                if (array_key_exists($license, $licensesLinks)) {
+                    $licenseLink = $licensesLinks[$license];
+                    $pageFooterLicenseClass = str_replace('https://creativecommons.org/licenses/', '', $licenseLink);
+                    $pageFooterLicenseClass = explode('/', $pageFooterLicenseClass);
+                    $pageFooterLicenseClass = 'cc cc-'.$pageFooterLicenseClass[0];
+                    $pageFooterLicense->addAttribute('class', $pageFooterLicenseClass);
+                    $pageFooterLicenseA = $pageFooterLicenseP->addChild('a', $license);
+                    $pageFooterLicenseA->addAttribute('href', $licenseLink);
+                    $pageFooterLicenseA->addAttribute('class', 'license');
+                } else {
+                    $pageFooterLicenseText = $pageFooterLicenseP->addChild('span', $license);
+                    $pageFooterLicenseText->addAttribute('class', 'license');
+                }
             }
         }
 
-        $siteUserFooter = $pageFooterContent->addChild('div', ' ');
-        $siteUserFooter->addAttribute('id', 'siteUserFooter');
-
         $extraFooter = $odeProperties['footer']->getValue();
         if ('' != $extraFooter) {
+            $siteUserFooter = $pageFooterContent->addChild('div', ' ');
+            $siteUserFooter->addAttribute('id', 'siteUserFooter');
             $siteExtra = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><footer></footer>');
             // convert $head to DOMDocument to add new node easily
             $domExtra = dom_import_simplexml($siteExtra)->ownerDocument;
