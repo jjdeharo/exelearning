@@ -267,3 +267,4 @@
 #tinymce .exe-wikipedia-content:first-of-type:before{content:"Wikipedia";color:#666;font-size: .8em;font-style:italic;position:absolute;top: 5px;right: 5px;}
 #tinymce .exe-wikipedia-content{padding: 20px;border: 1px dotted #000}
 #tinymce .exe-wikipedia-content .exe-wikipedia-content{padding: 0;border: 0;}
+#tinymce .exe-wikipedia-content .exe-wikipedia-content:before{content:""}
