@@ -1724,11 +1724,11 @@ class Properties
     public const CATALOGUING_METADATA_TYPE_UNIDIRECTIONAL_SIBLING_KEYS = [
         'pp_exportMetadataType' => 'lom_metaMetadata_metadataSchema',
     ];
+    */
 
     // Properties default -> preferences relationships
     public const USER_PREFERENCES_DEFAULT_PROPERTIES_RELATION = [
         'license' => 'defaultLicense',
         'lom_rights_copyrightAndOtherRestrictions_value' => 'defaultLicense',
     ];
-    */
 }

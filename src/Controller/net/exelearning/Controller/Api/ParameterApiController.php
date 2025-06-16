@@ -460,6 +460,7 @@ class ParameterApiController extends DefaultApiController
         $this->translator->trans('security level');
         $this->translator->trans('competency');
         */
+        
         // USER PREFERENCES
         // General settings
         $this->translator->trans('General settings');
@@ -467,20 +468,83 @@ class ParameterApiController extends DefaultApiController
         $this->translator->trans('You can choose a different language for the current project.');
         $this->translator->trans('License for the new documents');
         $this->translator->trans('You can choose a different licence for the current project.');
-        $this->translator->trans('Style theme');
-        $this->translator->trans('title' => self::TRANS_PREFIX.'Version control');
+        $this->translator->trans('Style theme'); // To review
+        $this->translator->trans('Version control');
+        
+        // STYLES CONFIG (to review)
+        // Edition theme categories
+        $this->translator->trans('Information');
+        $this->translator->trans('Texts and Links');
+        $this->translator->trans('Header');
+        
+        // Theme info fields
+        $this->translator->trans('Title');
+        $this->translator->trans('Description');
+        $this->translator->trans('Version');
+        $this->translator->trans('Authorship');
+        $this->translator->trans('Author URL');
+        $this->translator->trans('License');
+        $this->translator->trans('License URL');
+        
+        // Theme edition fields
+        // $this->translator->trans('Title');
+        // $this->translator->trans('Description');
+        // $this->translator->trans('Version');
+        // $this->translator->trans('Authorship');
+        // $this->translator->trans('Author URL');
+        // $this->translator->trans('License');
+        // $this->translator->trans('License URL');
+        $this->translator->trans('Text color');
+        $this->translator->trans('Links color');
+        $this->translator->trans('Header image');
+        $this->translator->trans('Logo image');
+        
+        // IDEVICE INFO FIELDS
+        // $this->translator->trans('Title');
+        // $this->translator->trans('Description');
+        // $this->translator->trans('Version');
+        // $this->translator->trans('Authorship');
+        // $this->translator->trans('Author URL');
+        // $this->translator->trans('License');
+        // $this->translator->trans('License URL');
+        
+        // IDEVICE PROPERTIES
+        $this->translator->trans('General');
+        $this->translator->trans('Visible in export');
+        $this->translator->trans('ID');
+        $this->translator->trans('CSS Class');
+
+        // BOX PROPERTIES
+        // $this->translator->trans('Visible in export');
+        $this->translator->trans('Allows to minimize/display content');
+        $this->translator->trans('Minimized');
+        // $this->translator->trans('ID');
+        // $this->translator->trans('CSS Class');
+
+        // PAGES PROPERTIES
+        // $this->translator->trans('Title');
+        $this->translator->trans('Title HTML');
+        $this->translator->trans('Advanced (SEO)');
+        $this->translator->trans('Different title on the page');
+
+        $this->translator->trans('Title in page');
+        // $this->translator->trans('Visible in export');
+        // $this->translator->trans('Description');
+        // $this->translator->trans('Advanced (SEO)');
+        
         // PACKAGE PROPERTIES
+        
         // Content metadata
         $this->translator->trans('Content metadata');
-        $this->translator->trans('Title');
-        $this->translator->trans('Title');
+        // $this->translator->trans('Title');
         $this->translator->trans('The name given to the resource.');
-        $this->translator->trans('Language');
+        // $this->translator->trans('Language');
         $this->translator->trans('Select a language.');
-        $this->translator->trans('Authorship');
+        // $this->translator->trans('Authorship');
         $this->translator->trans('Primary author/s of the resource.');
-        $this->translator->trans('License');
-        $this->translator->trans('Description');
+        // $this->translator->trans('License');
+        // $this->translator->trans('Description');
+        
         // Export options
         $this->translator->trans('Editable export');
         $this->translator->trans('The exported content will be editable with eXeLearning.');
@@ -494,12 +558,14 @@ class ParameterApiController extends DefaultApiController
         $this->translator->trans('A search box will be added to every page of the website.');
         $this->translator->trans('Accessibility toolbar');
         $this->translator->trans('The accessibility toolbar allows visitors to manipulate some aspects of your site, such as font and text size.');
+        
         // Custom code
         $this->translator->trans('Custom code');
         $this->translator->trans('HEAD');
         $this->translator->trans('HTML to be included at the end of the HEAD tag: LINK, META, SCRIPT, STYLE...');
         $this->translator->trans('Page footer');
         $this->translator->trans('Type any HTML. It will be placed after every page content. No JavaScript code will be executed inside eXe.');
+        
         // To review (this string should only be in app.js, but it's not extracted)
         $this->translator->trans('eXeLearning %s is a development version. It is not for production use.');
         $this->translator->trans('This is just a demo version. Not for real projects. Days before it expires: %s');
