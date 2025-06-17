@@ -4599,14 +4599,6 @@ body > .tooltip{
     display: none;
 }
 
-/* To review (see #290) */
-#properties-node-content-form .exe-form-tabs,
-.property-row[property="pp_learningResourceType"],
-#properties_package_description,
-#properties_package_usage {
-    display: none !important;
-}
-
 #node-content .form-properties.categories .exe-properties-form-content {
     border: none;
 }
