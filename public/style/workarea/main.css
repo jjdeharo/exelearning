@@ -3890,11 +3890,6 @@ body #node-content .box-head {
     border-bottom: 0;
 }
 
-#node-content .hidden-idevices [data-bs-toggle="dropdown"] {
-    opacity: .3;
-    pointer-events: none;
-}
-
 #node-content .box-head.dragging {
     margin: 0 var(--margin-m);
     margin-top: var(--margin-din-l);
