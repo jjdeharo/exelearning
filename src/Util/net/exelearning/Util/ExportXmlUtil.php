@@ -1138,12 +1138,6 @@ class ExportXmlUtil
             }
         }
 
-        if (!empty($odeProperties['pp_title']) && '' != $odeProperties['pp_title']->getValue()) {
-            $titleValueText = $odeProperties['pp_title']->getValue();
-        } else {
-            $titleValueText = Constants::ELP_PROPERTIES_NO_TITLE_NAME;
-        }
-
         $pageProperties = $odeNavStructureSync->getOdeNavStructureSyncProperties();
         $pagePropertiesDict = [];
         foreach ($pageProperties as $property) {
@@ -1152,12 +1146,25 @@ class ExportXmlUtil
             }
         }
 
+        if (!empty($odeProperties['pp_title']) && '' != $odeProperties['pp_title']->getValue()
+            && Constants::ELP_PROPERTIES_NO_TITLE_NAME != $odeProperties['pp_title']->getValue()) {
+            $titleValueText = $odeProperties['pp_title']->getValue();
+        } else {
+            $titleValueText = Constants::ELP_PROPERTIES_NO_TITLE_NAME;
+        }
+
         // HTML title for any html page apart from index.html
         if (!$pagesFileData[$odeNavStructureSync->getOdePageId()]['isIndex']) {
-            if (isset($pagePropertiesDict['titlePage'])) {
-                // HTML title: Page title | Package title
-                $titleValueText = $pagePropertiesDict['titlePage'].' | '.$titleValueText;
+            if (isset($pagePropertiesDict['titleNode'])) {
+                // HTML title: title Node | Package title
+                $titleValueText = $pagePropertiesDict['titleNode'].' | '.$titleValueText;
             }
+        }
+
+        // HTML title for any html page - SEO title property
+        if (isset($pagePropertiesDict['titleHtml']) && '' != $pagePropertiesDict['titleHtml']) {
+            // HTML title: SEO title property
+            $titleValueText = $pagePropertiesDict['titleHtml'];
         }
 
         if ($exportDynamicPage) {
@@ -1165,7 +1172,7 @@ class ExportXmlUtil
             if (isset($pagePropertiesDict['description'])) {
                 $description = $head->addChild('meta');
                 $description->addAttribute('name', 'description');
-                $description->addAttribute('content', $pagePropertiesDict['description']);
+                $description->addAttribute('content', htmlspecialchars($pagePropertiesDict['description']));
             }
         }
 
