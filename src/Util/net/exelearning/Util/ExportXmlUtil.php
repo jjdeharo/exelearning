@@ -1203,13 +1203,7 @@ class ExportXmlUtil
                 $domHead->documentElement->appendChild($import);
             }
 
-            // simplexml load the DOM but introduce scaping characters
-            // so we need to convert it back to SimpleXMLElement
-            // $domHead->formatOutput = true; // format output
-            // $domHead->preserveWhiteSpace = false; // remove unnecessary white spaces
-            // $domHead->encoding = 'UTF-8'; // set encoding
-            // $domHead->normalizeDocument(); // normalize the document
-            // $domHead->removeChild($domHead->doctype); // remove doctype
+            // TODO simplexml load the DOM but introduce scaping characters
             $head = simplexml_import_dom($domHead);
         }
 
