@@ -1012,7 +1012,8 @@ class ExportXmlUtil
             $userPreferencesDtos,
             $theme,
             $resourcesPrefix,
-            $exportDynamicPage
+            $exportDynamicPage,
+            $exportType
         );
 
         self::appendSimpleXml($head, $headContent);
@@ -1108,6 +1109,7 @@ class ExportXmlUtil
         $theme,
         $resourcesPrefix,
         $exportDynamicPage,
+        $exportType,
     ) {
         $head = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><head></head>');
 
@@ -1155,24 +1157,32 @@ class ExportXmlUtil
 
         // HTML title for any html page apart from index.html
         if (!$pagesFileData[$odeNavStructureSync->getOdePageId()]['isIndex']) {
-            if (isset($pagePropertiesDict['titleNode'])) {
+            if (isset($pagePropertiesDict['titlePage'])) {
                 // HTML title: title Node | Package title
-                $titleValueText = $pagePropertiesDict['titleNode'].' | '.$titleValueText;
+                $titleValueText = $pagePropertiesDict['titlePage'].' | '.$titleValueText;
             }
         }
 
-        // HTML title for any html page - SEO title property
-        if (isset($pagePropertiesDict['titleHtml']) && '' != $pagePropertiesDict['titleHtml']) {
+        // HTML title for any html page - SEO title property (except for single-page)
+        if (Constants::EXPORT_TYPE_HTML5_SP != $exportType && isset($pagePropertiesDict['titleHtml']) && '' != $pagePropertiesDict['titleHtml']) {
             // HTML title: SEO title property
             $titleValueText = $pagePropertiesDict['titleHtml'];
         }
 
         if ($exportDynamicPage) {
             $head->addChild('title', $titleValueText);
-            if (isset($pagePropertiesDict['description'])) {
+            $descriptionText = $odeProperties['pp_description']->getValue();
+            if (!$pagesFileData[$odeNavStructureSync->getOdePageId()]['isIndex']) {
+                $descriptionText = '';
+            }
+            // SEO description, except for single-page
+            if (Constants::EXPORT_TYPE_HTML5_SP != $exportType && isset($pagePropertiesDict['description'])) {
+                $descriptionText = $pagePropertiesDict['description'];
+            }
+            if ('' != $descriptionText) {
                 $description = $head->addChild('meta');
                 $description->addAttribute('name', 'description');
-                $description->addAttribute('content', htmlspecialchars($pagePropertiesDict['description']));
+                $description->addAttribute('content', htmlspecialchars($descriptionText));
             }
         }
 
