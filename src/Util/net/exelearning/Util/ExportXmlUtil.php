@@ -1140,27 +1140,33 @@ class ExportXmlUtil
 
         if (!empty($odeProperties['pp_title']) && '' != $odeProperties['pp_title']->getValue()) {
             $titleValueText = $odeProperties['pp_title']->getValue();
-
-            // HTML title for any html page apart from index.html
-            if (!$pagesFileData[$odeNavStructureSync->getOdePageId()]['isIndex']) {
-                $pageProperties = $odeNavStructureSync->getOdeNavStructureSyncProperties();
-                $pagePropertiesDict = [];
-                foreach ($pageProperties as $property) {
-                    if ($property->getValue()) {
-                        $pagePropertiesDict[$property->getKey()] = $property->getValue();
-                    }
-                }
-                if (isset($pagePropertiesDict['titlePage'])) {
-                    // HTML title: Page title | Package title
-                    $titleValueText = $pagePropertiesDict['titlePage'].' | '.$titleValueText;
-                }
-            }
         } else {
             $titleValueText = Constants::ELP_PROPERTIES_NO_TITLE_NAME;
         }
 
+        $pageProperties = $odeNavStructureSync->getOdeNavStructureSyncProperties();
+        $pagePropertiesDict = [];
+        foreach ($pageProperties as $property) {
+            if ($property->getValue()) {
+                $pagePropertiesDict[$property->getKey()] = $property->getValue();
+            }
+        }
+
+        // HTML title for any html page apart from index.html
+        if (!$pagesFileData[$odeNavStructureSync->getOdePageId()]['isIndex']) {
+            if (isset($pagePropertiesDict['titlePage'])) {
+                // HTML title: Page title | Package title
+                $titleValueText = $pagePropertiesDict['titlePage'].' | '.$titleValueText;
+            }
+        }
+
         if ($exportDynamicPage) {
             $head->addChild('title', $titleValueText);
+            if (isset($pagePropertiesDict['description'])) {
+                $description = $head->addChild('meta');
+                $description->addAttribute('name', 'description');
+                $description->addAttribute('content', $pagePropertiesDict['description']);
+            }
         }
 
         // Script JS class
