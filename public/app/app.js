@@ -59,6 +59,8 @@ class App {
         await this.showProvisionalDemoWarning();
         // To do warning (remove this as soon as possible)
         await this.showProvisionalToDoWarning();
+        // Add the notranslate class to some elements
+        await this.addNoTranslateForGoogle();
     }
 
     /**
@@ -235,6 +237,16 @@ class App {
             // Check for errors
             this.check();
         }
+    }
+
+    /**
+     * Add the notranslate class to some elements (see #43)
+     *
+     */
+    async addNoTranslateForGoogle() {
+        $('.exe-icon, .auto-icon, #nav_list .root-icon').each(function () {
+            $(this).addClass('notranslate');
+        });
     }
 
     /**
