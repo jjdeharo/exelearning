@@ -346,6 +346,15 @@ try {
             const copyButton = document.getElementById('copy-button');
             const clearButton = document.getElementById('clear-button');
             const insertButton = document.getElementById('insert-button');
+// Ocultar el botón si no se está ejecutando dentro de eXeLearning
+let insideExe = false;
+try {
+    insideExe = !!(window.opener && window.opener.PasteMathDialog && window.opener.PasteMathDialog.mathEditor && window.opener.PasteMathDialog.mathEditor.field);
+} catch (e) { insideExe = false; }
+if (!insideExe) {
+    insertButton.style.display = 'none';
+}
+
             const viewImageButton = document.getElementById('view-image-button');
             const delimiterSelector = document.getElementById('delimiter-selector');
             const copyCodeFeedback = document.getElementById('copy-code-feedback');
