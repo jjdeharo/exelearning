@@ -1,0 +1,992 @@
+{
+  "categorias": [
+    {
+      "nombre": "Básico",
+      "id": "basico",
+      "grid_template_columns": "repeat(auto-fit, minmax(80px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\frac{}{}",
+          "display": "\\frac{a}{b}",
+          "title": "Fracción"
+        },
+        {
+          "type": "button",
+          "latex": "^{}",
+          "display": "x^{a}",
+          "title": "Superíndice"
+        },
+        {
+          "type": "button",
+          "latex": "_{}",
+          "display": "x_{a}",
+          "title": "Subíndice"
+        },
+        {
+          "type": "button",
+          "title": "Paréntesis",
+          "latex": "\\left(...\\right)",
+          "display": "(\\,)"
+        },
+        {
+          "type": "button",
+          "title": "Infinito",
+          "latex": "\\infty",
+          "display": ""
+        },
+        {
+          "type": "button",
+          "latex": "\\sqrt{}",
+          "display": "\\sqrt{x}",
+          "title": "Raíz"
+        },
+        {
+          "type": "button",
+          "latex": "\\alpha",
+          "display": "\\alpha",
+          "title": "Letra griega alpha minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\beta",
+          "display": "\\beta",
+          "title": "Letra griega beta minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\pi",
+          "display": "\\pi",
+          "title": "Letra griega pi minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\displaystyle ",
+          "display": "\\text{Display}",
+          "title": "Modo display"
+        },
+        {
+          "type": "button",
+          "title": "Texto",
+          "latex": "\\text{texto}",
+          "display": ""
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Delimitadores",
+      "id": "delimitadores",
+      "grid_template_columns": "repeat(auto-fit, minmax(80px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\left(\\right)",
+          "display": "(\\,)",
+          "title": "Paréntesis"
+        },
+        {
+          "type": "button",
+          "latex": "\\left[\\,\\right]",
+          "display": "",
+          "title": "Corchetes"
+        },
+        {
+          "type": "button",
+          "latex": "\\left\\{\\right\\}",
+          "display": "",
+          "title": "Llaves"
+        },
+        {
+          "type": "button",
+          "latex": "\\left|\\right|",
+          "display": "|\\,|",
+          "title": "Valor absoluto"
+        },
+        {
+          "type": "button",
+          "latex": "\\left\\|\\right\\|",
+          "display": "‖\\,‖",
+          "title": "Norma"
+        },
+        {
+          "type": "button",
+          "latex": "\\left\\langle\\right\\rangle",
+          "display": "\\langle\\,\\rangle",
+          "title": "Ángulo"
+        },
+        {
+          "type": "button",
+          "latex": "\\lfloor\\rfloor",
+          "display": "\\lfloor\\,\\rfloor",
+          "title": "Parte entera"
+        },
+        {
+          "type": "button",
+          "latex": "\\lceil\\rceil",
+          "display": "\\lceil\\,\\rceil",
+          "title": "Techo"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Operadores y relaciones",
+      "id": "operadores",
+      "grid_template_columns": "repeat(auto-fit, minmax(60px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\pm",
+          "title": "Más/menos"
+        },
+        {
+          "type": "button",
+          "latex": "\\times",
+          "title": "Multiplicación"
+        },
+        {
+          "type": "button",
+          "latex": "\\div",
+          "title": "División"
+        },
+        {
+          "type": "button",
+          "latex": "\\cdot",
+          "title": "Producto punto"
+        },
+        {
+          "type": "button",
+          "latex": "\\leq",
+          "title": "Menor o igual"
+        },
+        {
+          "type": "button",
+          "latex": "\\geq",
+          "title": "Mayor o igual"
+        },
+        {
+          "type": "button",
+          "latex": "\\neq",
+          "title": "Distinto"
+        },
+        {
+          "type": "button",
+          "latex": "<",
+          "title": "Menor que"
+        },
+        {
+          "type": "button",
+          "latex": ">",
+          "title": "Mayor que"
+        },
+        {
+          "type": "button",
+          "latex": "\\approx",
+          "title": "Aproximado"
+        },
+        {
+          "type": "button",
+          "latex": "\\propto",
+          "title": "Proporcional"
+        },
+        {
+          "type": "button",
+          "latex": "\\equiv",
+          "title": "Equivalente"
+        },
+        {
+          "type": "button",
+          "latex": "\\in",
+          "title": "Pertenece"
+        },
+        {
+          "type": "button",
+          "latex": "\\notin",
+          "title": "No pertenece"
+        },
+        {
+          "type": "button",
+          "latex": "\\subset",
+          "title": "Subconjunto"
+        },
+        {
+          "type": "button",
+          "latex": "\\subseteq",
+          "title": "Subconjunto o igual"
+        },
+        {
+          "type": "button",
+          "latex": "\\supset",
+          "title": "Superconjunto"
+        },
+        {
+          "type": "button",
+          "latex": "\\supseteq",
+          "title": "Superconjunto o igual"
+        },
+        {
+          "type": "button",
+          "latex": "\\cup",
+          "title": "Unión"
+        },
+        {
+          "type": "button",
+          "latex": "\\cap",
+          "title": "Intersección"
+        },
+        {
+          "type": "button",
+          "latex": "\\setminus",
+          "title": "Diferencia"
+        },
+        {
+          "type": "button",
+          "latex": "\\infty",
+          "title": "Infinito"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Funciones",
+      "id": "funciones",
+      "grid_template_columns": "repeat(auto-fit, minmax(70px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\sin",
+          "title": "Seno"
+        },
+        {
+          "type": "button",
+          "latex": "\\cos",
+          "title": "Coseno"
+        },
+        {
+          "type": "button",
+          "latex": "\\tan",
+          "title": "Tangente"
+        },
+        {
+          "type": "button",
+          "latex": "\\cot",
+          "title": "Cotangente"
+        },
+        {
+          "type": "button",
+          "latex": "\\sec",
+          "title": "Secante"
+        },
+        {
+          "type": "button",
+          "latex": "\\csc",
+          "title": "Cosecante"
+        },
+        {
+          "type": "button",
+          "latex": "\\log",
+          "title": "Logaritmo"
+        },
+        {
+          "type": "button",
+          "latex": "\\ln",
+          "title": "Logaritmo natural"
+        },
+        {
+          "type": "button",
+          "latex": "e^{\\,}",
+          "display": "e^{x}",
+          "title": "Exponencial"
+        },
+        {
+          "type": "button",
+          "latex": "\\sqrt{}",
+          "display": "\\sqrt{x}",
+          "title": "Raíz cuadrada"
+        },
+        {
+          "type": "button",
+          "latex": "\\sqrt[]{}",
+          "display": "\\sqrt[n]{x}",
+          "title": "Raíz n-ésima"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Cálculo",
+      "id": "calculo",
+      "grid_template_columns": "repeat(auto-fit, minmax(120px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\lim_{x \\to a} f(x)",
+          "title": "Límite"
+        },
+        {
+          "type": "button",
+          "latex": "\\sum_{i=0}^{n}",
+          "title": "Sumatorio"
+        },
+        {
+          "type": "button",
+          "latex": "\\prod_{i=0}^{n}",
+          "title": "Productorio"
+        },
+        {
+          "type": "button",
+          "latex": "\\int f(x)\\,dx",
+          "title": "Integral indefinida"
+        },
+        {
+          "type": "button",
+          "latex": "\\int_{a}^{b} f(x)\\,dx",
+          "title": "Integral definida"
+        },
+        {
+          "type": "button",
+          "latex": "\\iint_{D} f(x,y)\\,dx\\,dy",
+          "title": "Integral doble"
+        },
+        {
+          "type": "button",
+          "latex": "\\iiint_{V} f(x,y,z)\\,dV",
+          "title": "Integral triple"
+        },
+        {
+          "type": "button",
+          "latex": "\\frac{dy}{dx}",
+          "title": "Derivada"
+        },
+        {
+          "type": "button",
+          "latex": "\\frac{\\partial y}{\\partial x}",
+          "title": "Derivada parcial"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Conjuntos",
+      "id": "conjuntos",
+      "grid_template_columns": "repeat(auto-fit, minmax(70px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\emptyset",
+          "title": "Conjunto vacío"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathbb{N}",
+          "title": "Naturales"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathbb{Z}",
+          "title": "Enteros"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathbb{Q}",
+          "title": "Racionales"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathbb{R}",
+          "title": "Reales"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathbb{C}",
+          "title": "Complejos"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Lógica",
+      "id": "logica",
+      "grid_template_columns": "repeat(auto-fit, minmax(70px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\land",
+          "title": "Conjunción"
+        },
+        {
+          "type": "button",
+          "latex": "\\lor",
+          "title": "Disyunción"
+        },
+        {
+          "type": "button",
+          "latex": "\\neg",
+          "title": "Negación"
+        },
+        {
+          "type": "button",
+          "latex": "\\implies",
+          "title": "Implicación"
+        },
+        {
+          "type": "button",
+          "latex": "\\Leftrightarrow",
+          "title": "Equivalencia"
+        },
+        {
+          "type": "button",
+          "latex": "\\forall",
+          "title": "Para todo"
+        },
+        {
+          "type": "button",
+          "latex": "\\not\\forall",
+          "title": "No para todo"
+        },
+        {
+          "type": "button",
+          "latex": "\\exists",
+          "title": "Existe"
+        },
+        {
+          "type": "button",
+          "latex": "\\nexists",
+          "title": "No existe"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Flechas",
+      "id": "flechas",
+      "grid_template_columns": "repeat(auto-fit, minmax(90px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\to",
+          "title": "Flecha derecha"
+        },
+        {
+          "type": "button",
+          "latex": "\\leftarrow",
+          "title": "Flecha izquierda"
+        },
+        {
+          "type": "button",
+          "latex": "\\leftrightarrow",
+          "title": "Doble flecha"
+        },
+        {
+          "type": "button",
+          "latex": "\\Rightarrow",
+          "title": "Implica"
+        },
+        {
+          "type": "button",
+          "latex": "\\Leftarrow",
+          "title": "Implica inversa"
+        },
+        {
+          "type": "button",
+          "latex": "\\Leftrightarrow",
+          "title": "Equivalencia"
+        },
+        {
+          "type": "button",
+          "latex": "\\longrightarrow",
+          "title": "Flecha larga"
+        },
+        {
+          "type": "button",
+          "latex": "\\hookrightarrow",
+          "title": "Inyección"
+        },
+        {
+          "type": "button",
+          "latex": "\\mapsto",
+          "title": "Mapsto"
+        },
+        {
+          "type": "button",
+          "latex": "\\vec{}",
+          "display": "\\vec{v}",
+          "title": "Vector"
+        },
+        {
+          "type": "button",
+          "latex": "\\overrightarrow{}",
+          "display": "\\overrightarrow{AB}",
+          "title": "Flecha vector"
+        },
+        {
+          "type": "button",
+          "latex": "\\xrightarrow{}",
+          "display": "\\xrightarrow{\\text{texto}}",
+          "title": "Flecha con texto arriba"
+        },
+        {
+          "type": "button",
+          "title": "Flecha con texto abajo",
+          "latex": "\\underset{\\text{texto}}{\\xrightarrow{}}\n",
+          "display": ""
+        },
+        {
+          "type": "button",
+          "latex": "\\xrightarrow[]{}",
+          "display": "\\xrightarrow[\\text{abajo}]{\\text{arriba}}",
+          "title": "Flecha con texto arriba y abajo"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Matrices",
+      "id": "matrices",
+      "grid_template_columns": "repeat(auto-fit, minmax(140px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+          "title": "Matriz 2x2"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}",
+          "title": "Matriz 2x2 corchetes"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix}",
+          "title": "Determinante 2x2"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{pmatrix} a & b & c \\\\ d & e & f \\\\ g & h & i \\end{pmatrix}",
+          "title": "Matriz 3x3"
+        },
+        {
+          "type": "custom_matrix"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Sistemas",
+      "id": "sistemas",
+      "grid_template_columns": "repeat(auto-fit, minmax(250px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\left\\{ \\begin{array}{l} x + y = 1 \\\\ x - y = 0 \\end{array} \\right.",
+          "title": "Sistema con array"
+        },
+        {
+          "type": "button",
+          "latex": "\\left\\{ \\begin{array}{l} x + y + z = 1 \\\\ 2x - y + z = 0 \\\\ x + 2y - z = 3 \\end{array} \\right.",
+          "title": "Sistema 3 ecuaciones con array"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Agrupación",
+      "id": "agrupacion",
+      "grid_template_columns": "repeat(auto-fit, minmax(100px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\boxed{}",
+          "display": "\\boxed{x+y}",
+          "title": "Caja"
+        },
+        {
+          "type": "button",
+          "latex": "\\overbrace{}^{\\text{}}",
+          "display": "\\overbrace{a+b+c}^{\\text{grupo}}",
+          "title": "Llave superior"
+        },
+        {
+          "type": "button",
+          "latex": "\\underbrace{}_{\\text{}}",
+          "display": "\\underbrace{a+b+c}_{\\text{grupo}}",
+          "title": "Llave inferior"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Acentos",
+      "id": "acentos",
+      "grid_template_columns": "repeat(auto-fit, minmax(70px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\bar{}",
+          "display": "\\bar{a}",
+          "title": "Barra"
+        },
+        {
+          "type": "button",
+          "latex": "\\overline{}",
+          "display": "\\overline{ab}",
+          "title": "Sobrebarra"
+        },
+        {
+          "type": "button",
+          "latex": "\\hat{}",
+          "display": "\\hat{a}",
+          "title": "Sombrero"
+        },
+        {
+          "type": "button",
+          "latex": "\\tilde{}",
+          "display": "\\tilde{a}",
+          "title": "Virgulilla"
+        },
+        {
+          "type": "button",
+          "latex": "\\dot{}",
+          "display": "\\dot{a}",
+          "title": "Punto"
+        },
+        {
+          "type": "button",
+          "latex": "\\ddot{}",
+          "display": "\\ddot{a}",
+          "title": "Doble punto"
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Anotaciones",
+      "id": "anotaciones",
+      "grid_template_columns": "repeat(auto-fit, minmax(160px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\cancel{x}",
+          "title": "Tachar término"
+        },
+        {
+          "type": "button",
+          "latex": "\\bcancel{x}",
+          "title": "Tachar en cruz"
+        },
+        {
+          "type": "button",
+          "latex": "\\xcancel{x}",
+          "title": "Tachar con X"
+        },
+        {
+          "type": "button",
+          "latex": "\\cancelto{0}{x}",
+          "title": "Tachar y anotar"
+        },
+        {
+          "type": "button",
+          "latex": " \\overset{}{} \n",
+          "title": "Texto encima",
+          "display": "a \\overset{?}{=} b\n"
+        },
+        {
+          "type": "button",
+          "latex": "\\underset{}{}",
+          "title": "Texto debajo",
+          "display": "a \\underset{?}{=} b"
+        },
+        {
+          "type": "button",
+          "latex": "\\text{texto}",
+          "title": "Insertar texto",
+          "display": ""
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Formato de texto",
+      "id": "formato",
+      "grid_template_columns": "repeat(auto-fit, minmax(120px, 1fr))",
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\textbf{}",
+          "display": "\\textbf{negrita t}",
+          "title": "Negrita tipográfica"
+        },
+        {
+          "type": "button",
+          "latex": "\\textit{}",
+          "display": "\\textit{cursiva}",
+          "title": "Cursiva"
+        },
+        {
+          "type": "button",
+          "latex": "\\texttt{}",
+          "display": "\\texttt{monoespaciado}",
+          "title": "Monoespaciado"
+        },
+        {
+          "type": "button",
+          "latex": "\\text{}",
+          "display": "\\text{texto}",
+          "title": "Texto plano"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathrm{}",
+          "display": "\\mathrm{recto}",
+          "title": "Recto (math roman)"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathit{}",
+          "display": "\\mathit{cursiva}",
+          "title": "Cursiva matemática"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathbf{}",
+          "display": "\\mathbf{\\text{negrita m}}",
+          "title": "Negrita matemática"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathcal{}",
+          "display": "\\mathcal{ABC}",
+          "title": "Caligráfico"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathbb{}",
+          "display": "\\mathbb{R}",
+          "title": "Blackboard bold"
+        },
+        {
+          "type": "button",
+          "latex": "\\mathfrak{}",
+          "display": "\\mathfrak{abc}",
+          "title": "Gótico"
+        },
+        {
+          "type": "button",
+          "title": "Color",
+          "latex": "{\\color{red}x}",
+          "display": ""
+        }
+      ],
+      "isCollapsed": true
+    },
+    {
+      "nombre": "Griego",
+      "id": "griego",
+      "grid_template_columns": "repeat(auto-fit, minmax(50px, 1fr))",
+      "isCollapsed": true,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\alpha",
+          "title": "Alfa minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\beta",
+          "title": "Beta minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\gamma",
+          "title": "Gamma minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\delta",
+          "title": "Delta minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\epsilon",
+          "title": "Épsilon minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\varepsilon",
+          "title": "Épsilon variante"
+        },
+        {
+          "type": "button",
+          "latex": "\\zeta",
+          "title": "Zeta minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\eta",
+          "title": "Eta minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\theta",
+          "title": "Theta minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\vartheta",
+          "title": "Theta variante"
+        },
+        {
+          "type": "button",
+          "latex": "\\iota",
+          "title": "Iota minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\kappa",
+          "title": "Kappa minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\lambda",
+          "title": "Lambda minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\mu",
+          "title": "Mu minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\nu",
+          "title": "Nu minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\xi",
+          "title": "Xi minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\pi",
+          "title": "Pi minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\varpi",
+          "title": "Pi variante"
+        },
+        {
+          "type": "button",
+          "latex": "\\rho",
+          "title": "Rho minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\varrho",
+          "title": "Rho variante"
+        },
+        {
+          "type": "button",
+          "latex": "\\sigma",
+          "title": "Sigma minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\varsigma",
+          "title": "Sigma final"
+        },
+        {
+          "type": "button",
+          "latex": "\\tau",
+          "title": "Tau minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\upsilon",
+          "title": "Upsilon minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\phi",
+          "title": "Phi minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\varphi",
+          "title": "Phi variante"
+        },
+        {
+          "type": "button",
+          "latex": "\\chi",
+          "title": "Chi minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\psi",
+          "title": "Psi minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\omega",
+          "title": "Omega minúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Gamma",
+          "title": "Gamma mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Delta",
+          "title": "Delta mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Theta",
+          "title": "Theta mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Lambda",
+          "title": "Lambda mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Xi",
+          "title": "Xi mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Pi",
+          "title": "Pi mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Sigma",
+          "title": "Sigma mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Upsilon",
+          "title": "Upsilon mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Phi",
+          "title": "Phi mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Psi",
+          "title": "Psi mayúscula"
+        },
+        {
+          "type": "button",
+          "latex": "\\Omega",
+          "title": "Omega mayúscula"
+        }
+      ]
+    }
+  ]
+}
