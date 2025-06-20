@@ -849,13 +849,33 @@ insertButton.addEventListener('click', () => {
             closeSettingsBtn.addEventListener('click', closeSettingsModal);
             settingsModal.addEventListener('click', (e) => { if(e.target === settingsModal) closeSettingsModal(); });
             urlInput.addEventListener('change', () => { if(urlInput.value) { addMenu({id: urlInput.value, url: urlInput.value, source: 'url', name: urlInput.value}).then(() => loadAndDisplayAvailableMenus()); urlInput.value = ''; } });
-            fileInput.addEventListener('change', () => { 
-                if(fileInput.files.length > 0) {
-                     const reader = new FileReader();
-                     reader.onload = (e) => { try { loadedMenus.set(fileInput.files[0].name, {id: fileInput.files[0].name, url: fileInput.files[0].name, source: 'localfile', name: fileInput.files[0].name, data: JSON.parse(e.target.result) }); rebuildToolbarAndUI(); } catch (err) { showModalFeedback('El archivo no es un JSON válido.', true); } };
-                    reader.readAsText(fileInput.files[0]); fileInput.value = '';
-                }
-            });
+            
+fileInput.addEventListener('change', () => {
+    if (fileInput.files.length === 0) return;
+    const [file] = fileInput.files;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        let jsonText = e.target.result;
+        let parsed = null;
+        try {
+            parsed = JSON.parse(jsonText);
+        } catch (parseErr) {
+            console.error('Error parseando JSON local:', parseErr);
+            showModalFeedback('El archivo no es un JSON válido (' + parseErr.message + ')', true);
+            return;
+        }
+        try {
+            loadedMenus.set(file.name, { id: file.name, url: file.name, source: 'localfile', name: file.name, data: parsed });
+            rebuildToolbarAndUI();
+            showModalFeedback('Menú cargado correctamente.', false);
+        } catch (logicErr) {
+            console.error('Error al integrar el menú:', logicErr);
+            showModalFeedback('Error al procesar el menú (' + logicErr.message + ')', true);
+        }
+    };
+    reader.readAsText(file, 'utf-8');
+    fileInput.value = '';
+});
             availableMenusList.addEventListener('change', (e) => { if(e.target.type !== 'checkbox') return; const ds = e.target.dataset; if (e.target.checked) addMenu(ds); else removeMenu(ds.id); });
             reloadMenusListBtn.addEventListener('click', () => loadAndDisplayAvailableMenus(true));
             clearCacheBtn.addEventListener('click', () => { menuCache.clear(); githubMenuListCache = null; showModalFeedback('Caché limpiada. Los menús se recargarán desde su origen.'); initializeApp(); });

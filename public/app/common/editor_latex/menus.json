@@ -1,0 +1,10 @@
+{
+  "menus": [
+    "base.json",
+    "entornos.json",
+    "estadistica.json",
+    "fisica.json",
+    "geometria.json"
+  ]
+}
+
