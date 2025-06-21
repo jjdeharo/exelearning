@@ -91,3 +91,6 @@ data_persistent/
 
 symfony.lock
 .phpunit.cache
+
+0_01sincronizar_main.sh
+
