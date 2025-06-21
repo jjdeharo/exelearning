@@ -1,0 +1,159 @@
+{
+  "categorias": [
+    {
+      "nombre": "Centralización",
+      "id": "centralizacion",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": true,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\overline{x} = \\frac{\\sum x_i}{n}",
+          "title": "Media aritmética"
+        },
+        {
+          "type": "button",
+          "latex": "\\tilde{x}",
+          "display": "\\tilde{x} = 7",
+          "title": "Mediana"
+        },
+        {
+          "type": "button",
+          "latex": "Moda = x_{\\text{moda}}",
+          "display": "Moda = x_{\\text{moda}}",
+          "title": "Moda"
+        }
+      ]
+    },
+    {
+      "nombre": "Dispersión",
+      "id": "dispersion",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": true,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "R = x_{\\text{max}} - x_{\\text{min}}",
+          "title": "Rango"
+        },
+        {
+          "type": "button",
+          "latex": "\\sigma = \\sqrt{\\frac{\\sum (x_i - \\overline{x})^2}{n}}",
+          "title": "Desviación típica"
+        },
+        {
+          "type": "button",
+          "latex": "\\sigma^2 = \\frac{\\sum (x_i - \\overline{x})^2}{n}",
+          "title": "Varianza"
+        },
+        {
+          "type": "button",
+          "latex": "CV = \\frac{\\sigma}{\\overline{x}} \\cdot 100\\%",
+          "title": "Coeficiente de variación"
+        }
+      ]
+    },
+    {
+      "nombre": "Frecuencias",
+      "id": "frecuencias",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": true,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "f_i = \\frac{n_i}{n}",
+          "title": "Frecuencia relativa"
+        },
+        {
+          "type": "button",
+          "latex": "F_i = \\sum_{j=1}^{i} f_j",
+          "title": "Frecuencia acumulada"
+        },
+        {
+          "type": "button",
+          "latex": "N_i = \\sum_{j=1}^{i} n_j",
+          "title": "Frecuencia absoluta acumulada"
+        }
+      ]
+    },
+    {
+      "nombre": "Intervalos",
+      "id": "intervalos",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": true,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "c_i = \\frac{l_i + l_{i+1}}{2}",
+          "title": "Marca de clase"
+        },
+        {
+          "type": "button",
+          "latex": "A = l_{i+1} - l_i",
+          "title": "Amplitud de clase"
+        }
+      ]
+    },
+    {
+      "nombre": "Intervalos de confianza",
+      "id": "intervalos_confianza",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\bar{x} \\pm z \\cdot \\frac{\\sigma}{\\sqrt{n}}",
+          "title": "Intervalo con desviación estándar poblacional"
+        },
+        {
+          "type": "button",
+          "latex": "\\bar{x} \\pm t \\cdot \\frac{s}{\\sqrt{n}}",
+          "title": "Intervalo con desviación muestral"
+        },
+        {
+          "type": "button",
+          "latex": "CI = (\\bar{x} - E, \\bar{x} + E)",
+          "title": "Fórmula general del intervalo"
+        },
+        {
+          "type": "button",
+          "latex": "E = z \\cdot \\frac{\\sigma}{\\sqrt{n}}",
+          "title": "Error estándar con z"
+        },
+        {
+          "type": "button",
+          "latex": "E = t \\cdot \\frac{s}{\\sqrt{n}}",
+          "title": "Error estándar con t"
+        }
+      ]
+    },
+    {
+      "nombre": "Otras fórmulas",
+      "id": "otras",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": true,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\sum x_i",
+          "title": "Suma de los datos"
+        },
+        {
+          "type": "button",
+          "latex": "\\sum f_i x_i",
+          "title": "Suma ponderada"
+        },
+        {
+          "type": "button",
+          "latex": "\\sum_{i=1}^{n} x_i^2",
+          "title": "Suma de cuadrados"
+        },
+        {
+          "type": "button",
+          "latex": "x_i - \\overline{x}",
+          "title": "Desviación respecto a la media"
+        }
+      ]
+    }
+  ]
+}

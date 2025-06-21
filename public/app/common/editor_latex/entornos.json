@@ -1,0 +1,138 @@
+{
+  "categorias": [
+    {
+      "nombre": "Entornos matemáticos básicos",
+      "id": "entornos-matematicos-basicos",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\begin{equation} \\end{equation}",
+          "display": "\\begin{equation} a = b + c \\end{equation}",
+          "title": "Ecuación numerada"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{equation*} \\end{equation*}",
+          "display": "\\begin{equation*} a = b + c \\end{equation*}",
+          "title": "Ecuación sin numerar"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{align} \\end{align}",
+          "display": "\\begin{align} a &= b + c \\\\ d &= e + f \\end{align}",
+          "title": "Alinear ecuaciones"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{align*} \\end{align*}",
+          "display": "\\begin{align*} a &= b + c \\\\ d &= e + f \\end{align*}",
+          "title": "Alinear sin numerar"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{gather} \\end{gather}",
+          "display": "\\begin{gather} a = b + c \\\\ d = e + f \\end{gather}",
+          "title": "Agrupar ecuaciones"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{gather*} \\end{gather*}",
+          "display": "\\begin{gather*} a = b + c \\\\ d = e + f \\end{gather*}",
+          "title": "Agrupar sin numerar"
+        }
+      ]
+    },
+    {
+      "nombre": "Entornos delimitadores",
+      "id": "entornos-delimitadores",
+      "grid_template_columns": "repeat(auto-fit, minmax(160px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\left( \\right)",
+          "display": "\\left( a + b \\right)",
+          "title": "Paréntesis ajustables"
+        },
+        {
+          "type": "button",
+          "latex": "\\left[ \\right]",
+          "display": "\\left[ a + b \\right]",
+          "title": "Corchetes ajustables"
+        },
+        {
+          "type": "button",
+          "latex": "\\left\\{ \\right\\}",
+          "display": "\\left\\{ a + b \\right\\}",
+          "title": "Llaves ajustables"
+        },
+        {
+          "type": "button",
+          "latex": "\\left| \\right|",
+          "display": "\\left| a + b \\right|",
+          "title": "Valor absoluto ajustable"
+        }
+      ]
+    },
+    {
+      "nombre": "Entornos de matrices",
+      "id": "entornos-matrices",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\begin{matrix} a & b \\\\ c & d \\end{matrix}",
+          "display": "\\begin{matrix} a & b \\\\ c & d \\end{matrix}",
+          "title": "Matriz simple"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+          "display": "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+          "title": "Matriz con paréntesis"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}",
+          "display": "\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}",
+          "title": "Matriz con corchetes"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{Bmatrix} a & b \\\\ c & d \\end{Bmatrix}",
+          "display": "\\begin{Bmatrix} a & b \\\\ c & d \\end{Bmatrix}",
+          "title": "Matriz con llaves"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix}",
+          "display": "\\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix}",
+          "title": "Determinante con barras"
+        },
+        {
+          "type": "button",
+          "latex": "\\begin{Vmatrix} a & b \\\\ c & d \\end{Vmatrix}",
+          "display": "\\begin{Vmatrix} a & b \\\\ c & d \\end{Vmatrix}",
+          "title": "Determinante con barras dobles"
+        }
+      ]
+    },
+    {
+      "nombre": "Entornos de casos",
+      "id": "entornos-casos",
+      "grid_template_columns": "repeat(auto-fit, minmax(200px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "\\begin{cases} a &\\text{si } x < 0 \\\\ b &\\text{si } x \\ge 0 \\end{cases}",
+          "display": "\\begin{cases} a &\\text{si } x < 0 \\\\ b &\\text{si } x \\ge 0 \\end{cases}",
+          "title": "Casos por tramos"
+        }
+      ]
+    }
+  ]
+}

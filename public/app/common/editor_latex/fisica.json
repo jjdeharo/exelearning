@@ -1,0 +1,215 @@
+{
+  "categorias": [
+    {
+      "nombre": "Cinemática",
+      "id": "cinematica",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "v = \\frac{\\Delta x}{\\Delta t}",
+          "title": "Velocidad media"
+        },
+        {
+          "type": "button",
+          "latex": "a = \\frac{\\Delta v}{\\Delta t}",
+          "title": "Aceleración media"
+        },
+        {
+          "type": "button",
+          "latex": "x = x_0 + v t",
+          "title": "Movimiento rectilíneo uniforme"
+        },
+        {
+          "type": "button",
+          "latex": "x = x_0 + v_0 t + \\frac{1}{2} a t^2",
+          "title": "Posición con aceleración constante"
+        },
+        {
+          "type": "button",
+          "latex": "v = v_0 + a t",
+          "title": "Velocidad con aceleración constante"
+        },
+        {
+          "type": "button",
+          "latex": "v^2 = v_0^2 + 2 a (x - x_0)",
+          "title": "Velocidad sin tiempo"
+        }
+      ]
+    },
+    {
+      "nombre": "Dinámica",
+      "id": "dinamica",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "F = m a",
+          "title": "Segunda ley de Newton"
+        },
+        {
+          "type": "button",
+          "latex": "W = F d \\cos\\theta",
+          "title": "Trabajo"
+        },
+        {
+          "type": "button",
+          "latex": "P = \\frac{W}{t}",
+          "title": "Potencia"
+        },
+        {
+          "type": "button",
+          "latex": "p = m v",
+          "title": "Cantidad de movimiento"
+        },
+        {
+          "type": "button",
+          "latex": "F = \\frac{\\Delta p}{\\Delta t}",
+          "title": "Fuerza como cambio de momento"
+        }
+      ]
+    },
+    {
+      "nombre": "Energía",
+      "id": "energia",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "E_c = \\frac{1}{2} m v^2",
+          "title": "Energía cinética"
+        },
+        {
+          "type": "button",
+          "latex": "E_p = m g h",
+          "title": "Energía potencial gravitatoria"
+        },
+        {
+          "type": "button",
+          "latex": "E_m = E_c + E_p",
+          "title": "Energía mecánica"
+        },
+        {
+          "type": "button",
+          "latex": "\\Delta E = W",
+          "title": "Teorema del trabajo y la energía"
+        }
+      ]
+    },
+    {
+      "nombre": "Gravitación",
+      "id": "gravitacion",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "F = G \\frac{m_1 m_2}{r^2}",
+          "title": "Ley de gravitación universal"
+        },
+        {
+          "type": "button",
+          "latex": "g = \\frac{G M}{r^2}",
+          "title": "Campo gravitatorio"
+        },
+        {
+          "type": "button",
+          "latex": "E_p = -G \\frac{m M}{r}",
+          "title": "Energía potencial gravitatoria universal"
+        },
+        {
+          "type": "button",
+          "latex": "v = \\sqrt{\\frac{G M}{r}}",
+          "title": "Velocidad orbital"
+        }
+      ]
+    },
+    {
+      "nombre": "Ondas",
+      "id": "ondas",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "v = \\lambda f",
+          "title": "Velocidad de propagación de una onda"
+        },
+        {
+          "type": "button",
+          "latex": "T = \\frac{1}{f}",
+          "title": "Periodo de una onda"
+        },
+        {
+          "type": "button",
+          "latex": "f = \\frac{1}{T}",
+          "title": "Frecuencia de una onda"
+        }
+      ]
+    },
+    {
+      "nombre": "Electricidad",
+      "id": "electricidad",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "V = I R",
+          "title": "Ley de Ohm"
+        },
+        {
+          "type": "button",
+          "latex": "P = V I",
+          "title": "Potencia eléctrica"
+        },
+        {
+          "type": "button",
+          "latex": "E = P t",
+          "title": "Energía eléctrica"
+        },
+        {
+          "type": "button",
+          "latex": "R_{eq} = R_1 + R_2 + \\dots",
+          "title": "Resistencias en serie"
+        },
+        {
+          "type": "button",
+          "latex": "\\frac{1}{R_{eq}} = \\frac{1}{R_1} + \\frac{1}{R_2} + \\dots",
+          "title": "Resistencias en paralelo"
+        }
+      ]
+    },
+    {
+      "nombre": "Termodinámica",
+      "id": "termodinamica",
+      "grid_template_columns": "repeat(auto-fit, minmax(180px, 1fr))",
+      "isCollapsed": false,
+      "elementos": [
+        {
+          "type": "button",
+          "latex": "Q = m c \\Delta T",
+          "title": "Calor sensible"
+        },
+        {
+          "type": "button",
+          "latex": "Q = m L",
+          "title": "Calor latente"
+        },
+        {
+          "type": "button",
+          "latex": "\\Delta U = Q - W",
+          "title": "Primer principio de la termodinámica"
+        },
+        {
+          "type": "button",
+          "latex": "W = P \\Delta V",
+          "title": "Trabajo termodinámico"
+        }
+      ]
+    }
+  ]
+}
