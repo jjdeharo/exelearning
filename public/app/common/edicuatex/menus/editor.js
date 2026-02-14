@@ -393,8 +393,8 @@ function createMinimalSetData() {
                 grid_template_columns: 'repeat(auto-fit, minmax(80px, 1fr))',
                 isCollapsed: false,
                 elementos: [
-                    { type: 'button', latex: '\\\\frac{}{}', display: '\\\\frac{a}{b}', title: _('Fraction') },
-                    { type: 'button', latex: '\\\\sqrt{}', display: '\\\\sqrt{x}', title: _('Square root') },
+                    { type: 'button', latex: '\\frac{}{}', display: '\\frac{a}{b}', title: _('Fraction') },
+                    { type: 'button', latex: '\\sqrt{}', display: '\\sqrt{x}', title: _('Square root') },
                     { type: 'button', latex: 'x^{}', display: 'x^2', title: _('Superscript') }
                 ]
             }
