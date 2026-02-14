@@ -798,6 +798,7 @@ $i18n['eXe'] = {
     'Your set is empty. Start by adding a category.': _('Your set is empty. Start by adding a category.'),
     'Add first category': _('Add first category'),
     'Add Category': _('Add Category'),
+    'Create new formula toolbar': _('Create new formula toolbar'),
     'Your set is empty. Use the "+ Add Category" button above to create the first category.': _('Your set is empty. Use the "+ Add Category" button above to create the first category.'),
     'No .json files found in the \'docs\' folder.': _('No .json files found in the \'docs\' folder.')
 };

@@ -731,6 +731,7 @@ $i18n['eu'] = {
     'Your set is empty. Start by adding a category.': 'Zure multzoa hutsik dago. Hasi kategoria bat gehituz.',
     'Add first category': 'Gehitu lehen kategoria',
     'Add Category': 'Gehitu kategoria',
+    'Create new formula toolbar': 'Sortu formula barra berria',
     'Your set is empty. Use the "+ Add Category" button above to create the first category.': 'Zure multzoa hutsik dago. Erabili goiko "+ Gehitu kategoria" botoia lehen kategoria sortzeko.',
     'No .json files found in the \'docs\' folder.': 'Ez da .json fitxategirik aurkitu \'docs\' karpetan.',
 };

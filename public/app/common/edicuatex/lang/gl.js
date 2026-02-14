@@ -731,6 +731,7 @@ $i18n['gl'] = {
     'Your set is empty. Start by adding a category.': 'O teu conxunto está baleiro. Comeza engadindo unha categoría.',
     'Add first category': 'Engadir primeira categoría',
     'Add Category': 'Engadir categoría',
+    'Create new formula toolbar': 'Crear nova barra de fórmulas',
     'Your set is empty. Use the "+ Add Category" button above to create the first category.': 'O teu conxunto está baleiro. Usa o botón "+ Engadir categoría" de arriba para crear a primeira categoría.',
     'No .json files found in the \'docs\' folder.': 'Non se atoparon ficheiros .json no cartafol \'docs\'.',
 };

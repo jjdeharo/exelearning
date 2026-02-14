@@ -798,6 +798,7 @@ $i18n['es'] = {
     'Your set is empty. Start by adding a category.': 'Tu conjunto está vacío. Empieza añadiendo una categoría.',
     'Add first category': 'Añadir primera categoría',
     'Add Category': 'Añadir categoría',
+    'Create new formula toolbar': 'Crear barra de fórmulas nueva',
     'Your set is empty. Use the "+ Add Category" button above to create the first category.': 'Tu conjunto está vacío. Usa el botón "+ Añadir categoría" de arriba para crear la primera categoría.',
     'No .json files found in the \'docs\' folder.': 'No se encontraron archivos .json en la carpeta \'docs\'.'
 };

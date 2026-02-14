@@ -113,6 +113,8 @@ function render() {
 function translateUIDynamic() {
     // Static text that might be re-rendered
     document.title = _('LaTeX Formula Visual Editor');
+    ui.addTabBtn.title = _('Create new formula toolbar');
+    ui.addTabBtn.setAttribute('aria-label', _('Create new formula toolbar'));
     ui.addCategoryBtn.textContent = `+ ${_('Add Category')}`;
     ui.toggleAllBtn.textContent = _('Collapse/Expand');
     ui.categoryNavigator.querySelector('option[value=""]').textContent = _('Go to category...');

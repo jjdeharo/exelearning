@@ -798,6 +798,7 @@ $i18n['ca'] = {
     'Your set is empty. Start by adding a category.': 'El conjunt està buit. Comença afegint una categoria.',
     'Add first category': 'Afegir primera categoria',
     'Add Category': 'Afegir categoria',
+    'Create new formula toolbar': 'Crear barra de fórmules nova',
     'Your set is empty. Use the "+ Add Category" button above to create the first category.': 'El conjunt està buit. Utilitza el botó "+ Afegir categoria" de dalt per crear la primera categoria.',
     'No .json files found in the \'docs\' folder.': 'No s\'han trobat fitxers .json a la carpeta \'docs\'.'
 };
