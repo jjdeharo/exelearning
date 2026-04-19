@@ -26,7 +26,10 @@ function loadExportIdevice(code) {
             /var\s+\$quickquestionsmultiplechoice\s*=/,
             'global.$quickquestionsmultiplechoice ='
         )
-        .replace(/\$\(function\s*\(\)\s*\{[\s\S]*?\}\);?\s*$/, '');
+        .replace(
+            /\$\(function\s*\(\)\s*\{\s*\$quickquestionsmultiplechoice\.init\(\);\s*\}\);?\s*$/,
+            ''
+        );
     // eslint-disable-next-line no-eval
     (0, eval)(modifiedCode);
     return global.$quickquestionsmultiplechoice;
