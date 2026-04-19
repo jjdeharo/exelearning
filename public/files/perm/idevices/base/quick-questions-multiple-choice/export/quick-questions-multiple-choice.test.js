@@ -9,24 +9,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 function loadExportIdevice(code) {
-    global.$exeDevices = global.$exeDevices || { iDevice: { gamification: {} } };
-    global.$exeDevices.iDevice = global.$exeDevices.iDevice || {
-        gamification: {},
+    global.$exeDevices.iDevice.gamification.colors = {
+        borderColors: {
+            red: '#f00',
+            blue: '#00f',
+            green: '#0f0',
+            yellow: '#ff0',
+        },
+        backColor: {
+            black: '#000',
+        },
     };
-    global.$exeDevices.iDevice.gamification =
-        global.$exeDevices.iDevice.gamification || {};
-    global.$exeDevices.iDevice.gamification.colors =
-        global.$exeDevices.iDevice.gamification.colors || {
-            borderColors: {
-                red: '#f00',
-                blue: '#00f',
-                green: '#0f0',
-                yellow: '#ff0',
-            },
-            backColor: {
-                black: '#000',
-            },
-        };
 
     const modifiedCode = code
         .replace(
