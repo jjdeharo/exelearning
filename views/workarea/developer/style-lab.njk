@@ -275,14 +275,6 @@
             font-size: 12px;
         }
         .sl-quick-row input[type="checkbox"] { accent-color: var(--action); }
-        .sl-quick-apply-btn {
-            width: 100%; padding: 6px;
-            background: var(--action); color: #fff;
-            border: none; border-radius: 5px;
-            font-size: 11px; font-weight: 600;
-            cursor: pointer; margin-top: 4px;
-        }
-        .sl-quick-apply-btn:hover { background: var(--action-dark); }
 
         /* ── Right: Preview ──────────────────────────────────── */
         #sl-preview-area {
@@ -583,7 +575,6 @@
                         <div class="sl-quick-row"><label>Texto botón</label><input type="color" data-quick="buttonTextColor" value="#ffffff"></div>
                     </div>
                 </details>
-                <button class="sl-quick-apply-btn" id="btn-apply-quick">Aplicar cambios</button>
             </div>
         </div>
     </div>
@@ -884,12 +875,6 @@
         if (q.buttonTextColor) css += `.feedbackbutton, .exe-quiz-btn, button.btn { color: ${q.buttonTextColor}${bang}; }\n`;
         return css;
     }
-
-    document.getElementById('btn-apply-quick').addEventListener('click', () => {
-        quickState = collectQuick();
-        injectQuickCss(buildQuickCss(quickState));
-        setStatus('Quick settings applied.');
-    });
 
     document.querySelectorAll('[data-quick]').forEach(el => {
         el.addEventListener('input', () => {
