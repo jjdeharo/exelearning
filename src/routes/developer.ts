@@ -117,14 +117,6 @@ function parseBoolParam(value: string | undefined): boolean | undefined {
 
 export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
-    .get('/developer/style-editor', ({ set }) => {
-        if (!isDev()) {
-            set.status = 404;
-            return 'Not Found';
-        }
-        set.redirect = `${getBasePath()}/developer/style-editor/index.html`;
-    })
-
     .get('/developer/style-lab', ({ set }) => {
         if (!isDev()) {
             set.status = 404;
