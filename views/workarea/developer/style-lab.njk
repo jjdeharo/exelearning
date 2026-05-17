@@ -1,241 +1,235 @@
-{% extends "base.njk" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Style Lab — Developer</title>
+    <link rel="icon" href="{{ '/favicon.ico' | asset }}">
+    <style>
+        :root {
+            --sl-sidebar-width: 280px;
+            --sl-header-height: 48px;
+            --sl-border: #dee2e6;
+            --sl-bg-sidebar: #f8f9fa;
+            --sl-accent: #0d6efd;
+        }
 
-{% block title %}Style Lab — Developer{% endblock %}
+        *, *::before, *::after { box-sizing: border-box; }
 
-{% block stylesheets %}
-{{ super() }}
-<style>
-    :root {
-        --sl-sidebar-width: 280px;
-        --sl-header-height: 48px;
-        --sl-border: #dee2e6;
-        --sl-bg-sidebar: #f8f9fa;
-        --sl-accent: #0d6efd;
-    }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: #fff;
+        }
 
-    * { box-sizing: border-box; }
+        #sl-header {
+            height: var(--sl-header-height);
+            background: #212529;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
+            flex-shrink: 0;
+            border-bottom: 1px solid #343a40;
+        }
 
-    body {
-        margin: 0;
-        font-family: system-ui, sans-serif;
-        font-size: 14px;
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        overflow: hidden;
-        background: #fff;
-    }
+        #sl-header a { color: #adb5bd; text-decoration: none; font-size: 13px; }
+        #sl-header a:hover { color: #fff; }
+        #sl-header .sep { color: #495057; }
+        #sl-header h1 { font-size: 14px; font-weight: 600; margin: 0; color: #fff; }
 
-    #sl-header {
-        height: var(--sl-header-height);
-        background: #212529;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        padding: 0 16px;
-        gap: 12px;
-        flex-shrink: 0;
-        border-bottom: 1px solid #343a40;
-    }
+        #sl-badge {
+            background: #198754;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+        }
 
-    #sl-header a { color: #adb5bd; text-decoration: none; font-size: 13px; }
-    #sl-header a:hover { color: #fff; }
-    #sl-header .sep { color: #495057; }
-    #sl-header h1 { font-size: 14px; font-weight: 600; margin: 0; color: #fff; }
+        #sl-main { display: flex; flex: 1; overflow: hidden; }
 
-    #sl-badge {
-        background: #198754;
-        color: #fff;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 2px 6px;
-        border-radius: 4px;
-        letter-spacing: .5px;
-        text-transform: uppercase;
-    }
+        #sl-sidebar {
+            width: var(--sl-sidebar-width);
+            background: var(--sl-bg-sidebar);
+            border-right: 1px solid var(--sl-border);
+            overflow-y: auto;
+            flex-shrink: 0;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
 
-    #sl-main { display: flex; flex: 1; overflow: hidden; }
+        .sl-section { display: flex; flex-direction: column; gap: 6px; }
 
-    #sl-sidebar {
-        width: var(--sl-sidebar-width);
-        background: var(--sl-bg-sidebar);
-        border-right: 1px solid var(--sl-border);
-        overflow-y: auto;
-        flex-shrink: 0;
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
+        .sl-label {
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: #6c757d;
+        }
 
-    .sl-section { display: flex; flex-direction: column; gap: 6px; }
+        .sl-section select {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #fff;
+        }
 
-    .sl-section label {
-        font-weight: 600;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        color: #6c757d;
-    }
+        .sl-section select:focus {
+            outline: none;
+            border-color: var(--sl-accent);
+            box-shadow: 0 0 0 3px rgba(13,110,253,.15);
+        }
 
-    .sl-section select {
-        width: 100%;
-        padding: 6px 8px;
-        border: 1px solid #ced4da;
-        border-radius: 6px;
-        font-size: 13px;
-        background: #fff;
-    }
+        .sl-btn-group { display: flex; gap: 4px; }
 
-    .sl-section select:focus {
-        outline: none;
-        border-color: var(--sl-accent);
-        box-shadow: 0 0 0 3px rgba(13,110,253,.15);
-    }
+        .sl-btn-group button {
+            flex: 1;
+            padding: 6px 4px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            background: #fff;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background .15s, border-color .15s;
+        }
 
-    .sl-btn-group { display: flex; gap: 4px; }
+        .sl-btn-group button.active,
+        .sl-btn-group button:hover {
+            background: var(--sl-accent);
+            border-color: var(--sl-accent);
+            color: #fff;
+        }
 
-    .sl-btn-group button {
-        flex: 1;
-        padding: 6px 4px;
-        border: 1px solid #ced4da;
-        border-radius: 6px;
-        background: #fff;
-        font-size: 12px;
-        cursor: pointer;
-        transition: background .15s, border-color .15s;
-    }
+        .sl-options-grid { display: flex; flex-direction: column; gap: 4px; }
 
-    .sl-btn-group button.active,
-    .sl-btn-group button:hover {
-        background: var(--sl-accent);
-        border-color: var(--sl-accent);
-        color: #fff;
-    }
+        .sl-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #495057;
+            cursor: pointer;
+            padding: 3px 0;
+        }
 
-    /* Export Options checkboxes */
-    .sl-options-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
+        .sl-option input[type="checkbox"] { cursor: pointer; accent-color: var(--sl-accent); }
 
-    .sl-option {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 12px;
-        color: #495057;
-        cursor: pointer;
-        padding: 3px 0;
-    }
+        #sl-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid var(--sl-border);
+        }
 
-    .sl-option input[type="checkbox"] { cursor: pointer; accent-color: var(--sl-accent); }
+        #sl-actions button {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
 
-    #sl-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-top: auto;
-        padding-top: 12px;
-        border-top: 1px solid var(--sl-border);
-    }
+        #sl-actions button:disabled { opacity: .5; cursor: not-allowed; }
 
-    #sl-actions button {
-        width: 100%;
-        padding: 8px;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        border: 1px solid transparent;
-        transition: opacity .15s;
-    }
+        #btn-preview  { background: var(--sl-accent); color: #fff; border-color: var(--sl-accent); }
+        #btn-open-window { background: #fff; border-color: #ced4da; }
+        #btn-reload-theme { background: #fff; border-color: #ced4da; color: #6c757d; font-size: 12px; }
 
-    #sl-actions button:disabled { opacity: .5; cursor: not-allowed; }
+        #sl-preview { flex: 1; display: flex; flex-direction: column; background: #e9ecef; overflow: hidden; }
 
-    #btn-preview { background: var(--sl-accent); color: #fff; border-color: var(--sl-accent); }
-    #btn-open-window { background: #fff; border-color: #ced4da; }
-    #btn-reload-theme { background: #fff; border-color: #ced4da; color: #6c757d; font-size: 12px; }
+        #sl-viewport-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #fff;
+            border-bottom: 1px solid var(--sl-border);
+            flex-shrink: 0;
+        }
 
-    #sl-preview { flex: 1; display: flex; flex-direction: column; background: #e9ecef; overflow: hidden; }
+        #sl-viewport-bar button {
+            padding: 4px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 20px;
+            background: #fff;
+            font-size: 12px;
+            cursor: pointer;
+        }
 
-    #sl-viewport-bar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 8px 16px;
-        background: #fff;
-        border-bottom: 1px solid var(--sl-border);
-        flex-shrink: 0;
-    }
+        #sl-viewport-bar button.active { background: #212529; border-color: #212529; color: #fff; }
 
-    #sl-viewport-bar button {
-        padding: 4px 12px;
-        border: 1px solid #ced4da;
-        border-radius: 20px;
-        background: #fff;
-        font-size: 12px;
-        cursor: pointer;
-    }
+        #sl-iframe-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow: auto;
+        }
 
-    #sl-viewport-bar button.active { background: #212529; border-color: #212529; color: #fff; }
+        #sl-iframe-wrap.vp-desktop { padding: 0; }
+        #sl-iframe-wrap.vp-tablet  { padding: 16px; }
+        #sl-iframe-wrap.vp-mobile  { padding: 32px; }
 
-    #sl-iframe-wrap {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 16px;
-        overflow: auto;
-        transition: all .3s;
-    }
+        #sl-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
 
-    #sl-iframe-wrap.vp-desktop { padding: 0; }
-    #sl-iframe-wrap.vp-tablet  { padding: 16px; }
-    #sl-iframe-wrap.vp-mobile  { padding: 32px; }
+        #sl-iframe-wrap.vp-tablet #sl-iframe { max-width: 768px; border-radius: 4px; box-shadow: 0 4px 24px rgba(0,0,0,.15); }
+        #sl-iframe-wrap.vp-mobile #sl-iframe { max-width: 390px; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,.2); }
 
-    #sl-iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        background: #fff;
-        transition: width .3s, height .3s, border-radius .3s;
-    }
+        #sl-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #6c757d;
+            font-size: 14px;
+            height: 100%;
+            width: 100%;
+        }
 
-    #sl-iframe-wrap.vp-tablet #sl-iframe { max-width: 768px; border-radius: 4px; box-shadow: 0 4px 24px rgba(0,0,0,.15); }
-    #sl-iframe-wrap.vp-mobile #sl-iframe { max-width: 390px; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,.2); }
+        #sl-placeholder svg { opacity: .3; }
 
-    #sl-placeholder {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        color: #6c757d;
-        font-size: 14px;
-        height: 100%;
-        width: 100%;
-    }
+        #sl-status {
+            font-size: 11px;
+            color: #6c757d;
+            text-align: center;
+            padding: 4px 8px;
+            background: #fff;
+            border-top: 1px solid var(--sl-border);
+            flex-shrink: 0;
+        }
 
-    #sl-placeholder svg { opacity: .3; }
+        .sl-loading { opacity: .6; pointer-events: none; }
+    </style>
+</head>
+<body>
 
-    #sl-status {
-        font-size: 11px;
-        color: #6c757d;
-        text-align: center;
-        padding: 4px 8px;
-        background: #fff;
-        border-top: 1px solid var(--sl-border);
-        flex-shrink: 0;
-    }
-
-    .sl-loading { opacity: .6; pointer-events: none; }
-</style>
-{% endblock %}
-
-{% block body %}
 <div id="sl-header">
     <a href="{{ basePath }}/workarea">← eXeLearning</a>
     <span class="sep">/</span>
@@ -247,21 +241,21 @@
     <aside id="sl-sidebar">
 
         <div class="sl-section">
-            <label>Fixture</label>
+            <span class="sl-label">Fixture</span>
             <select id="sl-fixture" data-testid="style-lab-fixture">
                 <option value="">— select —</option>
             </select>
         </div>
 
         <div class="sl-section">
-            <label>Theme</label>
+            <span class="sl-label">Theme</span>
             <select id="sl-theme" data-testid="style-lab-theme">
                 <option value="">— loading —</option>
             </select>
         </div>
 
         <div class="sl-section">
-            <label>Export type</label>
+            <span class="sl-label">Export type</span>
             <div class="sl-btn-group" data-testid="style-lab-export-type">
                 <button class="active" data-export="html5">Website</button>
                 <button data-export="html5-sp">Single page</button>
@@ -270,7 +264,7 @@
         </div>
 
         <div class="sl-section">
-            <label>Export options</label>
+            <span class="sl-label">Export options</span>
             <div class="sl-options-grid" data-testid="style-lab-export-options">
                 <label class="sl-option">
                     <input type="checkbox" id="opt-searchBox" data-meta="addSearchBox" data-testid="opt-searchBox">
@@ -323,7 +317,7 @@
     </div>
 </div>
 
-<script src="{{ ('/libs/fflate/fflate.umd.js') | asset }}"></script>
+<script src="{{ '/libs/fflate/fflate.umd.js' | asset }}"></script>
 <script>
 (function () {
     const basePath = {{ basePath | json }};
@@ -332,11 +326,9 @@
     let previewReady = false;
     let selectedExport = 'html5';
 
-    // ─── URL state helpers ────────────────────────────────────────────────────
+    // ─── URL state ────────────────────────────────────────────────────────────
 
-    function getParams() {
-        return new URLSearchParams(location.search);
-    }
+    function getParams() { return new URLSearchParams(location.search); }
 
     function pushParams(patch) {
         const p = getParams();
@@ -388,7 +380,10 @@
             for (const v of Object.values(files)) {
                 if (v instanceof ArrayBuffer) transferables.push(v);
             }
-            sw.postMessage({ type: 'SET_CONTENT', data: { files, options: { openExternalLinksInNewWindow: true } } }, transferables);
+            sw.postMessage(
+                { type: 'SET_CONTENT', data: { files, options: { openExternalLinksInNewWindow: true } } },
+                transferables
+            );
         });
     }
 
@@ -397,7 +392,7 @@
     async function loadFixtures(selectValue) {
         const sel = document.getElementById('sl-fixture');
         try {
-            const res = await fetch(`${basePath}/api/developer/fixtures`);
+            const res = await fetch(basePath + '/api/developer/fixtures');
             const { fixtures } = await res.json();
             sel.innerHTML = '<option value="">— select fixture —</option>' +
                 fixtures.map(f => `<option value="${f}"${f === selectValue ? ' selected' : ''}>${f}</option>`).join('');
@@ -409,7 +404,7 @@
     async function loadThemes(selectValue) {
         const sel = document.getElementById('sl-theme');
         try {
-            const res = await fetch(`${basePath}/api/themes/installed`);
+            const res = await fetch(basePath + '/api/themes/installed');
             const { themes } = await res.json();
             sel.innerHTML = '<option value="">— select theme —</option>' +
                 themes.map(t => {
@@ -436,7 +431,7 @@
         btn.addEventListener('click', () => {
             document.querySelectorAll('[data-viewport]').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById('sl-iframe-wrap').className = `vp-${btn.dataset.viewport}`;
+            document.getElementById('sl-iframe-wrap').className = 'vp-' + btn.dataset.viewport;
             pushParams({ viewport: btn.dataset.viewport });
         });
     });
@@ -451,7 +446,6 @@
         updateActions();
     });
 
-    // Export option checkboxes: update URL and re-preview automatically
     document.querySelectorAll('[data-meta]').forEach(cb => {
         cb.addEventListener('change', () => {
             pushParams({ [cb.dataset.meta]: cb.checked ? '1' : '0' });
@@ -479,12 +473,10 @@
         try {
             await ensureServiceWorker();
 
-            const url = new URL(`${basePath}/api/developer/style-lab/preview`, location.href);
+            const url = new URL(basePath + '/api/developer/style-lab/preview', location.href);
             url.searchParams.set('fixture', fixture);
             url.searchParams.set('theme', theme);
             url.searchParams.set('exportType', selectedExport);
-
-            // Append export option overrides
             document.querySelectorAll('[data-meta]').forEach(cb => {
                 url.searchParams.set(cb.dataset.meta, cb.checked ? '1' : '0');
             });
@@ -511,9 +503,9 @@
             previewReady = true;
             updateActions();
             showPreview();
-            setStatus(`${fileCount} files · ${fixture} · ${theme} · ${selectedExport}`);
+            setStatus(fileCount + ' files · ' + fixture + ' · ' + theme + ' · ' + selectedExport);
         } catch (e) {
-            setStatus(`Error: ${e.message}`);
+            setStatus('Error: ' + e.message);
             console.error('[Style Lab]', e);
         } finally {
             setLoading(false);
@@ -526,16 +518,12 @@
         if (previewReady) window.open(viewerUrl, '_blank');
     });
 
-    // Reload from disk: re-reads CSS from filesystem on next export (files are static, no cache)
     document.getElementById('btn-reload-theme').addEventListener('click', async () => {
-        try {
-            await fetch(`${basePath}/api/developer/reload-theme`, { method: 'POST' });
-        } catch { /* ignore */ }
-        if (previewReady || (document.getElementById('sl-fixture').value && document.getElementById('sl-theme').value)) {
-            runPreview();
-        } else {
-            setStatus('Select fixture and theme first.');
-        }
+        try { await fetch(basePath + '/api/developer/reload-theme', { method: 'POST' }); } catch { /* ignore */ }
+        const fixture = document.getElementById('sl-fixture').value;
+        const theme = document.getElementById('sl-theme').value;
+        if (fixture && theme) runPreview();
+        else setStatus('Select fixture and theme first.');
     });
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -560,8 +548,6 @@
 
     function applyUrlParams() {
         const p = getParams();
-
-        // Export type
         const exportParam = p.get('export');
         if (exportParam) {
             document.querySelectorAll('[data-export]').forEach(btn => {
@@ -570,23 +556,18 @@
                 if (active) selectedExport = exportParam;
             });
         }
-
-        // Viewport
         const viewportParam = p.get('viewport');
         if (viewportParam) {
             document.querySelectorAll('[data-viewport]').forEach(btn => {
                 const active = btn.dataset.viewport === viewportParam;
                 btn.classList.toggle('active', active);
-                if (active) document.getElementById('sl-iframe-wrap').className = `vp-${viewportParam}`;
+                if (active) document.getElementById('sl-iframe-wrap').className = 'vp-' + viewportParam;
             });
         }
-
-        // Export options
         document.querySelectorAll('[data-meta]').forEach(cb => {
             const val = p.get(cb.dataset.meta);
             if (val !== null) cb.checked = val === '1' || val === 'true';
         });
-
         return { fixture: p.get('fixture'), theme: p.get('theme') };
     }
 
@@ -596,15 +577,12 @@
         const { fixture, theme } = applyUrlParams();
         await Promise.all([loadFixtures(fixture), loadThemes(theme)]);
         updateActions();
-
-        // Auto-preview when all required params come from the URL
         if (fixture && theme) runPreview();
-
-        // Pre-register SW in background
         if (navigator.serviceWorker) ensureServiceWorker().catch(() => {});
     }
 
     init();
 })();
 </script>
-{% endblock %}
+</body>
+</html>
