@@ -1,0 +1,560 @@
+{% extends "base.njk" %}
+
+{% block title %}Style Lab — Developer{% endblock %}
+
+{% block stylesheets %}
+{{ super() }}
+<style>
+    :root {
+        --sl-sidebar-width: 280px;
+        --sl-header-height: 48px;
+        --sl-border: #dee2e6;
+        --sl-bg-sidebar: #f8f9fa;
+        --sl-accent: #0d6efd;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    #sl-header {
+        height: var(--sl-header-height);
+        background: #212529;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        gap: 12px;
+        flex-shrink: 0;
+        border-bottom: 1px solid #343a40;
+    }
+
+    #sl-header a {
+        color: #adb5bd;
+        text-decoration: none;
+        font-size: 13px;
+    }
+
+    #sl-header a:hover { color: #fff; }
+
+    #sl-header .sep { color: #495057; }
+
+    #sl-header h1 {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0;
+        color: #fff;
+    }
+
+    #sl-badge {
+        background: #198754;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 4px;
+        letter-spacing: .5px;
+        text-transform: uppercase;
+    }
+
+    #sl-main {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    #sl-sidebar {
+        width: var(--sl-sidebar-width);
+        background: var(--sl-bg-sidebar);
+        border-right: 1px solid var(--sl-border);
+        overflow-y: auto;
+        flex-shrink: 0;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .sl-section { display: flex; flex-direction: column; gap: 6px; }
+
+    .sl-section label {
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #6c757d;
+    }
+
+    .sl-section select,
+    .sl-section input[type="text"] {
+        width: 100%;
+        padding: 6px 8px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        font-size: 13px;
+        background: #fff;
+    }
+
+    .sl-section select:focus,
+    .sl-section input:focus {
+        outline: none;
+        border-color: var(--sl-accent);
+        box-shadow: 0 0 0 3px rgba(13,110,253,.15);
+    }
+
+    .sl-btn-group {
+        display: flex;
+        gap: 4px;
+    }
+
+    .sl-btn-group button {
+        flex: 1;
+        padding: 6px 4px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        background: #fff;
+        font-size: 12px;
+        cursor: pointer;
+        transition: background .15s, border-color .15s;
+    }
+
+    .sl-btn-group button.active,
+    .sl-btn-group button:hover {
+        background: var(--sl-accent);
+        border-color: var(--sl-accent);
+        color: #fff;
+    }
+
+    #sl-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid var(--sl-border);
+    }
+
+    #sl-actions button {
+        width: 100%;
+        padding: 8px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: opacity .15s;
+    }
+
+    #sl-actions button:disabled { opacity: .5; cursor: not-allowed; }
+
+    #btn-preview {
+        background: var(--sl-accent);
+        color: #fff;
+        border-color: var(--sl-accent);
+    }
+
+    #btn-open-window {
+        background: #fff;
+        border-color: #ced4da;
+    }
+
+    #btn-reload-theme {
+        background: #fff;
+        border-color: #ced4da;
+        color: #6c757d;
+        font-size: 12px;
+    }
+
+    #sl-preview {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #e9ecef;
+        overflow: hidden;
+    }
+
+    #sl-viewport-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: #fff;
+        border-bottom: 1px solid var(--sl-border);
+        flex-shrink: 0;
+    }
+
+    #sl-viewport-bar button {
+        padding: 4px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 20px;
+        background: #fff;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    #sl-viewport-bar button.active {
+        background: #212529;
+        border-color: #212529;
+        color: #fff;
+    }
+
+    #sl-iframe-wrap {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        overflow: auto;
+        transition: all .3s;
+    }
+
+    #sl-iframe-wrap.vp-desktop  { padding: 0; }
+    #sl-iframe-wrap.vp-tablet   { padding: 16px; }
+    #sl-iframe-wrap.vp-mobile   { padding: 32px; }
+
+    #sl-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: #fff;
+        border-radius: 0;
+        box-shadow: none;
+        transition: width .3s, height .3s, border-radius .3s;
+    }
+
+    #sl-iframe-wrap.vp-tablet  #sl-iframe { max-width: 768px;  border-radius: 4px; box-shadow: 0 4px 24px rgba(0,0,0,.15); }
+    #sl-iframe-wrap.vp-mobile  #sl-iframe { max-width: 390px;  border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,.2); }
+
+    #sl-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: #6c757d;
+        font-size: 14px;
+        height: 100%;
+        width: 100%;
+    }
+
+    #sl-placeholder svg { opacity: .3; }
+
+    #sl-status {
+        font-size: 11px;
+        color: #6c757d;
+        text-align: center;
+        padding: 4px 8px;
+        background: #fff;
+        border-top: 1px solid var(--sl-border);
+        flex-shrink: 0;
+    }
+
+    .sl-loading { opacity: .6; pointer-events: none; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div id="sl-header">
+    <a href="{{ basePath }}/workarea">← eXeLearning</a>
+    <span class="sep">/</span>
+    <h1>Style Lab</h1>
+    <span id="sl-badge">dev</span>
+</div>
+
+<div id="sl-main">
+    <aside id="sl-sidebar">
+
+        <div class="sl-section">
+            <label>Fixture</label>
+            <select id="sl-fixture" data-testid="style-lab-fixture">
+                <option value="">— select —</option>
+            </select>
+        </div>
+
+        <div class="sl-section">
+            <label>Theme</label>
+            <select id="sl-theme" data-testid="style-lab-theme">
+                <option value="">— loading —</option>
+            </select>
+        </div>
+
+        <div class="sl-section">
+            <label>Export type</label>
+            <div class="sl-btn-group" data-testid="style-lab-export-type">
+                <button class="active" data-export="html5">Website</button>
+                <button data-export="html5-sp">Single page</button>
+                <button data-export="scorm12">SCORM 1.2</button>
+            </div>
+        </div>
+
+        <div id="sl-actions">
+            <button id="btn-preview" data-testid="style-lab-preview-btn" disabled>Preview</button>
+            <button id="btn-open-window" data-testid="style-lab-open-window" disabled>Open in new window</button>
+            <button id="btn-reload-theme" data-testid="style-lab-reload-theme" title="Reload theme files from disk without restarting">↺ Reload theme from disk</button>
+        </div>
+    </aside>
+
+    <div id="sl-preview">
+        <div id="sl-viewport-bar">
+            <button class="active" data-viewport="desktop" data-testid="vp-desktop">Desktop</button>
+            <button data-viewport="tablet" data-testid="vp-tablet">Tablet</button>
+            <button data-viewport="mobile" data-testid="vp-mobile">Mobile</button>
+        </div>
+
+        <div id="sl-iframe-wrap" class="vp-desktop">
+            <div id="sl-placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 3h18v14H3zm16 12V5H5v10h14zM1 18h22v2H1z"/>
+                </svg>
+                <span>Select a fixture and theme, then click <strong>Preview</strong></span>
+            </div>
+            <iframe id="sl-iframe" style="display:none" data-testid="style-lab-iframe"></iframe>
+        </div>
+
+        <div id="sl-status" data-testid="style-lab-status">Ready</div>
+    </div>
+</div>
+
+<script src="{{ ('/libs/fflate/fflate.umd.js') | asset }}"></script>
+<script>
+(function () {
+    const basePath = {{ basePath | json }};
+    const viewerUrl = basePath + '/viewer/index.html';
+    let swRegistration = null;
+    let previewReady = false;
+    let selectedExport = 'html5';
+
+    // --- Service Worker setup ---
+
+    async function ensureServiceWorker() {
+        if (!navigator.serviceWorker) {
+            throw new Error('Service Workers not supported in this browser');
+        }
+        if (swRegistration) return swRegistration;
+
+        const scope = basePath + '/viewer/';
+        const swPath = basePath + '/preview-sw.js';
+
+        const existing = await navigator.serviceWorker.getRegistration(scope);
+        if (existing && existing.active) {
+            swRegistration = existing;
+            return swRegistration;
+        }
+
+        swRegistration = await navigator.serviceWorker.register(swPath, { scope });
+        await new Promise((resolve) => {
+            if (swRegistration.active) { resolve(); return; }
+            const worker = swRegistration.installing || swRegistration.waiting;
+            if (worker) {
+                worker.addEventListener('statechange', () => {
+                    if (worker.state === 'activated') resolve();
+                });
+            } else {
+                resolve();
+            }
+        });
+        return swRegistration;
+    }
+
+    function getActiveSW() {
+        return swRegistration?.active || navigator.serviceWorker?.controller || null;
+    }
+
+    async function sendToSW(files) {
+        const sw = getActiveSW();
+        if (!sw) throw new Error('No active Service Worker');
+
+        return new Promise((resolve, reject) => {
+            const ch = new MessageChannel();
+            const timeout = setTimeout(() => reject(new Error('SW timeout')), 15000);
+            ch.port1.onmessage = (e) => {
+                clearTimeout(timeout);
+                if (e.data?.type === 'CONTENT_READY') resolve(e.data.fileCount);
+                else reject(new Error('SW error: ' + JSON.stringify(e.data)));
+            };
+            const transferables = [ch.port2];
+            for (const v of Object.values(files)) {
+                if (v instanceof ArrayBuffer) transferables.push(v);
+            }
+            sw.postMessage({ type: 'SET_CONTENT', data: { files, options: { openExternalLinksInNewWindow: true } } }, transferables);
+        });
+    }
+
+    // --- Populate selectors ---
+
+    async function loadFixtures() {
+        const sel = document.getElementById('sl-fixture');
+        try {
+            const res = await fetch(`${basePath}/api/developer/fixtures`);
+            const { fixtures } = await res.json();
+            sel.innerHTML = '<option value="">— select fixture —</option>' +
+                fixtures.map(f => `<option value="${f}">${f}</option>`).join('');
+        } catch {
+            sel.innerHTML = '<option value="">Error loading fixtures</option>';
+        }
+    }
+
+    async function loadThemes() {
+        const sel = document.getElementById('sl-theme');
+        try {
+            const res = await fetch(`${basePath}/api/themes/installed`);
+            const { themes } = await res.json();
+            sel.innerHTML = '<option value="">— select theme —</option>' +
+                themes.map(t => `<option value="${t.dirName}"${t.isDefault ? ' selected' : ''}>${t.displayName}</option>`).join('');
+        } catch {
+            sel.innerHTML = '<option value="">Error loading themes</option>';
+        }
+    }
+
+    // --- Export type buttons ---
+
+    document.querySelectorAll('[data-export]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-export]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedExport = btn.dataset.export;
+        });
+    });
+
+    // --- Viewport buttons ---
+
+    document.querySelectorAll('[data-viewport]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-viewport]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('sl-iframe-wrap').className = `vp-${btn.dataset.viewport}`;
+        });
+    });
+
+    // --- Enable Preview button when both selectors have a value ---
+
+    function updateActions() {
+        const fixture = document.getElementById('sl-fixture').value;
+        const theme = document.getElementById('sl-theme').value;
+        document.getElementById('btn-preview').disabled = !(fixture && theme);
+        document.getElementById('btn-open-window').disabled = !previewReady;
+    }
+
+    document.getElementById('sl-fixture').addEventListener('change', updateActions);
+    document.getElementById('sl-theme').addEventListener('change', updateActions);
+
+    // --- Preview ---
+
+    document.getElementById('btn-preview').addEventListener('click', async () => {
+        const fixture = document.getElementById('sl-fixture').value;
+        const theme = document.getElementById('sl-theme').value;
+        if (!fixture || !theme) return;
+
+        setStatus('Generating preview…');
+        setLoading(true);
+
+        try {
+            // 1. Ensure SW is ready
+            setStatus('Initializing Service Worker…');
+            await ensureServiceWorker();
+
+            // 2. Fetch ZIP from server
+            setStatus('Fetching exported ZIP…');
+            const url = new URL(`${basePath}/api/developer/style-lab/preview`, location.href);
+            url.searchParams.set('fixture', fixture);
+            url.searchParams.set('theme', theme);
+            url.searchParams.set('exportType', selectedExport);
+
+            const res = await fetch(url.toString());
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.message || res.statusText);
+            }
+
+            // 3. Unzip in browser with fflate
+            setStatus('Decompressing…');
+            const zipBuffer = await res.arrayBuffer();
+            const zipData = window.fflate.unzipSync(new Uint8Array(zipBuffer));
+
+            // Convert { path: Uint8Array } → { path: ArrayBuffer }
+            const files = {};
+            for (const [filePath, data] of Object.entries(zipData)) {
+                files[filePath] = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+            }
+
+            // 4. Send to Service Worker
+            setStatus('Sending to Service Worker…');
+            const fileCount = await sendToSW(files);
+
+            // 5. Load in iframe
+            previewReady = true;
+            updateActions();
+            showPreview();
+            setStatus(`Preview ready · ${fileCount} files · ${fixture} · ${theme} · ${selectedExport}`);
+        } catch (e) {
+            setStatus(`Error: ${e.message}`);
+            console.error('[Style Lab]', e);
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    // --- Open in new window ---
+
+    document.getElementById('btn-open-window').addEventListener('click', () => {
+        if (previewReady) window.open(viewerUrl, '_blank');
+    });
+
+    // --- Reload theme from disk ---
+
+    document.getElementById('btn-reload-theme').addEventListener('click', async () => {
+        setStatus('Reloading theme…');
+        try {
+            const res = await fetch(`${basePath}/api/developer/reload-theme`, { method: 'POST' });
+            if (res.ok) {
+                setStatus('Theme reloaded — click Preview to apply changes.');
+            } else {
+                setStatus('Reload failed.');
+            }
+        } catch {
+            setStatus('Reload failed.');
+        }
+    });
+
+    // --- Helpers ---
+
+    function showPreview() {
+        const iframe = document.getElementById('sl-iframe');
+        const placeholder = document.getElementById('sl-placeholder');
+        // Force reload if already showing viewer
+        if (iframe.src && iframe.src.endsWith('/viewer/index.html')) {
+            iframe.src = 'about:blank';
+            setTimeout(() => { iframe.src = viewerUrl; }, 30);
+        } else {
+            iframe.src = viewerUrl;
+        }
+        iframe.style.display = '';
+        placeholder.style.display = 'none';
+    }
+
+    function setStatus(msg) {
+        document.getElementById('sl-status').textContent = msg;
+    }
+
+    function setLoading(loading) {
+        document.getElementById('sl-sidebar').classList.toggle('sl-loading', loading);
+    }
+
+    // --- Init ---
+    loadFixtures();
+    loadThemes();
+    // Pre-register SW in background so first preview is faster
+    if (navigator.serviceWorker) ensureServiceWorker().catch(() => {});
+})();
+</script>
+{% endblock %}
