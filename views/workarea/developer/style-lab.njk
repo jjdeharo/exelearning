@@ -159,10 +159,10 @@
             cursor: pointer; border: 1px solid transparent; transition: all .12s;
         }
         #sl-actions button:disabled { opacity: .4; cursor: not-allowed; }
-        #btn-preview { background: var(--action); color: #fff; border-color: var(--action); }
-        #btn-preview:not(:disabled):hover { background: var(--action-dark); }
         #btn-open-window { background: #fff; border-color: var(--line); color: var(--ink); }
         #btn-open-window:not(:disabled):hover { border-color: var(--action); color: var(--action); }
+        #btn-export-all-css { background: var(--action); color: #fff; border-color: var(--action); }
+        #btn-export-all-css:hover { background: var(--action-dark); }
         #btn-reload-theme { background: transparent; border-color: var(--line); color: var(--muted); font-size: 11px; }
         #btn-reload-theme:hover { color: var(--ink); }
 
@@ -542,8 +542,8 @@
                 </div>
             </div>
             <div id="sl-actions">
-                <button id="btn-preview" data-testid="style-lab-preview-btn" disabled>▶ Preview</button>
                 <button id="btn-open-window" data-testid="style-lab-open-window" disabled>Open in new window</button>
+                <button id="btn-export-all-css" data-testid="style-lab-export-theme">⬇ Export / install theme</button>
                 <button id="btn-reload-theme" data-testid="style-lab-reload-theme">↺ Reload theme from disk</button>
             </div>
         </div>
@@ -566,7 +566,6 @@
                     <button id="btn-apply-css">Apply</button>
                     <button id="btn-download-css">Download</button>
                     <button id="btn-reset-css">Reset</button>
-                    <button id="btn-export-all-css" title="Exportar tema modificado como ZIP instalable en eXeLearning">Export theme ZIP</button>
                 </div>
             </div>
         </div>
@@ -1415,12 +1414,12 @@
     document.getElementById('sl-fixture').addEventListener('change', e => {
         pushParams({ fixture: e.target.value || null });
         updateActions();
-        if (previewReady && e.target.value && document.getElementById('sl-theme').value) runPreview();
+        if (e.target.value && document.getElementById('sl-theme').value) runPreview();
     });
     document.getElementById('sl-theme').addEventListener('change', e => {
         pushParams({ theme: e.target.value || null });
         updateActions();
-        if (previewReady && e.target.value && document.getElementById('sl-fixture').value) runPreview();
+        if (e.target.value && document.getElementById('sl-fixture').value) runPreview();
     });
     document.querySelectorAll('[data-meta]').forEach(cb => {
         cb.addEventListener('change', () => {
@@ -1430,9 +1429,6 @@
     });
 
     function updateActions() {
-        const f = document.getElementById('sl-fixture').value;
-        const t = document.getElementById('sl-theme').value;
-        document.getElementById('btn-preview').disabled = !(f && t);
         document.getElementById('btn-open-window').disabled = !previewReady;
     }
 
@@ -1495,7 +1491,6 @@
         document.getElementById('sl-placeholder').style.display = 'none';
     }
 
-    document.getElementById('btn-preview').addEventListener('click', runPreview);
     document.getElementById('btn-open-window').addEventListener('click', () => {
         if (previewReady) window.open(viewerUrl, '_blank');
     });
