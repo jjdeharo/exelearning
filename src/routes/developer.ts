@@ -270,19 +270,26 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
     })
 
     // List active project sessions (projects open in the editor right now)
-    // sessionId === project UUID (odeId is never set on session objects)
-    .get('/api/developer/sessions', ({ set }) => {
+    // sessionId === project UUID; only sessions with a saved project in DB are shown.
+    // Title comes from DB so it's always up-to-date (session.fileName may lag behind).
+    .get('/api/developer/sessions', async ({ set }) => {
         if (!isDev()) {
             set.status = 404;
             return { error: 'Not Found' };
         }
-        const sessions = getAllSessions()
-            .filter(s => s.fileName) // only real project sessions (have a file name)
-            .map(s => ({
-                sessionId: s.sessionId,
-                fileName: s.fileName || 'Untitled',
-            }));
-        return { sessions };
+        const allSessions = getAllSessions();
+        const seen = new Set<string>();
+        const results: { sessionId: string; fileName: string }[] = [];
+        for (const s of allSessions) {
+            if (seen.has(s.sessionId)) continue;
+            seen.add(s.sessionId);
+            try {
+                const project = await findProjectByUuid(db, s.sessionId);
+                if (!project?.title) continue; // skip unsaved / untitled projects
+                results.push({ sessionId: s.sessionId, fileName: project.title });
+            } catch { /* skip on error */ }
+        }
+        return { sessions: results };
     })
 
     // Serve a fixture file by name
