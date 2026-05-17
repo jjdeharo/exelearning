@@ -340,6 +340,27 @@
         #sl-placeholder svg { opacity: .25; }
         body.sl-inspect #sl-iframe { cursor: crosshair; }
 
+        /* ── Loading overlay ─────────────────────────────────── */
+        #sl-loading-overlay {
+            display: none;
+            position: absolute; inset: 0;
+            background: rgba(238,241,244,.82);
+            backdrop-filter: blur(2px);
+            z-index: 10;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 14px; color: var(--muted); font-size: 13px;
+        }
+        #sl-loading-overlay.visible { display: flex; }
+        .sl-spinner {
+            width: 36px; height: 36px;
+            border: 3px solid var(--line);
+            border-top-color: var(--action);
+            border-radius: 50%;
+            animation: sl-spin .7s linear infinite;
+        }
+        @keyframes sl-spin { to { transform: rotate(360deg); } }
+
         /* ── Click-to-edit modal ─────────────────────────────── */
         #sl-click-modal {
             position: fixed; top: 80px; right: 20px;
@@ -576,7 +597,11 @@
             <span id="sl-status" data-testid="style-lab-status">Ready</span>
             <button id="btn-inspect" title="Click-to-edit: click an element in the preview">⊕ Inspect</button>
         </div>
-        <div id="sl-iframe-wrap" class="vp-desktop">
+        <div id="sl-iframe-wrap" class="vp-desktop" style="position:relative">
+            <div id="sl-loading-overlay">
+                <div class="sl-spinner"></div>
+                <span id="sl-loading-label">Generating preview…</span>
+            </div>
             <div id="sl-placeholder">
                 <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 3h18v14H3zm16 12V5H5v10h14zM1 18h22v2H1z"/>
@@ -1043,10 +1068,14 @@
         });
     });
     document.getElementById('sl-fixture').addEventListener('change', e => {
-        pushParams({ fixture: e.target.value || null }); updateActions();
+        pushParams({ fixture: e.target.value || null });
+        updateActions();
+        if (previewReady && e.target.value && document.getElementById('sl-theme').value) runPreview();
     });
     document.getElementById('sl-theme').addEventListener('change', e => {
-        pushParams({ theme: e.target.value || null }); updateActions();
+        pushParams({ theme: e.target.value || null });
+        updateActions();
+        if (previewReady && e.target.value && document.getElementById('sl-fixture').value) runPreview();
     });
     document.querySelectorAll('[data-meta]').forEach(cb => {
         cb.addEventListener('change', () => {
@@ -1128,8 +1157,14 @@
     });
 
     // ─── Helpers ──────────────────────────────────────────────
-    function setStatus(msg) { document.getElementById('sl-status').textContent = msg; }
-    function setLoading(on) { document.getElementById('sl-panel').classList.toggle('sl-loading', on); }
+    function setStatus(msg) {
+        document.getElementById('sl-status').textContent = msg;
+        document.getElementById('sl-loading-label').textContent = msg;
+    }
+    function setLoading(on) {
+        document.getElementById('sl-panel').classList.toggle('sl-loading', on);
+        document.getElementById('sl-loading-overlay').classList.toggle('visible', on);
+    }
 
     // ─── URL params ───────────────────────────────────────────
     function applyUrlParams() {
