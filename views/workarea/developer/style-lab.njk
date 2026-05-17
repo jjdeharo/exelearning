@@ -437,10 +437,13 @@
         <div class="sl-tab-panel active" data-panel="controls">
             <div class="sl-panel-scroll">
                 <div class="sl-section">
-                    <span class="sl-label">Fixture</span>
+                    <span class="sl-label">Proyecto</span>
                     <select id="sl-fixture" data-testid="style-lab-fixture">
                         <option value="">— select —</option>
                     </select>
+                    <span id="sl-fixture-hint" style="font-size:10px;color:var(--muted);margin-top:3px;display:block;">
+                        Abre un proyecto en eXeLearning para verlo aquí como opción.
+                    </span>
                 </div>
                 <div class="sl-section">
                     <span class="sl-label">Theme</span>
@@ -492,7 +495,7 @@
                     <button id="btn-apply-css">Apply</button>
                     <button id="btn-download-css">Download</button>
                     <button id="btn-reset-css">Reset</button>
-                    <button id="btn-export-all-css" title="Export all CSS (editor + Quick + click-to-edit) to paste in Project Properties">Export all CSS</button>
+                    <button id="btn-export-all-css" title="Exportar tema modificado como ZIP instalable en eXeLearning">Export theme ZIP</button>
                 </div>
             </div>
         </div>
@@ -642,45 +645,6 @@
     </div>
 </div>
 
-<!-- ── Export all CSS modal ── -->
-<div id="sl-export-modal" role="dialog" aria-label="Export CSS" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.25);width:min(640px,95vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#212529;color:#fff;border-radius:10px 10px 0 0;">
-            <strong>Exportar CSS</strong>
-            <button id="sl-export-modal-close" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;line-height:1;">×</button>
-        </div>
-        <div style="padding:16px;overflow-y:auto;flex:1;font-size:13px;color:#1f2937;display:flex;flex-direction:column;gap:12px;">
-            <p>Este CSS incluye todas las modificaciones activas (editor manual + Quick settings + click-to-edit). Puedes aplicarlo de dos formas:</p>
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:10px 14px;">
-                <strong>Opción A — CSS personalizado del proyecto (recomendado)</strong>
-                <ol style="margin:6px 0 0 16px;line-height:1.8;">
-                    <li>En eXeLearning, abre <em>Archivo → Propiedades del proyecto → Metadatos avanzados</em></li>
-                    <li>Pega el CSS en el campo <strong>"CSS personalizado"</strong></li>
-                    <li>Guarda el proyecto</li>
-                </ol>
-                <p style="margin:6px 0 0;color:#6b7280;font-size:11px;">Este CSS se incluirá en todas las exportaciones del proyecto sin modificar el tema.</p>
-            </div>
-            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:10px 14px;">
-                <strong>Opción B — Reemplazar el archivo CSS del tema</strong>
-                <ol style="margin:6px 0 0 16px;line-height:1.8;">
-                    <li>En el tab CSS del Style Lab, selecciona el archivo del tema (ej. <code>theme/style.css</code>)</li>
-                    <li>Pulsa <strong>Download</strong> para descargar ese archivo modificado</li>
-                    <li>Reemplaza el archivo en la carpeta del tema</li>
-                </ol>
-                <p style="margin:6px 0 0;color:#6b7280;font-size:11px;">Útil si estás creando o modificando un tema propio.</p>
-            </div>
-            <div>
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-                    <strong>CSS combinado:</strong>
-                    <button id="btn-copy-export-css" style="background:#0ba1a1;color:#fff;border:none;border-radius:5px;padding:4px 12px;font-size:11px;cursor:pointer;">Copiar</button>
-                </div>
-                <textarea id="sl-export-css-text" readonly spellcheck="false"
-                    style="width:100%;height:200px;font-family:monospace;font-size:11px;border:1px solid #d0d5dd;border-radius:5px;padding:8px;resize:vertical;background:#f8fafc;"></textarea>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script src="{{ '/libs/fflate/fflate.umd.js' | asset }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <script>
@@ -787,10 +751,28 @@
     // ─── Data loading ─────────────────────────────────────────
     async function loadFixtures(val) {
         const sel = document.getElementById('sl-fixture');
+        const hint = document.getElementById('sl-fixture-hint');
         try {
-            const { fixtures } = await fetch(basePath + '/api/developer/fixtures').then(r => r.json());
-            sel.innerHTML = '<option value="">— select fixture —</option>' +
-                fixtures.map(f => `<option value="${f}"${f === val ? ' selected' : ''}>${f}</option>`).join('');
+            const [{ fixtures }, { sessions }] = await Promise.all([
+                fetch(basePath + '/api/developer/fixtures').then(r => r.json()),
+                fetch(basePath + '/api/developer/sessions').then(r => r.json()).catch(() => ({ sessions: [] })),
+            ]);
+            let html = '<option value="">— select —</option>';
+            if (sessions.length > 0) {
+                html += '<optgroup label="Proyecto abierto en el editor">';
+                html += sessions.map(s => {
+                    const v = 'session:' + s.sessionId;
+                    return `<option value="${v}"${v === val ? ' selected' : ''}>▶ ${s.fileName}</option>`;
+                }).join('');
+                html += '</optgroup>';
+                hint.style.display = 'none';
+            }
+            if (fixtures.length > 0) {
+                html += '<optgroup label="Fixtures de prueba">';
+                html += fixtures.map(f => `<option value="${f}"${f === val ? ' selected' : ''}>${f}</option>`).join('');
+                html += '</optgroup>';
+            }
+            sel.innerHTML = html;
         } catch { sel.innerHTML = '<option value="">Error loading</option>'; }
     }
 
@@ -1079,27 +1061,40 @@
         return parts.join('\n\n');
     }
 
-    document.getElementById('btn-export-all-css').addEventListener('click', () => {
-        const css = buildExportCss();
-        document.getElementById('sl-export-css-text').value = css || '/* No CSS changes yet. Edit the theme CSS or use Quick settings. */';
-        const modal = document.getElementById('sl-export-modal');
-        modal.style.display = 'flex';
-    });
-
-    document.getElementById('sl-export-modal-close').addEventListener('click', () => {
-        document.getElementById('sl-export-modal').style.display = 'none';
-    });
-    document.getElementById('sl-export-modal').addEventListener('click', e => {
-        if (e.target === e.currentTarget) e.currentTarget.style.display = 'none';
-    });
-
-    document.getElementById('btn-copy-export-css').addEventListener('click', () => {
-        const ta = document.getElementById('sl-export-css-text');
-        navigator.clipboard.writeText(ta.value).then(() => {
-            const btn = document.getElementById('btn-copy-export-css');
-            btn.textContent = '✓ Copiado';
-            setTimeout(() => { btn.textContent = 'Copiar'; }, 2000);
-        }).catch(() => { ta.select(); document.execCommand('copy'); });
+    document.getElementById('btn-export-all-css').addEventListener('click', async () => {
+        const theme = document.getElementById('sl-theme').value;
+        if (!theme) { setStatus('Selecciona un tema primero.'); return; }
+        const btn = document.getElementById('btn-export-all-css');
+        btn.disabled = true;
+        btn.textContent = 'Exportando…';
+        try {
+            // Build cssOverrides: active CSS file + quick CSS appended
+            const cssOverrides = {};
+            if (activeCssFile) {
+                let css = document.getElementById('sl-css-textarea').value;
+                const quickCss = buildQuickCss(quickState);
+                if (quickCss) css += '\n\n/* === Quick settings === */\n' + quickCss;
+                cssOverrides[activeCssFile] = css;
+            }
+            const res = await fetch(basePath + '/api/developer/style-lab/export-theme', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ theme, cssOverrides }),
+            });
+            if (!res.ok) throw new Error((await res.json().catch(() => ({}))).message || res.statusText);
+            const blob = await res.blob();
+            const a = Object.assign(document.createElement('a'), {
+                href: URL.createObjectURL(blob),
+                download: theme + '-custom.zip',
+            });
+            a.click(); URL.revokeObjectURL(a.href);
+            setStatus('Tema exportado: ' + theme + '-custom.zip');
+        } catch(e) {
+            setStatus('Error exportando tema: ' + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Export theme ZIP';
+        }
     });
 
     // ─── Tabs ─────────────────────────────────────────────────
@@ -1152,15 +1147,20 @@
 
     // ─── Preview ──────────────────────────────────────────────
     async function runPreview() {
-        const fixture = document.getElementById('sl-fixture').value;
-        const theme   = document.getElementById('sl-theme').value;
-        if (!fixture || !theme) return;
+        const fixtureVal = document.getElementById('sl-fixture').value;
+        const theme      = document.getElementById('sl-theme').value;
+        if (!fixtureVal || !theme) return;
         setStatus('Generating preview…');
         setLoading(true);
         try {
             await ensureServiceWorker();
             const url = new URL(basePath + '/api/developer/style-lab/preview', location.href);
-            url.searchParams.set('fixture', fixture);
+            // fixtureVal is either "session:<id>" or a fixture filename
+            if (fixtureVal.startsWith('session:')) {
+                url.searchParams.set('session', fixtureVal.slice(8));
+            } else {
+                url.searchParams.set('fixture', fixtureVal);
+            }
             url.searchParams.set('theme', theme);
             url.searchParams.set('exportType', selectedExport);
             document.querySelectorAll('[data-meta]').forEach(cb =>
