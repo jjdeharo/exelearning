@@ -223,8 +223,6 @@
         }
         #btn-apply-css { background: var(--action); color: #fff; }
         #btn-apply-css:hover { background: var(--action-dark); }
-        #btn-download-css { background: #fff; border-color: var(--line); color: var(--ink); }
-        #btn-download-css:hover { border-color: var(--action); color: var(--action); }
         #btn-reset-css { background: #fff; border-color: var(--line); color: #c0392b; }
         #btn-reset-css:hover { border-color: #c0392b; }
         .sl-modified-dot {
@@ -564,7 +562,6 @@
                 </div>
                 <div class="sl-editor-toolbar">
                     <button id="btn-apply-css">Apply</button>
-                    <button id="btn-download-css">Download</button>
                     <button id="btn-reset-css">Reset</button>
                 </div>
             </div>
@@ -1080,15 +1077,6 @@
         updateHighlight();
         if (previewReady) injectEditorCss(originalCss);
         setStatus('CSS reset.');
-    });
-
-    document.getElementById('btn-download-css').addEventListener('click', () => {
-        const css = document.getElementById('sl-css-textarea').value;
-        const a = Object.assign(document.createElement('a'), {
-            href: URL.createObjectURL(new Blob([css], { type: 'text/css' })),
-            download: activeCssFile || 'style.css'
-        });
-        a.click(); URL.revokeObjectURL(a.href);
     });
 
     // ─── Click-to-edit (inspect mode) ────────────────────────
