@@ -38,22 +38,10 @@
         border-bottom: 1px solid #343a40;
     }
 
-    #sl-header a {
-        color: #adb5bd;
-        text-decoration: none;
-        font-size: 13px;
-    }
-
+    #sl-header a { color: #adb5bd; text-decoration: none; font-size: 13px; }
     #sl-header a:hover { color: #fff; }
-
     #sl-header .sep { color: #495057; }
-
-    #sl-header h1 {
-        font-size: 14px;
-        font-weight: 600;
-        margin: 0;
-        color: #fff;
-    }
+    #sl-header h1 { font-size: 14px; font-weight: 600; margin: 0; color: #fff; }
 
     #sl-badge {
         background: #198754;
@@ -66,11 +54,7 @@
         text-transform: uppercase;
     }
 
-    #sl-main {
-        display: flex;
-        flex: 1;
-        overflow: hidden;
-    }
+    #sl-main { display: flex; flex: 1; overflow: hidden; }
 
     #sl-sidebar {
         width: var(--sl-sidebar-width);
@@ -81,7 +65,7 @@
         padding: 12px;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 14px;
     }
 
     .sl-section { display: flex; flex-direction: column; gap: 6px; }
@@ -94,8 +78,7 @@
         color: #6c757d;
     }
 
-    .sl-section select,
-    .sl-section input[type="text"] {
+    .sl-section select {
         width: 100%;
         padding: 6px 8px;
         border: 1px solid #ced4da;
@@ -104,17 +87,13 @@
         background: #fff;
     }
 
-    .sl-section select:focus,
-    .sl-section input:focus {
+    .sl-section select:focus {
         outline: none;
         border-color: var(--sl-accent);
         box-shadow: 0 0 0 3px rgba(13,110,253,.15);
     }
 
-    .sl-btn-group {
-        display: flex;
-        gap: 4px;
-    }
+    .sl-btn-group { display: flex; gap: 4px; }
 
     .sl-btn-group button {
         flex: 1;
@@ -133,6 +112,25 @@
         border-color: var(--sl-accent);
         color: #fff;
     }
+
+    /* Export Options checkboxes */
+    .sl-options-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .sl-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #495057;
+        cursor: pointer;
+        padding: 3px 0;
+    }
+
+    .sl-option input[type="checkbox"] { cursor: pointer; accent-color: var(--sl-accent); }
 
     #sl-actions {
         display: flex;
@@ -156,31 +154,11 @@
 
     #sl-actions button:disabled { opacity: .5; cursor: not-allowed; }
 
-    #btn-preview {
-        background: var(--sl-accent);
-        color: #fff;
-        border-color: var(--sl-accent);
-    }
+    #btn-preview { background: var(--sl-accent); color: #fff; border-color: var(--sl-accent); }
+    #btn-open-window { background: #fff; border-color: #ced4da; }
+    #btn-reload-theme { background: #fff; border-color: #ced4da; color: #6c757d; font-size: 12px; }
 
-    #btn-open-window {
-        background: #fff;
-        border-color: #ced4da;
-    }
-
-    #btn-reload-theme {
-        background: #fff;
-        border-color: #ced4da;
-        color: #6c757d;
-        font-size: 12px;
-    }
-
-    #sl-preview {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        background: #e9ecef;
-        overflow: hidden;
-    }
+    #sl-preview { flex: 1; display: flex; flex-direction: column; background: #e9ecef; overflow: hidden; }
 
     #sl-viewport-bar {
         display: flex;
@@ -202,11 +180,7 @@
         cursor: pointer;
     }
 
-    #sl-viewport-bar button.active {
-        background: #212529;
-        border-color: #212529;
-        color: #fff;
-    }
+    #sl-viewport-bar button.active { background: #212529; border-color: #212529; color: #fff; }
 
     #sl-iframe-wrap {
         flex: 1;
@@ -218,22 +192,20 @@
         transition: all .3s;
     }
 
-    #sl-iframe-wrap.vp-desktop  { padding: 0; }
-    #sl-iframe-wrap.vp-tablet   { padding: 16px; }
-    #sl-iframe-wrap.vp-mobile   { padding: 32px; }
+    #sl-iframe-wrap.vp-desktop { padding: 0; }
+    #sl-iframe-wrap.vp-tablet  { padding: 16px; }
+    #sl-iframe-wrap.vp-mobile  { padding: 32px; }
 
     #sl-iframe {
         width: 100%;
         height: 100%;
         border: none;
         background: #fff;
-        border-radius: 0;
-        box-shadow: none;
         transition: width .3s, height .3s, border-radius .3s;
     }
 
-    #sl-iframe-wrap.vp-tablet  #sl-iframe { max-width: 768px;  border-radius: 4px; box-shadow: 0 4px 24px rgba(0,0,0,.15); }
-    #sl-iframe-wrap.vp-mobile  #sl-iframe { max-width: 390px;  border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,.2); }
+    #sl-iframe-wrap.vp-tablet #sl-iframe { max-width: 768px; border-radius: 4px; box-shadow: 0 4px 24px rgba(0,0,0,.15); }
+    #sl-iframe-wrap.vp-mobile #sl-iframe { max-width: 390px; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,.2); }
 
     #sl-placeholder {
         display: flex;
@@ -297,10 +269,36 @@
             </div>
         </div>
 
+        <div class="sl-section">
+            <label>Export options</label>
+            <div class="sl-options-grid" data-testid="style-lab-export-options">
+                <label class="sl-option">
+                    <input type="checkbox" id="opt-searchBox" data-meta="addSearchBox" data-testid="opt-searchBox">
+                    Search box
+                </label>
+                <label class="sl-option">
+                    <input type="checkbox" id="opt-pagination" data-meta="addPagination" data-testid="opt-pagination">
+                    Page counter
+                </label>
+                <label class="sl-option">
+                    <input type="checkbox" id="opt-accessibility" data-meta="addAccessibilityToolbar" data-testid="opt-accessibility">
+                    Accessibility toolbar
+                </label>
+                <label class="sl-option">
+                    <input type="checkbox" id="opt-exeLink" data-meta="addExeLink" checked data-testid="opt-exeLink">
+                    eXeLearning link
+                </label>
+                <label class="sl-option">
+                    <input type="checkbox" id="opt-exportSource" data-meta="exportSource" checked data-testid="opt-exportSource">
+                    Include source
+                </label>
+            </div>
+        </div>
+
         <div id="sl-actions">
             <button id="btn-preview" data-testid="style-lab-preview-btn" disabled>Preview</button>
             <button id="btn-open-window" data-testid="style-lab-open-window" disabled>Open in new window</button>
-            <button id="btn-reload-theme" data-testid="style-lab-reload-theme" title="Reload theme files from disk without restarting">↺ Reload theme from disk</button>
+            <button id="btn-reload-theme" data-testid="style-lab-reload-theme" title="Re-read theme files from disk and regenerate preview">↺ Reload theme from disk</button>
         </div>
     </aside>
 
@@ -334,34 +332,39 @@
     let previewReady = false;
     let selectedExport = 'html5';
 
-    // --- Service Worker setup ---
+    // ─── URL state helpers ────────────────────────────────────────────────────
+
+    function getParams() {
+        return new URLSearchParams(location.search);
+    }
+
+    function pushParams(patch) {
+        const p = getParams();
+        for (const [k, v] of Object.entries(patch)) {
+            if (v === null || v === undefined) p.delete(k);
+            else p.set(k, String(v));
+        }
+        history.replaceState(null, '', '?' + p.toString());
+    }
+
+    // ─── Service Worker ───────────────────────────────────────────────────────
 
     async function ensureServiceWorker() {
-        if (!navigator.serviceWorker) {
-            throw new Error('Service Workers not supported in this browser');
-        }
+        if (!navigator.serviceWorker) throw new Error('Service Workers not supported');
         if (swRegistration) return swRegistration;
 
         const scope = basePath + '/viewer/';
         const swPath = basePath + '/preview-sw.js';
 
         const existing = await navigator.serviceWorker.getRegistration(scope);
-        if (existing && existing.active) {
-            swRegistration = existing;
-            return swRegistration;
-        }
+        if (existing?.active) { swRegistration = existing; return swRegistration; }
 
         swRegistration = await navigator.serviceWorker.register(swPath, { scope });
-        await new Promise((resolve) => {
+        await new Promise(resolve => {
             if (swRegistration.active) { resolve(); return; }
             const worker = swRegistration.installing || swRegistration.waiting;
-            if (worker) {
-                worker.addEventListener('statechange', () => {
-                    if (worker.state === 'activated') resolve();
-                });
-            } else {
-                resolve();
-            }
+            if (worker) worker.addEventListener('statechange', () => { if (worker.state === 'activated') resolve(); });
+            else resolve();
         });
         return swRegistration;
     }
@@ -373,11 +376,10 @@
     async function sendToSW(files) {
         const sw = getActiveSW();
         if (!sw) throw new Error('No active Service Worker');
-
         return new Promise((resolve, reject) => {
             const ch = new MessageChannel();
             const timeout = setTimeout(() => reject(new Error('SW timeout')), 15000);
-            ch.port1.onmessage = (e) => {
+            ch.port1.onmessage = e => {
                 clearTimeout(timeout);
                 if (e.data?.type === 'CONTENT_READY') resolve(e.data.fileCount);
                 else reject(new Error('SW error: ' + JSON.stringify(e.data)));
@@ -390,53 +392,72 @@
         });
     }
 
-    // --- Populate selectors ---
+    // ─── Data loading ─────────────────────────────────────────────────────────
 
-    async function loadFixtures() {
+    async function loadFixtures(selectValue) {
         const sel = document.getElementById('sl-fixture');
         try {
             const res = await fetch(`${basePath}/api/developer/fixtures`);
             const { fixtures } = await res.json();
             sel.innerHTML = '<option value="">— select fixture —</option>' +
-                fixtures.map(f => `<option value="${f}">${f}</option>`).join('');
+                fixtures.map(f => `<option value="${f}"${f === selectValue ? ' selected' : ''}>${f}</option>`).join('');
         } catch {
             sel.innerHTML = '<option value="">Error loading fixtures</option>';
         }
     }
 
-    async function loadThemes() {
+    async function loadThemes(selectValue) {
         const sel = document.getElementById('sl-theme');
         try {
             const res = await fetch(`${basePath}/api/themes/installed`);
             const { themes } = await res.json();
             sel.innerHTML = '<option value="">— select theme —</option>' +
-                themes.map(t => `<option value="${t.dirName}"${t.isDefault ? ' selected' : ''}>${t.displayName}</option>`).join('');
+                themes.map(t => {
+                    const selected = selectValue ? t.dirName === selectValue : t.isDefault;
+                    return `<option value="${t.dirName}"${selected ? ' selected' : ''}>${t.displayName}</option>`;
+                }).join('');
         } catch {
             sel.innerHTML = '<option value="">Error loading themes</option>';
         }
     }
 
-    // --- Export type buttons ---
+    // ─── UI interactions ──────────────────────────────────────────────────────
 
     document.querySelectorAll('[data-export]').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('[data-export]').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             selectedExport = btn.dataset.export;
+            pushParams({ export: selectedExport });
         });
     });
-
-    // --- Viewport buttons ---
 
     document.querySelectorAll('[data-viewport]').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('[data-viewport]').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             document.getElementById('sl-iframe-wrap').className = `vp-${btn.dataset.viewport}`;
+            pushParams({ viewport: btn.dataset.viewport });
         });
     });
 
-    // --- Enable Preview button when both selectors have a value ---
+    document.getElementById('sl-fixture').addEventListener('change', e => {
+        pushParams({ fixture: e.target.value || null });
+        updateActions();
+    });
+
+    document.getElementById('sl-theme').addEventListener('change', e => {
+        pushParams({ theme: e.target.value || null });
+        updateActions();
+    });
+
+    // Export option checkboxes: update URL and re-preview automatically
+    document.querySelectorAll('[data-meta]').forEach(cb => {
+        cb.addEventListener('change', () => {
+            pushParams({ [cb.dataset.meta]: cb.checked ? '1' : '0' });
+            if (previewReady) runPreview();
+        });
+    });
 
     function updateActions() {
         const fixture = document.getElementById('sl-fixture').value;
@@ -445,12 +466,9 @@
         document.getElementById('btn-open-window').disabled = !previewReady;
     }
 
-    document.getElementById('sl-fixture').addEventListener('change', updateActions);
-    document.getElementById('sl-theme').addEventListener('change', updateActions);
+    // ─── Preview ──────────────────────────────────────────────────────────────
 
-    // --- Preview ---
-
-    document.getElementById('btn-preview').addEventListener('click', async () => {
+    async function runPreview() {
         const fixture = document.getElementById('sl-fixture').value;
         const theme = document.getElementById('sl-theme').value;
         if (!fixture || !theme) return;
@@ -459,79 +477,72 @@
         setLoading(true);
 
         try {
-            // 1. Ensure SW is ready
-            setStatus('Initializing Service Worker…');
             await ensureServiceWorker();
 
-            // 2. Fetch ZIP from server
-            setStatus('Fetching exported ZIP…');
             const url = new URL(`${basePath}/api/developer/style-lab/preview`, location.href);
             url.searchParams.set('fixture', fixture);
             url.searchParams.set('theme', theme);
             url.searchParams.set('exportType', selectedExport);
 
+            // Append export option overrides
+            document.querySelectorAll('[data-meta]').forEach(cb => {
+                url.searchParams.set(cb.dataset.meta, cb.checked ? '1' : '0');
+            });
+
+            setStatus('Fetching export…');
             const res = await fetch(url.toString());
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.message || res.statusText);
             }
 
-            // 3. Unzip in browser with fflate
             setStatus('Decompressing…');
             const zipBuffer = await res.arrayBuffer();
             const zipData = window.fflate.unzipSync(new Uint8Array(zipBuffer));
 
-            // Convert { path: Uint8Array } → { path: ArrayBuffer }
             const files = {};
             for (const [filePath, data] of Object.entries(zipData)) {
                 files[filePath] = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
             }
 
-            // 4. Send to Service Worker
             setStatus('Sending to Service Worker…');
             const fileCount = await sendToSW(files);
 
-            // 5. Load in iframe
             previewReady = true;
             updateActions();
             showPreview();
-            setStatus(`Preview ready · ${fileCount} files · ${fixture} · ${theme} · ${selectedExport}`);
+            setStatus(`${fileCount} files · ${fixture} · ${theme} · ${selectedExport}`);
         } catch (e) {
             setStatus(`Error: ${e.message}`);
             console.error('[Style Lab]', e);
         } finally {
             setLoading(false);
         }
-    });
+    }
 
-    // --- Open in new window ---
+    document.getElementById('btn-preview').addEventListener('click', runPreview);
 
     document.getElementById('btn-open-window').addEventListener('click', () => {
         if (previewReady) window.open(viewerUrl, '_blank');
     });
 
-    // --- Reload theme from disk ---
-
+    // Reload from disk: re-reads CSS from filesystem on next export (files are static, no cache)
     document.getElementById('btn-reload-theme').addEventListener('click', async () => {
-        setStatus('Reloading theme…');
         try {
-            const res = await fetch(`${basePath}/api/developer/reload-theme`, { method: 'POST' });
-            if (res.ok) {
-                setStatus('Theme reloaded — click Preview to apply changes.');
-            } else {
-                setStatus('Reload failed.');
-            }
-        } catch {
-            setStatus('Reload failed.');
+            await fetch(`${basePath}/api/developer/reload-theme`, { method: 'POST' });
+        } catch { /* ignore */ }
+        if (previewReady || (document.getElementById('sl-fixture').value && document.getElementById('sl-theme').value)) {
+            runPreview();
+        } else {
+            setStatus('Select fixture and theme first.');
         }
     });
 
-    // --- Helpers ---
+    // ─── Helpers ──────────────────────────────────────────────────────────────
 
     function showPreview() {
         const iframe = document.getElementById('sl-iframe');
         const placeholder = document.getElementById('sl-placeholder');
-        // Force reload if already showing viewer
         if (iframe.src && iframe.src.endsWith('/viewer/index.html')) {
             iframe.src = 'about:blank';
             setTimeout(() => { iframe.src = viewerUrl; }, 30);
@@ -542,19 +553,58 @@
         placeholder.style.display = 'none';
     }
 
-    function setStatus(msg) {
-        document.getElementById('sl-status').textContent = msg;
+    function setStatus(msg) { document.getElementById('sl-status').textContent = msg; }
+    function setLoading(on) { document.getElementById('sl-sidebar').classList.toggle('sl-loading', on); }
+
+    // ─── Apply URL params on load ─────────────────────────────────────────────
+
+    function applyUrlParams() {
+        const p = getParams();
+
+        // Export type
+        const exportParam = p.get('export');
+        if (exportParam) {
+            document.querySelectorAll('[data-export]').forEach(btn => {
+                const active = btn.dataset.export === exportParam;
+                btn.classList.toggle('active', active);
+                if (active) selectedExport = exportParam;
+            });
+        }
+
+        // Viewport
+        const viewportParam = p.get('viewport');
+        if (viewportParam) {
+            document.querySelectorAll('[data-viewport]').forEach(btn => {
+                const active = btn.dataset.viewport === viewportParam;
+                btn.classList.toggle('active', active);
+                if (active) document.getElementById('sl-iframe-wrap').className = `vp-${viewportParam}`;
+            });
+        }
+
+        // Export options
+        document.querySelectorAll('[data-meta]').forEach(cb => {
+            const val = p.get(cb.dataset.meta);
+            if (val !== null) cb.checked = val === '1' || val === 'true';
+        });
+
+        return { fixture: p.get('fixture'), theme: p.get('theme') };
     }
 
-    function setLoading(loading) {
-        document.getElementById('sl-sidebar').classList.toggle('sl-loading', loading);
+    // ─── Init ─────────────────────────────────────────────────────────────────
+
+    async function init() {
+        const { fixture, theme } = applyUrlParams();
+        await Promise.all([loadFixtures(fixture), loadThemes(theme)]);
+        updateActions();
+
+        // Auto-preview when all required params come from the URL
+        if (fixture && theme) runPreview();
+
+        // Pre-register SW in background
+        if (navigator.serviceWorker) ensureServiceWorker().catch(() => {});
     }
 
-    // --- Init ---
-    loadFixtures();
-    loadThemes();
-    // Pre-register SW in background so first preview is faster
-    if (navigator.serviceWorker) ensureServiceWorker().catch(() => {});
+    init();
 })();
 </script>
 {% endblock %}
