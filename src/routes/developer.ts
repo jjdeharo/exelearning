@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as Y from 'yjs';
 import { renderTemplate } from '../services/template';
-import { prefixPath } from '../utils/basepath.util';
+import { getBasePath } from '../utils/basepath.util';
 import {
     Html5Exporter,
     PageExporter,
@@ -117,13 +117,21 @@ function parseBoolParam(value: string | undefined): boolean | undefined {
 
 export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
+    .get('/developer/style-editor', ({ set }) => {
+        if (!isDev()) {
+            set.status = 404;
+            return 'Not Found';
+        }
+        set.redirect = `${getBasePath()}/developer/style-editor/index.html`;
+    })
+
     .get('/developer/style-lab', ({ set }) => {
         if (!isDev()) {
             set.status = 404;
             return 'Not Found';
         }
         const html = renderTemplate('workarea/developer/style-lab', {
-            basePath: prefixPath(''),
+            basePath: getBasePath(),
             appEnv: process.env.APP_ENV || 'dev',
             locale: 'en',
         });

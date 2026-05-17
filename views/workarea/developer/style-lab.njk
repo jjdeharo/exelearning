@@ -320,7 +320,7 @@
 <script src="{{ '/libs/fflate/fflate.umd.js' | asset }}"></script>
 <script>
 (function () {
-    const basePath = {{ basePath | json }};
+    const basePath = {{ basePath | json | safe }};
     const viewerUrl = basePath + '/viewer/index.html';
     let swRegistration = null;
     let previewReady = false;
