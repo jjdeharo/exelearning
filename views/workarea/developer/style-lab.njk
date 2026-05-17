@@ -6,273 +6,402 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Style Lab — Developer</title>
     <link rel="icon" href="{{ '/favicon.ico' | asset }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
     <style>
         :root {
-            --sl-sidebar-w: 260px;
-            --sl-editor-w: 420px;
-            --sl-header-h: 44px;
-            --sl-status-h: 26px;
-            --sl-border: #dee2e6;
-            --sl-accent: #0d6efd;
-            --sl-ed-bg: #1e1e1e;
-            --sl-ed-bg2: #252526;
-            --sl-ed-bg3: #2d2d2d;
-            --sl-ed-border: #3e3e42;
-            --sl-ed-fg: #d4d4d4;
-            --sl-ed-fg2: #9d9d9d;
+            --bg: #eef1f4;
+            --panel: #ffffff;
+            --line: #d0d5dd;
+            --line-soft: #eaecf0;
+            --ink: #1f2937;
+            --muted: #475467;
+            --action: #0ba1a1;
+            --action-dark: #107275;
+            --header-h: 48px;
         }
-        *, *::before, *::after { box-sizing: border-box; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            margin: 0;
             font-family: system-ui, -apple-system, sans-serif;
             font-size: 13px;
             display: flex;
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
-            background: #fff;
+            background: var(--bg);
+            color: var(--ink);
         }
 
-        /* ── Header ── */
+        /* ── Header ─────────────────────────────────────────── */
         #sl-header {
-            height: var(--sl-header-h);
+            height: var(--header-h);
             background: #212529;
             color: #fff;
             display: flex;
             align-items: center;
-            padding: 0 14px;
+            padding: 0 16px;
             gap: 10px;
             flex-shrink: 0;
         }
         #sl-header a { color: #adb5bd; text-decoration: none; font-size: 12px; }
         #sl-header a:hover { color: #fff; }
         #sl-header .sep { color: #495057; }
-        #sl-header h1 { font-size: 14px; font-weight: 600; margin: 0; }
+        #sl-header h1 { font-size: 14px; font-weight: 600; }
         #sl-badge {
             background: #198754; color: #fff;
             font-size: 10px; font-weight: 700;
-            padding: 2px 6px; border-radius: 4px;
+            padding: 2px 7px; border-radius: 4px;
             letter-spacing: .5px; text-transform: uppercase;
         }
 
-        /* ── Layout ── */
-        #sl-main { display: flex; flex: 1; overflow: hidden; }
+        /* ── Shell ───────────────────────────────────────────── */
+        #sl-shell {
+            display: grid;
+            grid-template-columns: minmax(400px, 480px) 1fr;
+            gap: 10px;
+            padding: 10px;
+            flex: 1;
+            overflow: hidden;
+        }
 
-        /* ── Controls sidebar ── */
-        #sl-sidebar {
-            width: var(--sl-sidebar-w);
-            background: #f8f9fa;
-            border-right: 1px solid var(--sl-border);
-            overflow-y: auto;
-            flex-shrink: 0;
-            padding: 12px;
+        /* ── Left panel ──────────────────────────────────────── */
+        #sl-panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
         }
-        .sl-section { display: flex; flex-direction: column; gap: 5px; }
+
+        /* Tabs */
+        .sl-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--line);
+            background: #f8fafc;
+            flex-shrink: 0;
+        }
+        .sl-tab {
+            flex: 1;
+            padding: 10px 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--muted);
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: color .15s, border-color .15s;
+        }
+        .sl-tab.active { color: var(--action); border-bottom-color: var(--action); }
+        .sl-tab:hover:not(.active) { color: var(--ink); }
+
+        /* Tab panels */
+        .sl-tab-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+        .sl-tab-panel.active { display: flex; }
+
+        /* Scrollable inner content */
+        .sl-panel-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* ── Section headers ─────────────────────────────────── */
+        .sl-section { display: flex; flex-direction: column; gap: 6px; }
         .sl-label {
-            font-weight: 700; font-size: 10px;
-            text-transform: uppercase; letter-spacing: .6px; color: #6c757d;
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .6px;
+            color: var(--muted);
         }
-        .sl-section select {
-            width: 100%; padding: 5px 8px;
-            border: 1px solid #ced4da; border-radius: 5px;
-            font-size: 12px; background: #fff;
+        .sl-section select, .sl-section input[type="text"], .sl-section input[type="number"] {
+            width: 100%; padding: 6px 8px;
+            border: 1px solid var(--line); border-radius: 6px;
+            font-size: 12px; background: #fff; color: var(--ink);
         }
-        .sl-section select:focus { outline: none; border-color: var(--sl-accent); box-shadow: 0 0 0 3px rgba(13,110,253,.12); }
-        .sl-btn-group { display: flex; gap: 3px; }
+        .sl-section select:focus, .sl-section input:focus {
+            outline: none; border-color: var(--action);
+            box-shadow: 0 0 0 3px rgba(11,161,161,.12);
+        }
+        .sl-btn-group { display: flex; gap: 4px; }
         .sl-btn-group button {
-            flex: 1; padding: 5px 3px;
-            border: 1px solid #ced4da; border-radius: 5px;
+            flex: 1; padding: 6px 4px;
+            border: 1px solid var(--line); border-radius: 6px;
             background: #fff; font-size: 11px; cursor: pointer;
-            transition: background .12s, border-color .12s;
+            transition: all .12s; color: var(--ink);
         }
         .sl-btn-group button.active,
-        .sl-btn-group button:hover { background: var(--sl-accent); border-color: var(--sl-accent); color: #fff; }
-        .sl-options-grid { display: flex; flex-direction: column; gap: 3px; }
+        .sl-btn-group button:hover { background: var(--action); border-color: var(--action); color: #fff; }
+
+        /* Export options */
+        .sl-options-grid { display: flex; flex-direction: column; gap: 4px; }
         .sl-option {
-            display: flex; align-items: center; gap: 7px;
-            font-size: 12px; color: #495057; cursor: pointer; padding: 2px 0;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; color: var(--muted); cursor: pointer; padding: 2px 0;
         }
-        .sl-option input[type="checkbox"] { cursor: pointer; accent-color: var(--sl-accent); }
+        .sl-option input[type="checkbox"] { cursor: pointer; accent-color: var(--action); }
+
+        /* Action buttons */
         #sl-actions {
-            display: flex; flex-direction: column; gap: 5px;
-            margin-top: auto; padding-top: 10px;
-            border-top: 1px solid var(--sl-border);
+            padding: 12px 14px;
+            border-top: 1px solid var(--line-soft);
+            display: flex; flex-direction: column; gap: 6px;
+            flex-shrink: 0;
         }
         #sl-actions button {
-            width: 100%; padding: 7px 8px; border-radius: 5px;
-            font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid transparent;
+            width: 100%; padding: 8px;
+            border-radius: 6px; font-size: 12px; font-weight: 500;
+            cursor: pointer; border: 1px solid transparent; transition: all .12s;
         }
-        #sl-actions button:disabled { opacity: .45; cursor: not-allowed; }
-        #btn-preview { background: var(--sl-accent); color: #fff; border-color: var(--sl-accent); }
-        #btn-open-window { background: #fff; border-color: #ced4da; }
-        #btn-reload-theme { background: #fff; border-color: #ced4da; color: #6c757d; font-size: 11px; }
+        #sl-actions button:disabled { opacity: .4; cursor: not-allowed; }
+        #btn-preview { background: var(--action); color: #fff; border-color: var(--action); }
+        #btn-preview:not(:disabled):hover { background: var(--action-dark); }
+        #btn-open-window { background: #fff; border-color: var(--line); color: var(--ink); }
+        #btn-open-window:not(:disabled):hover { border-color: var(--action); color: var(--action); }
+        #btn-reload-theme { background: transparent; border-color: var(--line); color: var(--muted); font-size: 11px; }
+        #btn-reload-theme:hover { color: var(--ink); }
 
-        /* ── Editor panel ── */
-        #sl-editor-panel {
-            width: var(--sl-editor-w);
-            min-width: 28px;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--sl-ed-border);
-            background: var(--sl-ed-bg);
-            flex-shrink: 0;
-            transition: width .2s;
-        }
-        #sl-editor-panel.sl-collapsed { width: 28px; }
-        #sl-editor-panel.sl-collapsed .sl-editor-inner { display: none; }
-        #sl-editor-collapse-btn {
-            writing-mode: vertical-rl;
-            padding: 8px 6px;
-            background: none; border: none;
-            color: var(--sl-ed-fg2); cursor: pointer;
-            font-size: 10px; letter-spacing: 1px;
-            text-transform: uppercase;
-            display: none;
-            align-items: center;
-            gap: 6px;
-        }
-        #sl-editor-panel.sl-collapsed #sl-editor-collapse-btn { display: flex; }
-
-        .sl-editor-inner { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
-
-        .sl-editor-topbar {
-            display: flex; align-items: center;
-            background: var(--sl-ed-bg3);
-            border-bottom: 1px solid var(--sl-ed-border);
-            flex-shrink: 0; height: 36px;
-        }
-        .sl-etab {
-            padding: 0 14px; height: 100%;
-            font-size: 11px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: .4px;
-            color: var(--sl-ed-fg2); cursor: pointer;
-            border: none; background: none;
-            border-bottom: 2px solid transparent;
-        }
-        .sl-etab.active { color: #fff; border-bottom-color: #0078d4; }
-        .sl-etab:hover:not(.active) { color: #ccc; }
-
-        .sl-editor-tools { margin-left: auto; display: flex; }
-        .sl-etool {
-            padding: 0 10px; height: 36px;
-            background: none; border: none;
-            color: var(--sl-ed-fg2); cursor: pointer;
-            font-size: 13px; display: flex; align-items: center;
-            transition: color .12s, background .12s;
-        }
-        .sl-etool:hover { color: #fff; background: var(--sl-ed-border); }
-        .sl-etool.active { color: #4fc3f7; }
-        .sl-etool[title] { position: relative; }
-
-        .sl-etab-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
-        .sl-etab-panel.active { display: flex; }
-
-        /* File list */
+        /* ── CSS editor tab ──────────────────────────────────── */
         #sl-file-list {
-            list-style: none; margin: 0; padding: 6px 0;
-            overflow-y: auto; flex: 1;
+            list-style: none;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
         }
         .sl-file-item {
             display: flex; align-items: center;
-            padding: 6px 14px; font-size: 12px;
-            color: #ccc; cursor: pointer; gap: 8px;
+            padding: 7px 10px; font-size: 12px;
+            color: var(--muted); cursor: pointer;
             font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            border-bottom: 1px solid var(--line-soft);
+            transition: background .1s;
         }
-        .sl-file-item:hover { background: #2a2d2e; color: #fff; }
-        .sl-file-item.active { background: #094771; color: #fff; }
-        .sl-file-ext { font-size: 10px; opacity: .5; text-transform: uppercase; margin-left: auto; }
-        .sl-file-empty { color: var(--sl-ed-fg2); font-size: 12px; padding: 16px; text-align: center; }
+        .sl-file-item:last-child { border-bottom: none; }
+        .sl-file-item:hover { background: #f0fdfd; color: var(--ink); }
+        .sl-file-item.active { background: #e0f7f7; color: var(--action-dark); font-weight: 600; }
+        .sl-file-ext { font-size: 10px; margin-left: auto; opacity: .5; }
+        .sl-file-empty { padding: 12px; text-align: center; color: var(--muted); font-size: 12px; }
 
-        /* CSS textarea */
-        .sl-editor-file-label {
-            font-size: 11px; color: #858585;
-            padding: 4px 14px 3px;
-            border-bottom: 1px solid var(--sl-ed-border);
-            flex-shrink: 0; font-family: monospace;
+        /* Editor surface with syntax highlight overlay */
+        .sl-editor-wrap {
+            flex: 1; position: relative; overflow: hidden;
+            border: 1px solid var(--line); border-radius: 6px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 12px; line-height: 1.65;
+        }
+        #sl-css-highlight {
+            position: absolute; inset: 0;
+            padding: 10px; margin: 0;
+            overflow: auto; pointer-events: none;
+            white-space: pre; word-wrap: normal;
+            background: #f6f8fa; color: #24292e;
+            font: inherit; border: none;
         }
         #sl-css-textarea {
-            flex: 1;
-            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-            font-size: 12px; line-height: 1.6;
-            background: var(--sl-ed-bg); color: var(--sl-ed-fg);
-            border: none; padding: 12px;
-            resize: none; width: 100%; outline: none;
-            tab-size: 2;
+            position: absolute; inset: 0;
+            padding: 10px; width: 100%; height: 100%;
+            font: inherit; background: transparent;
+            color: transparent; caret-color: #333;
+            border: none; resize: none; outline: none;
+            overflow: auto; white-space: pre; word-wrap: normal;
+            z-index: 1;
+        }
+        .sl-editor-toolbar {
+            display: flex; gap: 5px; align-items: center;
+            padding: 6px 0; flex-shrink: 0;
+        }
+        .sl-editor-toolbar button {
+            padding: 4px 10px; border-radius: 5px;
+            font-size: 11px; font-weight: 500;
+            cursor: pointer; border: 1px solid transparent; transition: all .12s;
+        }
+        #btn-apply-css { background: var(--action); color: #fff; }
+        #btn-apply-css:hover { background: var(--action-dark); }
+        #btn-download-css { background: #fff; border-color: var(--line); color: var(--ink); }
+        #btn-download-css:hover { border-color: var(--action); color: var(--action); }
+        #btn-reset-css { background: #fff; border-color: var(--line); color: #c0392b; }
+        #btn-reset-css:hover { border-color: #c0392b; }
+        .sl-modified-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #f9c23c; display: none; margin-left: auto;
+        }
+        .sl-modified-dot.on { display: block; }
+        .sl-editor-file-label {
+            font-size: 10px; color: var(--muted); font-family: monospace; flex: 1;
         }
 
-        /* Editor footer */
-        .sl-editor-footer {
-            display: flex; gap: 5px; padding: 7px 8px;
-            background: var(--sl-ed-bg2);
-            border-top: 1px solid var(--sl-ed-border);
+        /* ── Quick settings tab ──────────────────────────────── */
+        details {
+            border: 1px solid var(--line-soft);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        summary {
+            padding: 9px 12px;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .5px;
+            cursor: pointer; user-select: none;
+            background: #f8fafc; color: var(--muted);
+            list-style: none;
+            display: flex; align-items: center; gap: 6px;
+        }
+        summary:hover { color: var(--ink); }
+        summary::after { content: '▾'; margin-left: auto; }
+        details[open] summary::after { content: '▴'; }
+        details[open] summary { color: var(--action); }
+        .sl-quick-body {
+            padding: 10px 12px;
+            display: flex; flex-direction: column; gap: 8px;
+            background: #fff;
+        }
+        .sl-quick-row {
+            display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink);
+        }
+        .sl-quick-row label { flex: 1; color: var(--muted); font-size: 11px; }
+        .sl-quick-row input[type="color"] {
+            width: 36px; height: 26px; padding: 1px 2px;
+            border: 1px solid var(--line); border-radius: 4px; cursor: pointer;
+        }
+        .sl-quick-row input[type="number"],
+        .sl-quick-row select {
+            width: 90px; padding: 4px 6px;
+            border: 1px solid var(--line); border-radius: 4px;
+            font-size: 12px;
+        }
+        .sl-quick-row input[type="checkbox"] { accent-color: var(--action); }
+        .sl-quick-apply-btn {
+            width: 100%; padding: 6px;
+            background: var(--action); color: #fff;
+            border: none; border-radius: 5px;
+            font-size: 11px; font-weight: 600;
+            cursor: pointer; margin-top: 4px;
+        }
+        .sl-quick-apply-btn:hover { background: var(--action-dark); }
+
+        /* ── Right: Preview ──────────────────────────────────── */
+        #sl-preview-area {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        }
+        #sl-preview-toolbar {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px;
+            background: #f8fafc; border-bottom: 1px solid var(--line);
             flex-shrink: 0;
         }
-        .sl-editor-footer button {
-            padding: 4px 11px; border-radius: 4px;
-            font-size: 11px; cursor: pointer; border: 1px solid transparent;
+        .sl-vp-btn {
+            padding: 4px 14px;
+            border: 1px solid var(--line); border-radius: 20px;
+            background: #fff; font-size: 11px; cursor: pointer;
+            transition: all .12s; color: var(--muted);
         }
-        #btn-apply-css { background: #0078d4; color: #fff; }
-        #btn-apply-css:hover { background: #106ebe; }
-        #btn-download-css { background: transparent; color: #ccc; border-color: #555; }
-        #btn-download-css:hover { color: #fff; border-color: #888; }
-        #btn-reset-css { background: transparent; color: #f48771; border-color: #555; }
-        #btn-reset-css:hover { border-color: #f48771; }
-        .sl-editor-footer .sl-modified-dot {
-            width: 7px; height: 7px; border-radius: 50%;
-            background: #f9c23c; margin: auto 0; display: none;
+        .sl-vp-btn.active { background: #212529; border-color: #212529; color: #fff; }
+        .sl-vp-btn:not(.active):hover { border-color: var(--action); color: var(--action); }
+        #btn-inspect {
+            margin-left: auto;
+            padding: 4px 12px;
+            border: 1px solid var(--line); border-radius: 6px;
+            background: #fff; font-size: 11px; cursor: pointer;
+            transition: all .12s; color: var(--muted);
         }
-        .sl-editor-footer .sl-modified-dot.visible { display: block; }
-
-        /* ── Preview ── */
-        #sl-preview { flex: 1; display: flex; flex-direction: column; background: #e9ecef; overflow: hidden; }
-        #sl-viewport-bar {
-            display: flex; align-items: center; justify-content: center;
-            gap: 6px; padding: 6px 16px;
-            background: #fff; border-bottom: 1px solid var(--sl-border); flex-shrink: 0;
+        #btn-inspect.active { background: var(--action); border-color: var(--action); color: #fff; }
+        #btn-inspect:not(.active):hover { border-color: var(--action); color: var(--action); }
+        #sl-status {
+            font-size: 11px; color: var(--muted);
+            padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;
         }
-        #sl-viewport-bar button {
-            padding: 3px 12px;
-            border: 1px solid #ced4da; border-radius: 20px;
-            background: #fff; font-size: 12px; cursor: pointer;
-        }
-        #sl-viewport-bar button.active { background: #212529; border-color: #212529; color: #fff; }
         #sl-iframe-wrap {
             flex: 1; display: flex; align-items: center; justify-content: center;
-            padding: 0; overflow: auto;
+            background: var(--bg); overflow: auto; padding: 0;
         }
         #sl-iframe-wrap.vp-tablet  { padding: 16px; }
         #sl-iframe-wrap.vp-mobile  { padding: 32px; }
         #sl-iframe {
-            width: 100%; height: 100%;
-            border: none; background: #fff;
+            width: 100%; height: 100%; border: none; background: #fff;
         }
         #sl-iframe-wrap.vp-tablet #sl-iframe { max-width: 768px; border-radius: 4px; box-shadow: 0 4px 24px rgba(0,0,0,.15); }
         #sl-iframe-wrap.vp-mobile #sl-iframe { max-width: 390px; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,.2); }
         #sl-placeholder {
             display: flex; flex-direction: column; align-items: center;
-            justify-content: center; gap: 8px;
-            color: #6c757d; font-size: 14px; height: 100%; width: 100%;
+            justify-content: center; gap: 10px;
+            color: var(--muted); font-size: 14px; width: 100%;
         }
-        #sl-placeholder svg { opacity: .3; }
+        #sl-placeholder svg { opacity: .25; }
+        body.sl-inspect #sl-iframe { cursor: crosshair; }
 
-        /* ── Status bar ── */
-        #sl-status {
-            font-size: 11px; color: #6c757d; text-align: center;
-            padding: 3px 8px; background: #fff;
-            border-top: 1px solid var(--sl-border); flex-shrink: 0;
+        /* ── Click-to-edit modal ─────────────────────────────── */
+        #sl-click-modal {
+            position: fixed; top: 80px; right: 20px;
+            width: 280px; background: #fff;
+            border: 1px solid var(--line); border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,.18);
+            display: none; flex-direction: column; z-index: 100;
         }
-
-        /* ── Inspect mode ── */
-        body.sl-inspect-mode #sl-iframe { cursor: crosshair; }
+        #sl-click-modal.open { display: flex; }
+        #sl-click-modal-header {
+            display: flex; align-items: center;
+            padding: 8px 12px; background: #212529; color: #fff;
+            border-radius: 7px 7px 0 0; cursor: move; user-select: none; gap: 8px;
+        }
+        #sl-click-modal-header span { font-size: 11px; font-weight: 600; flex: 1; }
+        #sl-click-modal-close {
+            background: none; border: none; color: #adb5bd;
+            font-size: 16px; cursor: pointer; line-height: 1; padding: 0 2px;
+        }
+        #sl-click-modal-selector {
+            font-family: monospace; font-size: 11px;
+            background: #f3f4f6; color: var(--action-dark);
+            padding: 6px 12px; border-bottom: 1px solid var(--line-soft);
+            word-break: break-all;
+        }
+        #sl-click-modal-body {
+            padding: 10px 12px;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .sl-click-row {
+            display: flex; align-items: center; gap: 8px; font-size: 11px;
+        }
+        .sl-click-row label { flex: 1; color: var(--muted); }
+        .sl-click-row input[type="color"] {
+            width: 34px; height: 24px; padding: 1px 2px;
+            border: 1px solid var(--line); border-radius: 4px; cursor: pointer;
+        }
+        .sl-click-row input[type="number"],
+        .sl-click-row select {
+            width: 80px; padding: 3px 5px;
+            border: 1px solid var(--line); border-radius: 4px; font-size: 11px;
+        }
+        #sl-click-modal-footer {
+            padding: 8px 12px; display: flex; gap: 6px;
+            border-top: 1px solid var(--line-soft);
+        }
+        #sl-click-modal-footer button {
+            flex: 1; padding: 5px; border-radius: 5px;
+            font-size: 11px; font-weight: 500; cursor: pointer;
+            border: 1px solid transparent; transition: all .12s;
+        }
+        #btn-click-apply { background: var(--action); color: #fff; }
+        #btn-click-apply:hover { background: var(--action-dark); }
+        #btn-click-cancel { background: #fff; border-color: var(--line); color: var(--muted); }
+        #btn-click-cancel:hover { color: var(--ink); }
 
         .sl-loading { opacity: .6; pointer-events: none; }
     </style>
 </head>
 <body>
 
+<!-- ── Header ── -->
 <div id="sl-header">
     <a href="{{ basePath }}/workarea">← eXeLearning</a>
     <span class="sep">/</span>
@@ -280,121 +409,224 @@
     <span id="sl-badge">dev</span>
 </div>
 
-<div id="sl-main">
+<!-- ── Main shell ── -->
+<div id="sl-shell">
 
-    <!-- ── Controls sidebar ── -->
-    <aside id="sl-sidebar">
-
-        <div class="sl-section">
-            <span class="sl-label">Fixture</span>
-            <select id="sl-fixture" data-testid="style-lab-fixture">
-                <option value="">— select —</option>
-            </select>
+    <!-- ── Left panel ── -->
+    <div id="sl-panel">
+        <div class="sl-tabs">
+            <button class="sl-tab active" data-tab="controls" data-testid="sl-tab-controls">Ajustes</button>
+            <button class="sl-tab" data-tab="css" data-testid="sl-tab-css">CSS</button>
+            <button class="sl-tab" data-tab="quick" data-testid="sl-tab-quick">Quick</button>
         </div>
 
-        <div class="sl-section">
-            <span class="sl-label">Theme</span>
-            <select id="sl-theme" data-testid="style-lab-theme">
-                <option value="">— loading —</option>
-            </select>
-        </div>
-
-        <div class="sl-section">
-            <span class="sl-label">Export type</span>
-            <div class="sl-btn-group" data-testid="style-lab-export-type">
-                <button class="active" data-export="html5">Website</button>
-                <button data-export="html5-sp">Single</button>
-                <button data-export="scorm12">SCORM</button>
-            </div>
-        </div>
-
-        <div class="sl-section">
-            <span class="sl-label">Export options</span>
-            <div class="sl-options-grid" data-testid="style-lab-export-options">
-                <label class="sl-option">
-                    <input type="checkbox" data-meta="addSearchBox" data-testid="opt-searchBox"> Search box
-                </label>
-                <label class="sl-option">
-                    <input type="checkbox" data-meta="addPagination" data-testid="opt-pagination"> Page counter
-                </label>
-                <label class="sl-option">
-                    <input type="checkbox" data-meta="addAccessibilityToolbar" data-testid="opt-accessibility"> Accessibility toolbar
-                </label>
-                <label class="sl-option">
-                    <input type="checkbox" data-meta="addExeLink" checked data-testid="opt-exeLink"> eXeLearning link
-                </label>
-                <label class="sl-option">
-                    <input type="checkbox" data-meta="exportSource" checked data-testid="opt-exportSource"> Include source
-                </label>
-            </div>
-        </div>
-
-        <div id="sl-actions">
-            <button id="btn-preview" data-testid="style-lab-preview-btn" disabled>▶ Preview</button>
-            <button id="btn-open-window" data-testid="style-lab-open-window" disabled>Open in new window</button>
-            <button id="btn-reload-theme" data-testid="style-lab-reload-theme" title="Re-read theme files from disk and regenerate preview">↺ Reload theme from disk</button>
-        </div>
-    </aside>
-
-    <!-- ── Editor panel ── -->
-    <div id="sl-editor-panel">
-        <button id="sl-editor-collapse-btn" title="Expand editor">CSS</button>
-
-        <div class="sl-editor-inner">
-            <div class="sl-editor-topbar">
-                <button class="sl-etab active" data-etab="css">CSS</button>
-                <button class="sl-etab" data-etab="files">Files</button>
-                <div class="sl-editor-tools">
-                    <button class="sl-etool" id="btn-click-edit" title="Click to select element in preview (inspect mode)">⊕</button>
-                    <button class="sl-etool" id="btn-collapse-editor" title="Collapse editor panel">◀</button>
+        <!-- ── Controls tab ── -->
+        <div class="sl-tab-panel active" data-panel="controls">
+            <div class="sl-panel-scroll">
+                <div class="sl-section">
+                    <span class="sl-label">Fixture</span>
+                    <select id="sl-fixture" data-testid="style-lab-fixture">
+                        <option value="">— select —</option>
+                    </select>
+                </div>
+                <div class="sl-section">
+                    <span class="sl-label">Theme</span>
+                    <select id="sl-theme" data-testid="style-lab-theme">
+                        <option value="">— loading —</option>
+                    </select>
+                </div>
+                <div class="sl-section">
+                    <span class="sl-label">Export type</span>
+                    <div class="sl-btn-group" data-testid="style-lab-export-type">
+                        <button class="active" data-export="html5">Website</button>
+                        <button data-export="html5-sp">Single</button>
+                        <button data-export="scorm12">SCORM</button>
+                    </div>
+                </div>
+                <div class="sl-section">
+                    <span class="sl-label">Export options</span>
+                    <div class="sl-options-grid" data-testid="style-lab-export-options">
+                        <label class="sl-option"><input type="checkbox" data-meta="addSearchBox" data-testid="opt-searchBox"> Search box</label>
+                        <label class="sl-option"><input type="checkbox" data-meta="addPagination" data-testid="opt-pagination"> Page counter</label>
+                        <label class="sl-option"><input type="checkbox" data-meta="addAccessibilityToolbar" data-testid="opt-accessibility"> Accessibility toolbar</label>
+                        <label class="sl-option"><input type="checkbox" data-meta="addExeLink" checked data-testid="opt-exeLink"> eXeLearning link</label>
+                        <label class="sl-option"><input type="checkbox" data-meta="exportSource" checked data-testid="opt-exportSource"> Include source</label>
+                    </div>
                 </div>
             </div>
-
-            <!-- CSS tab -->
-            <div class="sl-etab-panel active" data-epanel="css">
-                <div class="sl-editor-file-label" id="sl-editor-file-label">style.css</div>
-                <textarea id="sl-css-textarea" spellcheck="false" placeholder="Load a fixture and theme to edit CSS…"></textarea>
+            <div id="sl-actions">
+                <button id="btn-preview" data-testid="style-lab-preview-btn" disabled>▶ Preview</button>
+                <button id="btn-open-window" data-testid="style-lab-open-window" disabled>Open in new window</button>
+                <button id="btn-reload-theme" data-testid="style-lab-reload-theme">↺ Reload theme from disk</button>
             </div>
+        </div>
 
-            <!-- Files tab -->
-            <div class="sl-etab-panel" data-epanel="files">
+        <!-- ── CSS editor tab ── -->
+        <div class="sl-tab-panel" data-panel="css">
+            <div class="sl-panel-scroll" style="gap:10px;">
                 <ul id="sl-file-list">
                     <li class="sl-file-empty">Load a fixture and theme first.</li>
                 </ul>
+                <div class="sl-editor-toolbar">
+                    <span class="sl-editor-file-label" id="sl-editor-file-label">style.css</span>
+                    <div class="sl-modified-dot" id="sl-modified-dot" title="Unsaved changes"></div>
+                </div>
+                <div class="sl-editor-wrap" style="min-height:260px;">
+                    <pre id="sl-css-highlight"><code class="language-css"></code></pre>
+                    <textarea id="sl-css-textarea" spellcheck="false" wrap="off" placeholder="Load a fixture and theme to edit CSS…"></textarea>
+                </div>
+                <div class="sl-editor-toolbar">
+                    <button id="btn-apply-css">Apply</button>
+                    <button id="btn-download-css">Download</button>
+                    <button id="btn-reset-css">Reset</button>
+                </div>
             </div>
+        </div>
 
-            <div class="sl-editor-footer">
-                <button id="btn-apply-css" title="Inject CSS into preview">Apply</button>
-                <button id="btn-download-css" title="Download current CSS as file">Download CSS</button>
-                <button id="btn-reset-css" title="Reset CSS to original theme">Reset</button>
-                <div class="sl-modified-dot" id="sl-modified-dot" title="Unsaved changes"></div>
+        <!-- ── Quick settings tab ── -->
+        <div class="sl-tab-panel" data-panel="quick">
+            <div class="sl-panel-scroll">
+                <details open>
+                    <summary>Apariencia general</summary>
+                    <div class="sl-quick-body">
+                        <div class="sl-quick-row"><label>Color enlaces</label><input type="color" data-quick="linkColor" value="#d76b4a"></div>
+                        <div class="sl-quick-row"><label>Color título página</label><input type="color" data-quick="titleColor" value="#078e8e"></div>
+                        <div class="sl-quick-row"><label>Color texto base</label><input type="color" data-quick="textColor" value="#333333"></div>
+                        <div class="sl-quick-row"><label>Fondo contenido</label><input type="color" data-quick="contentBgColor" value="#ffffff"></div>
+                        <div class="sl-quick-row"><label>Fondo global</label><input type="color" data-quick="pageBgColor" value="#ffffff"></div>
+                        <div class="sl-quick-row"><label>Fondo lateral</label><input type="color" data-quick="contentOuterBgColor" value="#eef1f4"></div>
+                    </div>
+                </details>
+                <details>
+                    <summary>Tipografía</summary>
+                    <div class="sl-quick-body">
+                        <div class="sl-quick-row">
+                            <label>Fuente cuerpo</label>
+                            <select data-quick="fontBody">
+                                <option value="Georgia, 'Times New Roman', serif">Georgia (serif)</option>
+                                <option value="'Noto Serif', serif">Noto Serif</option>
+                                <option value="'Trebuchet MS', Trebuchet, sans-serif">Trebuchet</option>
+                                <option value="Verdana, Geneva, sans-serif">Verdana</option>
+                                <option value="system-ui, -apple-system, sans-serif">System UI</option>
+                            </select>
+                        </div>
+                        <div class="sl-quick-row">
+                            <label>Fuente títulos</label>
+                            <select data-quick="fontTitles">
+                                <option value="Georgia, 'Times New Roman', serif">Georgia (serif)</option>
+                                <option value="'Noto Serif', serif">Noto Serif</option>
+                                <option value="'Trebuchet MS', Trebuchet, sans-serif">Trebuchet</option>
+                                <option value="Verdana, Geneva, sans-serif">Verdana</option>
+                                <option value="system-ui, -apple-system, sans-serif">System UI</option>
+                            </select>
+                        </div>
+                        <div class="sl-quick-row"><label>Tamaño base (px)</label><input type="number" data-quick="baseFontSize" value="18" min="12" max="28"></div>
+                        <div class="sl-quick-row"><label>Interlineado</label><input type="number" data-quick="lineHeight" value="1.45" min="1" max="2.2" step="0.05"></div>
+                    </div>
+                </details>
+                <details>
+                    <summary>Títulos</summary>
+                    <div class="sl-quick-body">
+                        <div class="sl-quick-row"><label>Tamaño título página (rem)</label><input type="number" data-quick="pageTitleSize" value="1.7" min="1.1" max="3.2" step="0.05"></div>
+                        <div class="sl-quick-row">
+                            <label>Peso título página</label>
+                            <select data-quick="pageTitleWeight">
+                                <option value="400">400</option>
+                                <option value="600">600</option>
+                                <option value="700" selected>700</option>
+                                <option value="800">800</option>
+                            </select>
+                        </div>
+                        <div class="sl-quick-row"><label>Mayúsculas título</label><input type="checkbox" data-quick="pageTitleUppercase"></div>
+                        <div class="sl-quick-row"><label>Color título proyecto</label><input type="color" data-quick="packageTitleColor" value="#333333"></div>
+                    </div>
+                </details>
+                <details>
+                    <summary>Menú de navegación</summary>
+                    <div class="sl-quick-body">
+                        <div class="sl-quick-row"><label>Fondo menú</label><input type="color" data-quick="menuBgColor" value="#f6f6f6"></div>
+                        <div class="sl-quick-row"><label>Texto menú</label><input type="color" data-quick="menuTextColor" value="#000000"></div>
+                        <div class="sl-quick-row"><label>Fondo hover</label><input type="color" data-quick="menuHoverBgColor" value="#f2f2f2"></div>
+                        <div class="sl-quick-row"><label>Texto hover</label><input type="color" data-quick="menuHoverTextColor" value="#000000"></div>
+                        <div class="sl-quick-row"><label>Fondo activo</label><input type="color" data-quick="menuActiveBgColor" value="#ffffff"></div>
+                        <div class="sl-quick-row"><label>Texto activo</label><input type="color" data-quick="menuActiveTextColor" value="#d76b4a"></div>
+                    </div>
+                </details>
+                <details>
+                    <summary>iDevices y botones</summary>
+                    <div class="sl-quick-body">
+                        <div class="sl-quick-row"><label>Fondo iDevice</label><input type="color" data-quick="boxBgColor" value="#ffffff"></div>
+                        <div class="sl-quick-row"><label>Borde iDevice</label><input type="color" data-quick="boxBorderColor" value="#dddddd"></div>
+                        <div class="sl-quick-row"><label>Color título iDevice</label><input type="color" data-quick="boxTitleColor" value="#054d4d"></div>
+                        <div class="sl-quick-row"><label>Fondo botón</label><input type="color" data-quick="buttonBgColor" value="#005f73"></div>
+                        <div class="sl-quick-row"><label>Texto botón</label><input type="color" data-quick="buttonTextColor" value="#ffffff"></div>
+                    </div>
+                </details>
+                <button class="sl-quick-apply-btn" id="btn-apply-quick">Aplicar cambios</button>
             </div>
         </div>
     </div>
 
-    <!-- ── Preview ── -->
-    <div id="sl-preview">
-        <div id="sl-viewport-bar">
-            <button class="active" data-viewport="desktop" data-testid="vp-desktop">Desktop</button>
-            <button data-viewport="tablet" data-testid="vp-tablet">Tablet</button>
-            <button data-viewport="mobile" data-testid="vp-mobile">Mobile</button>
+    <!-- ── Preview area ── -->
+    <div id="sl-preview-area">
+        <div id="sl-preview-toolbar">
+            <button class="sl-vp-btn active" data-viewport="desktop" data-testid="vp-desktop">Desktop</button>
+            <button class="sl-vp-btn" data-viewport="tablet" data-testid="vp-tablet">Tablet</button>
+            <button class="sl-vp-btn" data-viewport="mobile" data-testid="vp-mobile">Mobile</button>
+            <span id="sl-status" data-testid="style-lab-status">Ready</span>
+            <button id="btn-inspect" title="Click-to-edit: click an element in the preview">⊕ Inspect</button>
         </div>
-
         <div id="sl-iframe-wrap" class="vp-desktop">
             <div id="sl-placeholder">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 3h18v14H3zm16 12V5H5v10h14zM1 18h22v2H1z"/>
                 </svg>
                 <span>Select a fixture and theme, then click <strong>Preview</strong></span>
             </div>
             <iframe id="sl-iframe" style="display:none" data-testid="style-lab-iframe"></iframe>
         </div>
+    </div>
+</div>
 
-        <div id="sl-status" data-testid="style-lab-status">Ready</div>
+<!-- ── Click-to-edit modal ── -->
+<div id="sl-click-modal" role="dialog" aria-label="Click-to-edit">
+    <div id="sl-click-modal-header">
+        <span>Edit element</span>
+        <button id="sl-click-modal-close">×</button>
+    </div>
+    <div id="sl-click-modal-selector">—</div>
+    <div id="sl-click-modal-body">
+        <div class="sl-click-row"><label>Color texto</label><input type="color" id="ce-textColor" value="#333333"></div>
+        <div class="sl-click-row"><label>Fondo</label><input type="color" id="ce-bgColor" value="#ffffff"></div>
+        <div class="sl-click-row"><label>Tamaño fuente (px)</label><input type="number" id="ce-fontSize" min="8" max="96" value="16"></div>
+        <div class="sl-click-row">
+            <label>Peso</label>
+            <select id="ce-fontWeight">
+                <option value="">—</option>
+                <option value="400">400</option>
+                <option value="600">600</option>
+                <option value="700">700</option>
+                <option value="800">800</option>
+            </select>
+        </div>
+        <div class="sl-click-row">
+            <label>Alineación</label>
+            <select id="ce-textAlign">
+                <option value="">—</option>
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+            </select>
+        </div>
+    </div>
+    <div id="sl-click-modal-footer">
+        <button id="btn-click-apply">Apply to CSS</button>
+        <button id="btn-click-cancel">Cancel</button>
     </div>
 </div>
 
 <script src="{{ '/libs/fflate/fflate.umd.js' | asset }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <script>
 (function () {
     const basePath = {{ basePath | json | safe }};
@@ -403,27 +635,52 @@
     let previewReady = false;
     let selectedExport = 'html5';
     let loadedThemes = [];
-    let originalCss = '';    // CSS loaded from server (unmodified theme)
+    let themeFiles = {};        // path → string
     let activeCssFile = 'style.css';
-    let themeFiles = {};     // path → text content (fetched from server)
+    let originalCss = '';
     let inspectMode = false;
+    let clickEditSelector = '';
     let applyDebounce = 0;
+    let quickState = {};        // collected from [data-quick] inputs
 
-    // ─── URL state ────────────────────────────────────────────────────────────
+    // ─── Highlight.js for CSS editor ─────────────────────────
+    function updateHighlight() {
+        const code = document.querySelector('#sl-css-highlight code');
+        const ta = document.getElementById('sl-css-textarea');
+        code.textContent = ta.value;
+        if (window.hljs) hljs.highlightElement(code);
+        syncScroll();
+    }
 
+    function syncScroll() {
+        const ta = document.getElementById('sl-css-textarea');
+        const pre = document.getElementById('sl-css-highlight');
+        pre.scrollTop = ta.scrollTop;
+        pre.scrollLeft = ta.scrollLeft;
+    }
+
+    document.getElementById('sl-css-textarea').addEventListener('input', () => {
+        markModified(true);
+        updateHighlight();
+        clearTimeout(applyDebounce);
+        applyDebounce = setTimeout(() => {
+            if (previewReady) injectEditorCss(document.getElementById('sl-css-textarea').value);
+        }, 600);
+    });
+
+    document.getElementById('sl-css-textarea').addEventListener('scroll', syncScroll);
+
+    // ─── URL state ────────────────────────────────────────────
     function getParams() { return new URLSearchParams(location.search); }
-
     function pushParams(patch) {
         const p = getParams();
         for (const [k, v] of Object.entries(patch)) {
-            if (v === null || v === undefined) p.delete(k);
-            else p.set(k, String(v));
+            if (v == null) p.delete(k); else p.set(k, String(v));
         }
         history.replaceState(null, '', '?' + p.toString());
     }
 
-    // ─── Service Worker ───────────────────────────────────────────────────────
-
+    // ─── Service Worker ───────────────────────────────────────
     async function ensureServiceWorker() {
         if (!navigator.serviceWorker) throw new Error('Service Workers not supported');
         if (swRegistration) return swRegistration;
@@ -434,322 +691,328 @@
         swRegistration = await navigator.serviceWorker.register(swPath, { scope });
         await new Promise(resolve => {
             if (swRegistration.active) { resolve(); return; }
-            const worker = swRegistration.installing || swRegistration.waiting;
-            if (worker) worker.addEventListener('statechange', () => { if (worker.state === 'activated') resolve(); });
+            const w = swRegistration.installing || swRegistration.waiting;
+            if (w) w.addEventListener('statechange', () => { if (w.state === 'activated') resolve(); });
             else resolve();
         });
         return swRegistration;
     }
 
-    function getActiveSW() {
-        return swRegistration?.active || navigator.serviceWorker?.controller || null;
-    }
-
     async function sendToSW(files) {
-        const sw = getActiveSW();
+        const sw = swRegistration?.active || navigator.serviceWorker?.controller;
         if (!sw) throw new Error('No active Service Worker');
         return new Promise((resolve, reject) => {
             const ch = new MessageChannel();
-            const timeout = setTimeout(() => reject(new Error('SW timeout')), 15000);
+            const t = setTimeout(() => reject(new Error('SW timeout')), 15000);
             ch.port1.onmessage = e => {
-                clearTimeout(timeout);
+                clearTimeout(t);
                 if (e.data?.type === 'CONTENT_READY') resolve(e.data.fileCount);
-                else reject(new Error('SW error: ' + JSON.stringify(e.data)));
+                else reject(new Error(JSON.stringify(e.data)));
             };
-            const transferables = [ch.port2];
-            for (const v of Object.values(files)) {
-                if (v instanceof ArrayBuffer) transferables.push(v);
-            }
-            sw.postMessage(
-                { type: 'SET_CONTENT', data: { files, options: { openExternalLinksInNewWindow: true } } },
-                transferables
-            );
+            const trans = [ch.port2];
+            for (const v of Object.values(files)) if (v instanceof ArrayBuffer) trans.push(v);
+            sw.postMessage({ type: 'SET_CONTENT', data: { files, options: { openExternalLinksInNewWindow: true } } }, trans);
         });
     }
 
-    // ─── Data loading ─────────────────────────────────────────────────────────
-
-    async function loadFixtures(selectValue) {
+    // ─── Data loading ─────────────────────────────────────────
+    async function loadFixtures(val) {
         const sel = document.getElementById('sl-fixture');
         try {
-            const res = await fetch(basePath + '/api/developer/fixtures');
-            const { fixtures } = await res.json();
+            const { fixtures } = await fetch(basePath + '/api/developer/fixtures').then(r => r.json());
             sel.innerHTML = '<option value="">— select fixture —</option>' +
-                fixtures.map(f => `<option value="${f}"${f === selectValue ? ' selected' : ''}>${f}</option>`).join('');
-        } catch {
-            sel.innerHTML = '<option value="">Error loading fixtures</option>';
-        }
+                fixtures.map(f => `<option value="${f}"${f === val ? ' selected' : ''}>${f}</option>`).join('');
+        } catch { sel.innerHTML = '<option value="">Error loading</option>'; }
     }
 
-    async function loadThemes(selectValue) {
+    async function loadThemes(val) {
         const sel = document.getElementById('sl-theme');
         try {
-            const res = await fetch(basePath + '/api/themes/installed');
-            const { themes } = await res.json();
+            const { themes } = await fetch(basePath + '/api/themes/installed').then(r => r.json());
             loadedThemes = themes;
             sel.innerHTML = '<option value="">— select theme —</option>' +
                 themes.map(t => {
-                    const selected = selectValue ? t.dirName === selectValue : t.isDefault;
-                    return `<option value="${t.dirName}"${selected ? ' selected' : ''}>${t.displayName}</option>`;
+                    const sel2 = val ? t.dirName === val : t.isDefault;
+                    return `<option value="${t.dirName}"${sel2 ? ' selected' : ''}>${t.displayName}</option>`;
                 }).join('');
-        } catch {
-            sel.innerHTML = '<option value="">Error loading themes</option>';
-        }
+        } catch { sel.innerHTML = '<option value="">Error loading</option>'; }
     }
 
-    // Fetch theme CSS/JS files from server
     async function loadThemeFiles(themeDirName) {
         const theme = loadedThemes.find(t => t.dirName === themeDirName);
-        if (!theme || !theme.url) return;
-
+        if (!theme?.url) return;
         themeFiles = {};
-        const toFetch = [];
-
-        // CSS files
-        if (Array.isArray(theme.cssFiles)) {
-            theme.cssFiles.forEach(f => toFetch.push({ path: f, url: theme.url + '/' + f }));
-        } else {
-            toFetch.push({ path: 'style.css', url: theme.url + '/style.css' });
-        }
-        // JS files
-        if (Array.isArray(theme.js)) {
-            theme.js.forEach(f => toFetch.push({ path: f, url: theme.url + '/' + f }));
-        }
-
-        await Promise.allSettled(
-            toFetch.map(async ({ path, url }) => {
-                try {
-                    const res = await fetch(url);
-                    if (res.ok) themeFiles[path] = await res.text();
-                } catch { /* ignore missing files */ }
-            })
-        );
-
+        const toFetch = [
+            ...(theme.cssFiles || ['style.css']).map(f => ({ path: f, url: theme.url + '/' + f })),
+            ...(theme.js     || ['style.js' ]).map(f => ({ path: f, url: theme.url + '/' + f })),
+        ];
+        await Promise.allSettled(toFetch.map(async ({ path, url }) => {
+            try {
+                const r = await fetch(url);
+                if (r.ok) themeFiles[path] = await r.text();
+            } catch {}
+        }));
         renderFileList();
-
-        // Show first CSS file in editor
         const firstCss = toFetch.find(f => f.path.endsWith('.css'));
-        if (firstCss && themeFiles[firstCss.path] !== undefined) {
-            setEditorFile(firstCss.path);
-        }
+        if (firstCss && themeFiles[firstCss.path] != null) setEditorFile(firstCss.path);
     }
 
     function setEditorFile(path) {
         activeCssFile = path;
-        const content = themeFiles[path] || '';
-        originalCss = content;
-        const ta = document.getElementById('sl-css-textarea');
-        ta.value = content;
+        originalCss = themeFiles[path] || '';
+        document.getElementById('sl-css-textarea').value = originalCss;
         document.getElementById('sl-editor-file-label').textContent = path;
         markModified(false);
+        updateHighlight();
     }
 
     function renderFileList() {
         const list = document.getElementById('sl-file-list');
         const paths = Object.keys(themeFiles);
-        if (!paths.length) {
-            list.innerHTML = '<li class="sl-file-empty">No editable files found.</li>';
-            return;
-        }
+        if (!paths.length) { list.innerHTML = '<li class="sl-file-empty">No editable files found.</li>'; return; }
         list.innerHTML = paths.map(p => {
             const ext = p.split('.').pop();
-            return `<li class="sl-file-item${p === activeCssFile ? ' active' : ''}" data-file="${p}">
-                ${p} <span class="sl-file-ext">${ext}</span>
-            </li>`;
+            return `<li class="sl-file-item${p === activeCssFile ? ' active' : ''}" data-file="${p}">${p}<span class="sl-file-ext">${ext}</span></li>`;
         }).join('');
         list.querySelectorAll('.sl-file-item').forEach(li => {
             li.addEventListener('click', () => {
                 list.querySelectorAll('.sl-file-item').forEach(x => x.classList.remove('active'));
                 li.classList.add('active');
                 setEditorFile(li.dataset.file);
-                // switch to CSS tab
-                switchEditorTab('css');
+                switchTab('css');
             });
         });
     }
 
-    // ─── CSS injection into iframe ────────────────────────────────────────────
-
-    function applyCssToIframe(cssText) {
+    // ─── CSS injection ────────────────────────────────────────
+    function injectStyle(id, css) {
         const iframe = document.getElementById('sl-iframe');
         if (!iframe.contentDocument) return;
         try {
             const doc = iframe.contentDocument;
-            let style = doc.getElementById('sl-css-override');
-            if (!style) {
-                style = doc.createElement('style');
-                style.id = 'sl-css-override';
-                doc.head.appendChild(style);
-            }
-            style.textContent = cssText;
-        } catch (e) {
-            console.warn('[Style Lab] Cannot inject CSS:', e);
-        }
+            let el = doc.getElementById(id);
+            if (!el) { el = doc.createElement('style'); el.id = id; doc.head.appendChild(el); }
+            el.textContent = css;
+        } catch(e) { console.warn('[Style Lab] inject:', e); }
     }
+
+    function injectEditorCss(css) { injectStyle('sl-editor-css', css); }
+    function injectQuickCss(css)  { injectStyle('sl-quick-css', css); }
+    function injectClickCss(css)  { injectStyle('sl-click-css', css); }
 
     function markModified(on) {
-        document.getElementById('sl-modified-dot').classList.toggle('visible', on);
+        document.getElementById('sl-modified-dot').classList.toggle('on', on);
     }
 
-    // ─── Click-to-edit (inspect mode) ─────────────────────────────────────────
-
-    function injectInspector(iframe) {
-        try {
-            const doc = iframe.contentDocument;
-            if (!doc) return;
-            // Remove previous
-            const prev = doc.getElementById('__sl_inspector');
-            if (prev) prev.remove();
-            const script = doc.createElement('script');
-            script.id = '__sl_inspector';
-            script.textContent = `
-(function(){
-    window.__slInspect = false;
-    function buildSelector(el) {
-        if (el.id) return '#' + CSS.escape(el.id);
-        let s = el.tagName.toLowerCase();
-        if (el.className && typeof el.className === 'string') {
-            el.className.trim().split(/\\s+/).forEach(c => { if (c) s += '.' + CSS.escape(c); });
-        }
-        return s;
-    }
-    document.addEventListener('click', function(e) {
-        if (!window.__slInspect) return;
-        e.preventDefault(); e.stopPropagation();
-        const el = e.target;
-        window.parent.postMessage({
-            type: 'SL_ELEMENT_CLICK',
-            selector: buildSelector(el),
-            tagName: el.tagName.toLowerCase(),
-            classes: Array.from(el.classList)
-        }, '*');
-    }, true);
-    document.addEventListener('mouseover', function(e) {
-        if (!window.__slInspect) return;
-        e.target.style.outline = '2px solid #0078d4';
-    }, true);
-    document.addEventListener('mouseout', function(e) {
-        if (!window.__slInspect) return;
-        e.target.style.outline = '';
-    }, true);
-})();`;
-            doc.head.appendChild(script);
-        } catch(e) {
-            console.warn('[Style Lab] Cannot inject inspector:', e);
-        }
+    // ─── Quick CSS builder (eXeLearning selectors) ────────────
+    function collectQuick() {
+        const q = {};
+        document.querySelectorAll('[data-quick]').forEach(el => {
+            const k = el.dataset.quick;
+            if (el.type === 'checkbox') q[k] = el.checked;
+            else if (el.type === 'number') q[k] = parseFloat(el.value) || 0;
+            else q[k] = el.value;
+        });
+        return q;
     }
 
-    function setInspectMode(active) {
-        inspectMode = active;
-        document.getElementById('btn-click-edit').classList.toggle('active', active);
-        document.body.classList.toggle('sl-inspect-mode', active);
-        // tell iframe
-        const iframe = document.getElementById('sl-iframe');
-        if (iframe.contentWindow) {
-            try { iframe.contentWindow.__slInspect = active; } catch {}
-        }
+    function buildQuickCss(q) {
+        const bang = ' !important';
+        let css = '';
+        if (q.linkColor) css += `a { color: ${q.linkColor}${bang}; }\n`;
+        if (q.titleColor) css += `.page-title, .exe-content h1, .exe-content h2 { color: ${q.titleColor}${bang}; }\n`;
+        if (q.textColor) css += `body, .exe-content p, .exe-content li { color: ${q.textColor}${bang}; }\n`;
+        if (q.contentBgColor) css += `.exe-content, .page-content { background-color: ${q.contentBgColor}${bang}; }\n`;
+        if (q.pageBgColor) css += `body { background-color: ${q.pageBgColor}${bang}; }\n`;
+        if (q.contentOuterBgColor) css += `.exe-web-site, .exe-scorm { background-color: ${q.contentOuterBgColor}${bang}; }\n`;
+        if (q.fontBody) css += `body, p, li, td { font-family: ${q.fontBody}${bang}; }\n`;
+        if (q.fontTitles) css += `h1, h2, h3, h4, .page-title { font-family: ${q.fontTitles}${bang}; }\n`;
+        if (q.baseFontSize) css += `body { font-size: ${q.baseFontSize}px${bang}; }\n`;
+        if (q.lineHeight) css += `body { line-height: ${q.lineHeight}${bang}; }\n`;
+        if (q.pageTitleSize) css += `.page-title { font-size: ${q.pageTitleSize}rem${bang}; }\n`;
+        if (q.pageTitleWeight) css += `.page-title { font-weight: ${q.pageTitleWeight}${bang}; }\n`;
+        if (q.pageTitleUppercase) css += `.page-title { text-transform: uppercase${bang}; }\n`;
+        if (q.packageTitleColor) css += `.package-title { color: ${q.packageTitleColor}${bang}; }\n`;
+        if (q.menuBgColor) css += `#siteNav, .site-nav { background-color: ${q.menuBgColor}${bang}; }\n`;
+        if (q.menuTextColor) css += `#siteNav a, .site-nav a { color: ${q.menuTextColor}${bang}; }\n`;
+        if (q.menuHoverBgColor) css += `#siteNav a:hover, .site-nav a:hover { background-color: ${q.menuHoverBgColor}${bang}; }\n`;
+        if (q.menuHoverTextColor) css += `#siteNav a:hover, .site-nav a:hover { color: ${q.menuHoverTextColor}${bang}; }\n`;
+        if (q.menuActiveBgColor) css += `#siteNav a.active, .site-nav a.active { background-color: ${q.menuActiveBgColor}${bang}; }\n`;
+        if (q.menuActiveTextColor) css += `#siteNav a.active, .site-nav a.active { color: ${q.menuActiveTextColor}${bang}; }\n`;
+        if (q.boxBgColor) css += `.iDevice, .box { background-color: ${q.boxBgColor}${bang}; }\n`;
+        if (q.boxBorderColor) css += `.iDevice, .box { border-color: ${q.boxBorderColor}${bang}; }\n`;
+        if (q.boxTitleColor) css += `.iDevice_header, .box-head { color: ${q.boxTitleColor}${bang}; }\n`;
+        if (q.buttonBgColor) css += `.feedbackbutton, .exe-quiz-btn, button.btn { background-color: ${q.buttonBgColor}${bang}; }\n`;
+        if (q.buttonTextColor) css += `.feedbackbutton, .exe-quiz-btn, button.btn { color: ${q.buttonTextColor}${bang}; }\n`;
+        return css;
     }
 
-    window.addEventListener('message', e => {
-        if (e.data?.type !== 'SL_ELEMENT_CLICK') return;
-        const { selector, classes } = e.data;
-        // build a search term from the selector/classes for the CSS editor
-        const searchTerms = [selector, ...classes.map(c => '.' + c)];
-        highlightInEditor(searchTerms);
-        setInspectMode(false);
+    document.getElementById('btn-apply-quick').addEventListener('click', () => {
+        quickState = collectQuick();
+        injectQuickCss(buildQuickCss(quickState));
+        setStatus('Quick settings applied.');
     });
 
-    function highlightInEditor(terms) {
-        // Switch to CSS tab and scroll to first occurrence
-        switchEditorTab('css');
-        const ta = document.getElementById('sl-css-textarea');
-        const text = ta.value;
-        for (const term of terms) {
-            const idx = text.indexOf(term);
-            if (idx !== -1) {
-                ta.focus();
-                ta.setSelectionRange(idx, idx + term.length);
-                // Approximate scroll
-                const linesBefore = text.substring(0, idx).split('\n').length - 1;
-                const lineHeight = 19; // ~12px font * 1.6
-                ta.scrollTop = Math.max(0, linesBefore * lineHeight - 60);
-                setStatus('Found: ' + term);
-                return;
-            }
-        }
-        setStatus('Selector not found in CSS: ' + terms[0]);
-    }
-
-    // ─── Editor tabs ──────────────────────────────────────────────────────────
-
-    function switchEditorTab(tabName) {
-        document.querySelectorAll('.sl-etab').forEach(t => t.classList.toggle('active', t.dataset.etab === tabName));
-        document.querySelectorAll('.sl-etab-panel').forEach(p => p.classList.toggle('active', p.dataset.epanel === tabName));
-    }
-
-    document.querySelectorAll('.sl-etab').forEach(tab => {
-        tab.addEventListener('click', () => switchEditorTab(tab.dataset.etab));
+    document.querySelectorAll('[data-quick]').forEach(el => {
+        el.addEventListener('input', () => {
+            if (!previewReady) return;
+            quickState = collectQuick();
+            injectQuickCss(buildQuickCss(quickState));
+        });
     });
 
-    // ─── Editor collapse ──────────────────────────────────────────────────────
-
-    document.getElementById('btn-collapse-editor').addEventListener('click', () => {
-        document.getElementById('sl-editor-panel').classList.add('sl-collapsed');
-    });
-    document.getElementById('sl-editor-collapse-btn').addEventListener('click', () => {
-        document.getElementById('sl-editor-panel').classList.remove('sl-collapsed');
-    });
-
-    // ─── CSS textarea events ──────────────────────────────────────────────────
-
-    document.getElementById('sl-css-textarea').addEventListener('input', () => {
-        markModified(true);
-        clearTimeout(applyDebounce);
-        applyDebounce = setTimeout(() => {
-            if (previewReady) applyCssToIframe(document.getElementById('sl-css-textarea').value);
-        }, 600);
-    });
-
+    // ─── Editor actions ───────────────────────────────────────
     document.getElementById('btn-apply-css').addEventListener('click', () => {
         if (!previewReady) return;
-        applyCssToIframe(document.getElementById('sl-css-textarea').value);
-        setStatus('CSS applied to preview.');
+        injectEditorCss(document.getElementById('sl-css-textarea').value);
+        setStatus('CSS applied.');
     });
 
     document.getElementById('btn-reset-css').addEventListener('click', () => {
         document.getElementById('sl-css-textarea').value = originalCss;
         markModified(false);
-        if (previewReady) applyCssToIframe(originalCss);
-        setStatus('CSS reset to original.');
+        updateHighlight();
+        if (previewReady) injectEditorCss(originalCss);
+        setStatus('CSS reset.');
     });
 
     document.getElementById('btn-download-css').addEventListener('click', () => {
         const css = document.getElementById('sl-css-textarea').value;
-        const blob = new Blob([css], { type: 'text/css' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = activeCssFile || 'style.css';
-        a.click();
-        URL.revokeObjectURL(a.href);
-    });
-
-    document.getElementById('btn-click-edit').addEventListener('click', () => {
-        if (!previewReady) { setStatus('Load a preview first.'); return; }
-        setInspectMode(!inspectMode);
-        setStatus(inspectMode ? 'Inspect mode: click an element in the preview.' : 'Inspect mode off.');
-    });
-
-    // ─── UI interactions ──────────────────────────────────────────────────────
-
-    document.querySelectorAll('[data-export]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('[data-export]').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            selectedExport = btn.dataset.export;
-            pushParams({ export: selectedExport });
+        const a = Object.assign(document.createElement('a'), {
+            href: URL.createObjectURL(new Blob([css], { type: 'text/css' })),
+            download: activeCssFile || 'style.css'
         });
+        a.click(); URL.revokeObjectURL(a.href);
     });
 
+    // ─── Click-to-edit (inspect mode) ────────────────────────
+    function injectInspector() {
+        const iframe = document.getElementById('sl-iframe');
+        try {
+            const doc = iframe.contentDocument;
+            if (!doc) return;
+            const prev = doc.getElementById('__sl_insp');
+            if (prev) prev.remove();
+            const s = doc.createElement('script');
+            s.id = '__sl_insp';
+            s.textContent = `(function(){
+  window.__slInspect=false;
+  var hl=null;
+  function sel(el){
+    if(el.id) return '#'+CSS.escape(el.id);
+    var s=el.tagName.toLowerCase();
+    if(el.className&&typeof el.className==='string')
+      el.className.trim().split(/\\s+/).forEach(function(c){if(c)s+='.'+CSS.escape(c);});
+    return s;
+  }
+  document.addEventListener('click',function(e){
+    if(!window.__slInspect)return;
+    e.preventDefault();e.stopPropagation();
+    var cs=window.getComputedStyle(e.target);
+    window.parent.postMessage({type:'SL_CLICK',selector:sel(e.target),
+      textColor:cs.color,bgColor:cs.backgroundColor,
+      fontSize:parseFloat(cs.fontSize)||16,fontWeight:cs.fontWeight},'\*');
+  },true);
+  document.addEventListener('mouseover',function(e){if(!window.__slInspect)return;e.target.style.outline='2px solid #0ba1a1';},true);
+  document.addEventListener('mouseout',function(e){if(!window.__slInspect)return;e.target.style.outline='';},true);
+})();`;
+            doc.head.appendChild(s);
+        } catch(e) { console.warn('[Style Lab] inspector:', e); }
+    }
+
+    function rgbToHex(rgb) {
+        const m = rgb.match(/\d+/g);
+        if (!m || m.length < 3) return '#ffffff';
+        return '#' + m.slice(0,3).map(x => parseInt(x).toString(16).padStart(2,'0')).join('');
+    }
+
+    window.addEventListener('message', e => {
+        if (e.data?.type !== 'SL_CLICK') return;
+        const { selector, textColor, bgColor, fontSize, fontWeight } = e.data;
+        clickEditSelector = selector;
+        document.getElementById('sl-click-modal-selector').textContent = selector;
+        document.getElementById('ce-textColor').value = rgbToHex(textColor || '#333333');
+        document.getElementById('ce-bgColor').value = rgbToHex(bgColor || '#ffffff');
+        document.getElementById('ce-fontSize').value = Math.round(fontSize) || 16;
+        document.getElementById('ce-fontWeight').value = ['400','600','700','800'].includes(fontWeight) ? fontWeight : '';
+        document.getElementById('ce-textAlign').value = '';
+        document.getElementById('sl-click-modal').classList.add('open');
+        setInspect(false);
+    });
+
+    document.getElementById('btn-click-apply').addEventListener('click', () => {
+        const s = clickEditSelector;
+        const textColor = document.getElementById('ce-textColor').value;
+        const bgColor = document.getElementById('ce-bgColor').value;
+        const fontSize = document.getElementById('ce-fontSize').value;
+        const fontWeight = document.getElementById('ce-fontWeight').value;
+        const textAlign = document.getElementById('ce-textAlign').value;
+        let rule = `${s} {\n`;
+        if (textColor) rule += `  color: ${textColor} !important;\n`;
+        if (bgColor) rule += `  background-color: ${bgColor} !important;\n`;
+        if (fontSize) rule += `  font-size: ${fontSize}px !important;\n`;
+        if (fontWeight) rule += `  font-weight: ${fontWeight} !important;\n`;
+        if (textAlign) rule += `  text-align: ${textAlign} !important;\n`;
+        rule += `}\n`;
+        // Append to CSS editor
+        const ta = document.getElementById('sl-css-textarea');
+        ta.value += '\n/* click-edit */\n' + rule;
+        markModified(true);
+        updateHighlight();
+        injectEditorCss(ta.value);
+        switchTab('css');
+        document.getElementById('sl-click-modal').classList.remove('open');
+        setStatus('Rule added to CSS editor.');
+    });
+
+    document.getElementById('btn-click-cancel').addEventListener('click', () => {
+        document.getElementById('sl-click-modal').classList.remove('open');
+    });
+    document.getElementById('sl-click-modal-close').addEventListener('click', () => {
+        document.getElementById('sl-click-modal').classList.remove('open');
+    });
+
+    // Draggable modal
+    (function() {
+        const modal = document.getElementById('sl-click-modal');
+        const header = document.getElementById('sl-click-modal-header');
+        let ox, oy, drag = false;
+        header.addEventListener('mousedown', e => {
+            drag = true;
+            const r = modal.getBoundingClientRect();
+            ox = e.clientX - r.left; oy = e.clientY - r.top;
+            modal.style.right = 'auto';
+        });
+        document.addEventListener('mousemove', e => {
+            if (!drag) return;
+            modal.style.left = (e.clientX - ox) + 'px';
+            modal.style.top  = (e.clientY - oy) + 'px';
+        });
+        document.addEventListener('mouseup', () => { drag = false; });
+    })();
+
+    function setInspect(on) {
+        inspectMode = on;
+        document.getElementById('btn-inspect').classList.toggle('active', on);
+        document.body.classList.toggle('sl-inspect', on);
+        const iw = document.getElementById('sl-iframe');
+        try { iw.contentWindow.__slInspect = on; } catch {}
+        setStatus(on ? '⊕ Click an element in the preview…' : 'Ready');
+    }
+
+    document.getElementById('btn-inspect').addEventListener('click', () => {
+        if (!previewReady) { setStatus('Load a preview first.'); return; }
+        setInspect(!inspectMode);
+    });
+
+    // ─── Tabs ─────────────────────────────────────────────────
+    function switchTab(name) {
+        document.querySelectorAll('.sl-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+        document.querySelectorAll('.sl-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === name));
+    }
+    document.querySelectorAll('.sl-tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+    // ─── Viewport + export type ───────────────────────────────
     document.querySelectorAll('[data-viewport]').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('[data-viewport]').forEach(b => b.classList.remove('active'));
@@ -758,17 +1021,20 @@
             pushParams({ viewport: btn.dataset.viewport });
         });
     });
-
+    document.querySelectorAll('[data-export]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-export]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedExport = btn.dataset.export;
+            pushParams({ export: selectedExport });
+        });
+    });
     document.getElementById('sl-fixture').addEventListener('change', e => {
-        pushParams({ fixture: e.target.value || null });
-        updateActions();
+        pushParams({ fixture: e.target.value || null }); updateActions();
     });
-
     document.getElementById('sl-theme').addEventListener('change', e => {
-        pushParams({ theme: e.target.value || null });
-        updateActions();
+        pushParams({ theme: e.target.value || null }); updateActions();
     });
-
     document.querySelectorAll('[data-meta]').forEach(cb => {
         cb.addEventListener('change', () => {
             pushParams({ [cb.dataset.meta]: cb.checked ? '1' : '0' });
@@ -777,137 +1043,88 @@
     });
 
     function updateActions() {
-        const fixture = document.getElementById('sl-fixture').value;
-        const theme = document.getElementById('sl-theme').value;
-        document.getElementById('btn-preview').disabled = !(fixture && theme);
+        const f = document.getElementById('sl-fixture').value;
+        const t = document.getElementById('sl-theme').value;
+        document.getElementById('btn-preview').disabled = !(f && t);
         document.getElementById('btn-open-window').disabled = !previewReady;
     }
 
-    // ─── Preview ──────────────────────────────────────────────────────────────
-
+    // ─── Preview ──────────────────────────────────────────────
     async function runPreview() {
         const fixture = document.getElementById('sl-fixture').value;
-        const theme = document.getElementById('sl-theme').value;
+        const theme   = document.getElementById('sl-theme').value;
         if (!fixture || !theme) return;
-
         setStatus('Generating preview…');
         setLoading(true);
-
         try {
             await ensureServiceWorker();
-
             const url = new URL(basePath + '/api/developer/style-lab/preview', location.href);
             url.searchParams.set('fixture', fixture);
             url.searchParams.set('theme', theme);
             url.searchParams.set('exportType', selectedExport);
-            document.querySelectorAll('[data-meta]').forEach(cb => {
-                url.searchParams.set(cb.dataset.meta, cb.checked ? '1' : '0');
-            });
-
+            document.querySelectorAll('[data-meta]').forEach(cb =>
+                url.searchParams.set(cb.dataset.meta, cb.checked ? '1' : '0'));
             setStatus('Fetching export…');
             const res = await fetch(url.toString());
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.message || res.statusText);
-            }
-
+            if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.message || res.statusText); }
             setStatus('Decompressing…');
-            const zipBuffer = await res.arrayBuffer();
-            const zipData = window.fflate.unzipSync(new Uint8Array(zipBuffer));
-
+            const zip = window.fflate.unzipSync(new Uint8Array(await res.arrayBuffer()));
             const files = {};
-            for (const [filePath, data] of Object.entries(zipData)) {
-                files[filePath] = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
-            }
-
+            for (const [p, d] of Object.entries(zip)) files[p] = d.buffer.slice(d.byteOffset, d.byteOffset + d.byteLength);
             setStatus('Sending to Service Worker…');
-            const fileCount = await sendToSW(files);
-
+            const n = await sendToSW(files);
             previewReady = true;
             updateActions();
-            showPreview(theme);
-
-            // Load theme CSS for editor (in parallel, non-blocking)
-            loadThemeFiles(theme).catch(e => console.warn('[Style Lab] Theme files:', e));
-
-            setStatus(fileCount + ' files · ' + fixture + ' · ' + theme + ' · ' + selectedExport);
-        } catch (e) {
+            showPreview();
+            loadThemeFiles(theme).catch(() => {});
+            setStatus(n + ' files · ' + fixture + ' · ' + theme);
+        } catch(e) {
             setStatus('Error: ' + e.message);
             console.error('[Style Lab]', e);
-        } finally {
-            setLoading(false);
-        }
+        } finally { setLoading(false); }
+    }
+
+    function showPreview() {
+        const iframe = document.getElementById('sl-iframe');
+        iframe.onload = () => {
+            injectInspector();
+            const css = document.getElementById('sl-css-textarea').value;
+            if (css) injectEditorCss(css);
+            if (Object.keys(quickState).length) injectQuickCss(buildQuickCss(quickState));
+        };
+        iframe.src = iframe.src?.includes('/viewer/') ? (iframe.src = 'about:blank', setTimeout(() => iframe.src = viewerUrl, 30), '') : viewerUrl;
+        if (!iframe.src) iframe.src = viewerUrl;
+        iframe.style.display = '';
+        document.getElementById('sl-placeholder').style.display = 'none';
     }
 
     document.getElementById('btn-preview').addEventListener('click', runPreview);
-
     document.getElementById('btn-open-window').addEventListener('click', () => {
         if (previewReady) window.open(viewerUrl, '_blank');
     });
-
     document.getElementById('btn-reload-theme').addEventListener('click', async () => {
         try { await fetch(basePath + '/api/developer/reload-theme', { method: 'POST' }); } catch {}
-        const fixture = document.getElementById('sl-fixture').value;
-        const theme = document.getElementById('sl-theme').value;
-        if (fixture && theme) runPreview();
-        else setStatus('Select fixture and theme first.');
+        const f = document.getElementById('sl-fixture').value;
+        const t = document.getElementById('sl-theme').value;
+        if (f && t) runPreview(); else setStatus('Select fixture and theme first.');
     });
 
-    // ─── Helpers ──────────────────────────────────────────────────────────────
-
-    function showPreview(theme) {
-        const iframe = document.getElementById('sl-iframe');
-        const placeholder = document.getElementById('sl-placeholder');
-
-        iframe.onload = () => {
-            // inject inspector and re-apply any pending CSS override
-            injectInspector(iframe);
-            const css = document.getElementById('sl-css-textarea').value;
-            if (css && css !== originalCss) applyCssToIframe(css);
-        };
-
-        if (iframe.src && iframe.src.includes('/viewer/')) {
-            iframe.src = 'about:blank';
-            setTimeout(() => { iframe.src = viewerUrl; }, 30);
-        } else {
-            iframe.src = viewerUrl;
-        }
-        iframe.style.display = '';
-        placeholder.style.display = 'none';
-    }
-
+    // ─── Helpers ──────────────────────────────────────────────
     function setStatus(msg) { document.getElementById('sl-status').textContent = msg; }
-    function setLoading(on) { document.getElementById('sl-sidebar').classList.toggle('sl-loading', on); }
+    function setLoading(on) { document.getElementById('sl-panel').classList.toggle('sl-loading', on); }
 
-    // ─── URL params ───────────────────────────────────────────────────────────
-
+    // ─── URL params ───────────────────────────────────────────
     function applyUrlParams() {
         const p = getParams();
-        const exportParam = p.get('export');
-        if (exportParam) {
-            document.querySelectorAll('[data-export]').forEach(btn => {
-                const active = btn.dataset.export === exportParam;
-                btn.classList.toggle('active', active);
-                if (active) selectedExport = exportParam;
-            });
-        }
-        const viewportParam = p.get('viewport');
-        if (viewportParam) {
-            document.querySelectorAll('[data-viewport]').forEach(btn => {
-                const active = btn.dataset.viewport === viewportParam;
-                btn.classList.toggle('active', active);
-                if (active) document.getElementById('sl-iframe-wrap').className = 'vp-' + viewportParam;
-            });
-        }
-        document.querySelectorAll('[data-meta]').forEach(cb => {
-            const val = p.get(cb.dataset.meta);
-            if (val !== null) cb.checked = val === '1' || val === 'true';
-        });
+        const exp = p.get('export');
+        if (exp) { document.querySelectorAll('[data-export]').forEach(b => { const a = b.dataset.export === exp; b.classList.toggle('active', a); if (a) selectedExport = exp; }); }
+        const vp = p.get('viewport');
+        if (vp) { document.querySelectorAll('[data-viewport]').forEach(b => { const a = b.dataset.viewport === vp; b.classList.toggle('active', a); if (a) document.getElementById('sl-iframe-wrap').className = 'vp-' + vp; }); }
+        document.querySelectorAll('[data-meta]').forEach(cb => { const v = p.get(cb.dataset.meta); if (v !== null) cb.checked = v === '1' || v === 'true'; });
         return { fixture: p.get('fixture'), theme: p.get('theme') };
     }
 
-    // ─── Init ─────────────────────────────────────────────────────────────────
-
+    // ─── Init ─────────────────────────────────────────────────
     async function init() {
         const { fixture, theme } = applyUrlParams();
         await Promise.all([loadFixtures(fixture), loadThemes(theme)]);
