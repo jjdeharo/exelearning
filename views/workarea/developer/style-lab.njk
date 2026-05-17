@@ -492,6 +492,7 @@
                     <button id="btn-apply-css">Apply</button>
                     <button id="btn-download-css">Download</button>
                     <button id="btn-reset-css">Reset</button>
+                    <button id="btn-export-all-css" title="Export all CSS (editor + Quick + click-to-edit) to paste in Project Properties">Export all CSS</button>
                 </div>
             </div>
         </div>
@@ -638,6 +639,45 @@
     <div id="sl-click-modal-footer">
         <button id="btn-click-apply">Apply to CSS</button>
         <button id="btn-click-cancel">Cancel</button>
+    </div>
+</div>
+
+<!-- ── Export all CSS modal ── -->
+<div id="sl-export-modal" role="dialog" aria-label="Export CSS" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.25);width:min(640px,95vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#212529;color:#fff;border-radius:10px 10px 0 0;">
+            <strong>Exportar CSS</strong>
+            <button id="sl-export-modal-close" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;line-height:1;">×</button>
+        </div>
+        <div style="padding:16px;overflow-y:auto;flex:1;font-size:13px;color:#1f2937;display:flex;flex-direction:column;gap:12px;">
+            <p>Este CSS incluye todas las modificaciones activas (editor manual + Quick settings + click-to-edit). Puedes aplicarlo de dos formas:</p>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:10px 14px;">
+                <strong>Opción A — CSS personalizado del proyecto (recomendado)</strong>
+                <ol style="margin:6px 0 0 16px;line-height:1.8;">
+                    <li>En eXeLearning, abre <em>Archivo → Propiedades del proyecto → Metadatos avanzados</em></li>
+                    <li>Pega el CSS en el campo <strong>"CSS personalizado"</strong></li>
+                    <li>Guarda el proyecto</li>
+                </ol>
+                <p style="margin:6px 0 0;color:#6b7280;font-size:11px;">Este CSS se incluirá en todas las exportaciones del proyecto sin modificar el tema.</p>
+            </div>
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:10px 14px;">
+                <strong>Opción B — Reemplazar el archivo CSS del tema</strong>
+                <ol style="margin:6px 0 0 16px;line-height:1.8;">
+                    <li>En el tab CSS del Style Lab, selecciona el archivo del tema (ej. <code>theme/style.css</code>)</li>
+                    <li>Pulsa <strong>Download</strong> para descargar ese archivo modificado</li>
+                    <li>Reemplaza el archivo en la carpeta del tema</li>
+                </ol>
+                <p style="margin:6px 0 0;color:#6b7280;font-size:11px;">Útil si estás creando o modificando un tema propio.</p>
+            </div>
+            <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                    <strong>CSS combinado:</strong>
+                    <button id="btn-copy-export-css" style="background:#0ba1a1;color:#fff;border:none;border-radius:5px;padding:4px 12px;font-size:11px;cursor:pointer;">Copiar</button>
+                </div>
+                <textarea id="sl-export-css-text" readonly spellcheck="false"
+                    style="width:100%;height:200px;font-family:monospace;font-size:11px;border:1px solid #d0d5dd;border-radius:5px;padding:8px;resize:vertical;background:#f8fafc;"></textarea>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1026,6 +1066,40 @@
     document.getElementById('btn-inspect').addEventListener('click', () => {
         if (!previewReady) { setStatus('Load a preview first.'); return; }
         setInspect(!inspectMode);
+    });
+
+    // ─── Export all CSS modal ─────────────────────────────────
+    function buildExportCss() {
+        const parts = [];
+        const editorCss = document.getElementById('sl-css-textarea').value.trim();
+        const quickCss = buildQuickCss(quickState).trim();
+        // click-edit CSS is already merged into editorCss via the textarea
+        if (editorCss) parts.push('/* === Theme CSS (editor) === */\n' + editorCss);
+        if (quickCss)  parts.push('/* === Quick settings === */\n' + quickCss);
+        return parts.join('\n\n');
+    }
+
+    document.getElementById('btn-export-all-css').addEventListener('click', () => {
+        const css = buildExportCss();
+        document.getElementById('sl-export-css-text').value = css || '/* No CSS changes yet. Edit the theme CSS or use Quick settings. */';
+        const modal = document.getElementById('sl-export-modal');
+        modal.style.display = 'flex';
+    });
+
+    document.getElementById('sl-export-modal-close').addEventListener('click', () => {
+        document.getElementById('sl-export-modal').style.display = 'none';
+    });
+    document.getElementById('sl-export-modal').addEventListener('click', e => {
+        if (e.target === e.currentTarget) e.currentTarget.style.display = 'none';
+    });
+
+    document.getElementById('btn-copy-export-css').addEventListener('click', () => {
+        const ta = document.getElementById('sl-export-css-text');
+        navigator.clipboard.writeText(ta.value).then(() => {
+            const btn = document.getElementById('btn-copy-export-css');
+            btn.textContent = '✓ Copiado';
+            setTimeout(() => { btn.textContent = 'Copiar'; }, 2000);
+        }).catch(() => { ta.select(); document.execCommand('copy'); });
     });
 
     // ─── Tabs ─────────────────────────────────────────────────
