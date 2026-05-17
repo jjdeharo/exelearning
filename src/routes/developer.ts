@@ -17,9 +17,10 @@ import {
 } from '../shared/export';
 import { ElpxImporter, FileSystemAssetHandler } from '../shared/import';
 import { getAllSessions } from '../services/session-manager';
-import { reconstructDocument } from '../websocket/yjs-persistence';
+import { reconstructDocument, storeUpdate } from '../websocket/yjs-persistence';
 import { db } from '../db/client';
 import { findProjectByUuid } from '../db/queries';
+import { createTheme, themeDirNameExists, getNextSiteThemeSortOrder } from '../db/queries/themes';
 import { DatabaseAssetProvider } from '../shared/export/providers/DatabaseAssetProvider';
 import * as fflate from 'fflate';
 
@@ -40,6 +41,30 @@ export interface StyleLabMetaOverrides {
     addExeLink?: boolean;
     exportSource?: boolean;
 }
+
+interface StyleLabThemeMetadata {
+    name?: string;
+    title?: string;
+    version?: string;
+    compatibility?: string;
+    author?: string;
+    license?: string;
+    licenseUrl?: string;
+    description?: string;
+    downloadable?: string;
+}
+
+const THEME_METADATA_TAGS: Record<keyof StyleLabThemeMetadata, string> = {
+    name: 'name',
+    title: 'title',
+    version: 'version',
+    compatibility: 'compatibility',
+    author: 'author',
+    license: 'license',
+    licenseUrl: 'license-url',
+    description: 'description',
+    downloadable: 'downloadable',
+};
 
 function safeFixturePath(filename: string): string | null {
     const basename = path.basename(filename);
@@ -68,8 +93,49 @@ async function buildPreview(
     exportType: AllowedExportType,
     metaOverrides: StyleLabMetaOverrides = {},
 ): Promise<Uint8Array> {
-    const elpxBuffer = await fs.promises.readFile(fixturePath);
-    return buildPreviewFromBuffer(new Uint8Array(elpxBuffer), theme, exportType, metaOverrides);
+    const elpxBuffer = new Uint8Array(await fs.promises.readFile(fixturePath));
+    const tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'exe-style-lab-'));
+    try {
+        const ydoc = new Y.Doc();
+        const assetHandler = new FileSystemAssetHandler(tempDir);
+        const importer = new ElpxImporter(ydoc, assetHandler);
+        await importer.importFromBuffer(elpxBuffer);
+
+        if (Object.keys(metaOverrides).length > 0) {
+            const metaMap = ydoc.getMap('metadata');
+            ydoc.transact(() => {
+                for (const [key, value] of Object.entries(metaOverrides)) {
+                    if (value !== undefined) metaMap.set(key, value);
+                }
+            });
+        }
+
+        const fakeOdeId = 'fixture-preview';
+        const wrapper = new ServerYjsDocumentWrapper(ydoc, fakeOdeId);
+        const document = new YjsDocumentAdapter(wrapper);
+        const resources = new FileSystemResourceProvider(PUBLIC_DIR);
+        const assets = new FileSystemAssetProvider(tempDir);
+        const zip = new FflateZipProvider();
+
+        let exporter;
+        switch (exportType) {
+            case 'html5-sp':
+                exporter = new PageExporter(document, resources, assets, zip);
+                break;
+            case 'scorm12':
+                exporter = new Scorm12Exporter(document, resources, assets, zip);
+                break;
+            default:
+                exporter = new Html5Exporter(document, resources, assets, zip);
+        }
+
+        const result = await exporter.export({ theme });
+        wrapper.destroy();
+        if (!result.success || !result.data) throw new Error(result.error || 'Export failed');
+        return result.data;
+    } finally {
+        await fs.promises.rm(tempDir, { recursive: true, force: true });
+    }
 }
 
 function parseBoolParam(value: string | undefined): boolean | undefined {
@@ -89,11 +155,67 @@ function resolveThemeDir(themeDirName: string): string | null {
     return null;
 }
 
-/** Build an installable theme ZIP from the theme directory + CSS overrides */
-async function buildThemeZip(
-    themeDir: string,
-    cssOverrides: Record<string, string>,
-): Promise<Uint8Array> {
+/** Patch a tag value in a theme config.xml string */
+function patchConfigXml(xmlContent: string, updates: Record<string, string>): string {
+    let result = xmlContent;
+    for (const [tag, value] of Object.entries(updates)) {
+        const escaped = value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const regex = new RegExp(`<${tag}>[\\s\\S]*?<\\/${tag}>`);
+        if (regex.test(result)) {
+            result = result.replace(regex, `<${tag}>${escaped}</${tag}>`);
+        } else {
+            result = result.replace(/<\/theme>/, `  <${tag}>${escaped}</${tag}>\n</theme>`);
+        }
+    }
+    return result;
+}
+
+function normalizeThemeMetadata(metadata: StyleLabThemeMetadata | undefined): Record<string, string> {
+    const updates: Record<string, string> = {};
+    for (const [key, tag] of Object.entries(THEME_METADATA_TAGS) as [keyof StyleLabThemeMetadata, string][]) {
+        const value = metadata?.[key];
+        if (value === undefined) continue;
+        const text = String(value).trim();
+        if (text === '' && key !== 'description') continue;
+        updates[tag] = key === 'downloadable' && text !== '0' ? '1' : text;
+    }
+    return updates;
+}
+
+function defaultConfigXml(metadata: Record<string, string>): string {
+    const values = {
+        name: metadata.name || 'style-lab-theme',
+        title: metadata.title || metadata.name || 'Style Lab Theme',
+        version: metadata.version || '1.0',
+        compatibility: metadata.compatibility || '3.0',
+        author: metadata.author || '',
+        license: metadata.license || '',
+        'license-url': metadata['license-url'] || '',
+        description: metadata.description || '',
+        downloadable: metadata.downloadable || '1',
+    };
+    const escaped = Object.fromEntries(
+        Object.entries(values).map(([key, value]) => [
+            key,
+            value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+        ]),
+    );
+    return `<?xml version="1.0"?>
+<theme>
+    <name>${escaped.name}</name>
+    <title>${escaped.title}</title>
+    <version>${escaped.version}</version>
+    <compatibility>${escaped.compatibility}</compatibility>
+    <author>${escaped.author}</author>
+    <license>${escaped.license}</license>
+    <license-url>${escaped['license-url']}</license-url>
+    <description>${escaped.description}</description>
+    <downloadable>${escaped.downloadable}</downloadable>
+</theme>`;
+}
+
+/** Build an installable theme ZIP from the theme directory + file overrides (CSS, config.xml…) */
+async function buildThemeZip(themeDir: string, fileOverrides: Record<string, string>): Promise<Uint8Array> {
     const zipFiles: Record<string, Uint8Array> = {};
 
     async function addDir(dir: string, prefix: string) {
@@ -104,9 +226,8 @@ async function buildThemeZip(
             if (entry.isDirectory()) {
                 await addDir(fullPath, zipPath);
             } else {
-                // Apply CSS override if this file was edited
-                if (entry.name.endsWith('.css') && cssOverrides[zipPath] !== undefined) {
-                    zipFiles[zipPath] = Buffer.from(cssOverrides[zipPath], 'utf-8');
+                if (fileOverrides[zipPath] !== undefined) {
+                    zipFiles[zipPath] = Buffer.from(fileOverrides[zipPath], 'utf-8');
                 } else {
                     zipFiles[zipPath] = await fs.promises.readFile(fullPath);
                 }
@@ -115,6 +236,9 @@ async function buildThemeZip(
     }
 
     await addDir(themeDir, '');
+    if (!zipFiles['config.xml'] && fileOverrides['config.xml'] !== undefined) {
+        zipFiles['config.xml'] = Buffer.from(fileOverrides['config.xml'], 'utf-8');
+    }
     return fflate.zipSync(zipFiles);
 }
 
@@ -190,10 +314,7 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             set.status = 404;
             return { error: 'Not Found' };
         }
-        const fixtures = [
-            ...listFixtures(FIXTURES_PATH),
-            ...listFixtures(DEV_FIXTURES_PATH),
-        ];
+        const fixtures = [...listFixtures(FIXTURES_PATH), ...listFixtures(DEV_FIXTURES_PATH)];
         return {
             fixtures,
             exportTypes: [
@@ -231,9 +352,7 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return { error: 'Missing required params: (fixture or session) and theme' };
         }
 
-        const resolvedExportType: AllowedExportType = ALLOWED_EXPORT_TYPES.includes(
-            exportType as AllowedExportType,
-        )
+        const resolvedExportType: AllowedExportType = ALLOWED_EXPORT_TYPES.includes(exportType as AllowedExportType)
             ? (exportType as AllowedExportType)
             : 'html5';
 
@@ -346,7 +465,12 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return new Response('Not Found', { status: 404 });
         }
 
-        const { theme, cssOverrides } = body as { theme: string; cssOverrides?: Record<string, string> };
+        const { theme, cssOverrides, fileOverrides, themeMetadata } = body as {
+            theme: string;
+            cssOverrides?: Record<string, string>;
+            fileOverrides?: Record<string, string>;
+            themeMetadata?: StyleLabThemeMetadata;
+        };
         if (!theme) {
             set.status = 400;
             return { error: 'Missing required param: theme' };
@@ -359,7 +483,16 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
         }
 
         try {
-            const zipBuffer = await buildThemeZip(themeDir, cssOverrides || {});
+            const overrides: Record<string, string> = { ...(cssOverrides || {}), ...(fileOverrides || {}) };
+            const metadataUpdates = normalizeThemeMetadata(themeMetadata);
+            if (Object.keys(metadataUpdates).length > 0) {
+                const configPath = path.join(themeDir, 'config.xml');
+                const originalXml = fs.existsSync(configPath)
+                    ? await fs.promises.readFile(configPath, 'utf-8')
+                    : defaultConfigXml(metadataUpdates);
+                overrides['config.xml'] = patchConfigXml(originalXml, metadataUpdates);
+            }
+            const zipBuffer = await buildThemeZip(themeDir, overrides);
             return new Response(zipBuffer, {
                 headers: {
                     'Content-Type': 'application/zip',
@@ -371,6 +504,117 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             set.status = 500;
             return {
                 error: 'Theme export failed',
+                message: err instanceof Error ? err.message : String(err),
+            };
+        }
+    })
+
+    // Install a modified theme as a new site theme + optionally apply it to a project
+    .post('/api/developer/style-lab/install-theme', async ({ body, set }) => {
+        if (!isDev()) {
+            set.status = 404;
+            return new Response('Not Found', { status: 404 });
+        }
+
+        const { theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId } = body as {
+            theme: string;
+            fileOverrides?: Record<string, string>;
+            themeMetadata?: StyleLabThemeMetadata;
+            newDirName: string;
+            newDisplayName: string;
+            sessionId?: string;
+        };
+
+        if (!theme || !newDirName || !newDisplayName) {
+            set.status = 400;
+            return { error: 'Missing required params: theme, newDirName, newDisplayName' };
+        }
+        if (!/^[a-z0-9_-]+$/.test(newDirName)) {
+            set.status = 400;
+            return { error: 'newDirName must contain only lowercase letters, numbers, hyphens and underscores' };
+        }
+
+        const themeDir = resolveThemeDir(theme);
+        if (!themeDir) {
+            set.status = 404;
+            return { error: `Theme not found: ${theme}` };
+        }
+
+        const exists = await themeDirNameExists(db, newDirName);
+        if (exists) {
+            set.status = 409;
+            return { error: `Theme directory "${newDirName}" already exists. Choose a different identifier.` };
+        }
+
+        try {
+            const overrides: Record<string, string> = { ...(fileOverrides || {}) };
+            const metadataUpdates = normalizeThemeMetadata({
+                ...themeMetadata,
+                name: newDirName,
+                title: themeMetadata?.title || newDisplayName,
+            });
+
+            // Patch config.xml with new name
+            const configPath = path.join(themeDir, 'config.xml');
+            if (fs.existsSync(configPath)) {
+                const originalXml = await fs.promises.readFile(configPath, 'utf-8');
+                overrides['config.xml'] = patchConfigXml(originalXml, metadataUpdates);
+            } else {
+                overrides['config.xml'] = defaultConfigXml(metadataUpdates);
+            }
+
+            const zipBuffer = await buildThemeZip(themeDir, overrides);
+
+            // Extract files to site themes directory
+            const filesDir = process.env.FILES_DIR || './data';
+            const targetDir = path.join(filesDir, 'themes', 'site', newDirName);
+            await fs.promises.mkdir(targetDir, { recursive: true });
+            const files = fflate.unzipSync(zipBuffer);
+            for (const [filePath, data] of Object.entries(files)) {
+                const fullPath = path.join(targetDir, filePath);
+                await fs.promises.mkdir(path.dirname(fullPath), { recursive: true });
+                await fs.promises.writeFile(fullPath, data);
+            }
+
+            // Register in database
+            const sortOrder = await getNextSiteThemeSortOrder(db);
+            await createTheme(db, {
+                dir_name: newDirName,
+                display_name: newDisplayName,
+                description: themeMetadata?.description || null,
+                version: themeMetadata?.version || null,
+                author: themeMetadata?.author || null,
+                license: themeMetadata?.license || null,
+                is_builtin: 0,
+                is_enabled: 1,
+                is_default: 0,
+                sort_order: sortOrder,
+                storage_path: `themes/site/${newDirName}`,
+            });
+
+            // Optionally apply theme to an open project
+            if (sessionId) {
+                const liveSession = getAllSessions().find(s => s.sessionId === sessionId);
+                if (liveSession?.odeId) {
+                    const project = await findProjectByUuid(db, liveSession.odeId);
+                    if (project) {
+                        const ydoc = await reconstructDocument(project.id);
+                        if (ydoc) {
+                            ydoc.transact(() => {
+                                ydoc.getMap('metadata').set('theme', newDirName);
+                            });
+                            await storeUpdate(project.id, Y.encodeStateAsUpdate(ydoc));
+                        }
+                    }
+                }
+            }
+
+            return { ok: true, dirName: newDirName, displayName: newDisplayName };
+        } catch (err) {
+            console.error('[style-lab] Install theme error:', err);
+            set.status = 500;
+            return {
+                error: 'Theme installation failed',
                 message: err instanceof Error ? err.message : String(err),
             };
         }

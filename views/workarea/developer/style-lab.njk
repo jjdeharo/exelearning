@@ -410,6 +410,77 @@
         #btn-click-cancel:hover { color: var(--ink); }
 
         .sl-loading { opacity: .6; pointer-events: none; }
+
+        /* ── Theme rename/install modal ─────────────────────── */
+        #sl-rename-modal {
+            position: fixed; inset: 0; margin: auto;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 520px; max-width: 96vw;
+            background: #fff; border: 1px solid var(--line);
+            border-radius: 10px; box-shadow: 0 12px 40px rgba(0,0,0,.22);
+            display: none; flex-direction: column; z-index: 200;
+        }
+        #sl-rename-modal.open { display: flex; }
+        #sl-rename-modal-header {
+            display: flex; align-items: center;
+            padding: 10px 14px; background: #212529; color: #fff;
+            border-radius: 9px 9px 0 0; gap: 8px;
+        }
+        #sl-rename-modal-header span { font-size: 12px; font-weight: 600; flex: 1; }
+        #sl-rename-modal-close {
+            background: none; border: none; color: #adb5bd;
+            font-size: 18px; cursor: pointer; line-height: 1; padding: 0 2px;
+        }
+        #sl-rename-modal-body {
+            padding: 14px 16px; display: flex; flex-direction: column; gap: 12px;
+            max-height: min(72vh, 680px); overflow: auto;
+        }
+        .sl-rename-warning {
+            background: #fff8e1; border: 1px solid #f9c23c;
+            border-radius: 6px; padding: 8px 10px;
+            font-size: 11px; color: #7a5a00; line-height: 1.5;
+        }
+        .sl-rename-row {
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .sl-rename-row label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .5px; color: var(--muted);
+        }
+        .sl-rename-row input,
+        .sl-rename-row select,
+        .sl-rename-row textarea {
+            padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px;
+            font-size: 12px; color: var(--ink);
+        }
+        .sl-rename-row textarea { min-height: 70px; resize: vertical; }
+        .sl-rename-row input:focus,
+        .sl-rename-row select:focus,
+        .sl-rename-row textarea:focus {
+            outline: none; border-color: var(--action);
+            box-shadow: 0 0 0 3px rgba(11,161,161,.12);
+        }
+        .sl-rename-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .sl-rename-hint { font-size: 10px; color: var(--muted); }
+        .sl-rename-error {
+            background: #fee2e2; border: 1px solid #fca5a5;
+            border-radius: 5px; padding: 6px 10px;
+            font-size: 11px; color: #b91c1c;
+        }
+        #sl-rename-modal-footer {
+            padding: 10px 14px; display: flex; gap: 8px;
+            border-top: 1px solid var(--line-soft);
+        }
+        #sl-rename-modal-footer button {
+            flex: 1; padding: 8px; border-radius: 6px;
+            font-size: 11px; font-weight: 500; cursor: pointer;
+            border: 1px solid var(--line); background: #fff; color: var(--ink);
+            transition: all .12s;
+        }
+        #sl-rename-modal-footer button:hover { border-color: var(--action); color: var(--action); }
+        #btn-rename-install.primary { background: var(--action); color: #fff; border-color: var(--action); }
+        #btn-rename-install.primary:hover { background: var(--action-dark); }
+        #btn-rename-install:disabled, #btn-rename-download:disabled { opacity: .4; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -645,12 +716,81 @@
     </div>
 </div>
 
+<!-- ── Theme rename/install modal ── -->
+<div id="sl-rename-modal" role="dialog" aria-label="Export or install theme">
+    <div id="sl-rename-modal-header">
+        <span>Exportar / instalar tema</span>
+        <button id="sl-rename-modal-close">×</button>
+    </div>
+    <div id="sl-rename-modal-body">
+        <div class="sl-rename-warning" id="sl-rename-warning">
+            <strong>⚠ Tema predefinido</strong><br>
+            No puedes guardar cambios sobre un tema base con el mismo nombre. Introduce un nombre e identificador nuevos.
+        </div>
+        <div class="sl-rename-row">
+            <label for="sl-new-display-name">Nombre del tema</label>
+            <input type="text" id="sl-new-display-name" placeholder="Mi tema personalizado" maxlength="64">
+        </div>
+        <div class="sl-rename-row">
+            <label for="sl-new-dir-name">Identificador (ID)</label>
+            <input type="text" id="sl-new-dir-name" placeholder="mi-tema" maxlength="48" pattern="[a-z0-9_-]+">
+            <span class="sl-rename-hint">Solo minúsculas, números, guiones y guiones bajos.</span>
+        </div>
+        <div class="sl-rename-grid">
+            <div class="sl-rename-row">
+                <label for="sl-meta-version">Versión</label>
+                <input type="text" id="sl-meta-version" placeholder="1.0" maxlength="32">
+            </div>
+            <div class="sl-rename-row">
+                <label for="sl-meta-compatibility">Compatibilidad</label>
+                <input type="text" id="sl-meta-compatibility" placeholder="3.0" maxlength="32">
+            </div>
+        </div>
+        <div class="sl-rename-grid">
+            <div class="sl-rename-row">
+                <label for="sl-meta-author">Autor</label>
+                <input type="text" id="sl-meta-author" maxlength="128">
+            </div>
+            <div class="sl-rename-row">
+                <label for="sl-meta-downloadable">Importable</label>
+                <select id="sl-meta-downloadable">
+                    <option value="1">Sí</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+        </div>
+        <div class="sl-rename-row">
+            <label for="sl-meta-license">Licencia</label>
+            <input type="text" id="sl-meta-license" maxlength="128">
+        </div>
+        <div class="sl-rename-row">
+            <label for="sl-meta-license-url">URL licencia</label>
+            <input type="url" id="sl-meta-license-url" maxlength="256">
+        </div>
+        <div class="sl-rename-row">
+            <label for="sl-meta-description">Descripción</label>
+            <textarea id="sl-meta-description" maxlength="1000"></textarea>
+        </div>
+        <div class="sl-rename-error" id="sl-rename-error" style="display:none"></div>
+    </div>
+    <div id="sl-rename-modal-footer">
+        <button id="btn-rename-download">⬇ Descargar ZIP</button>
+        <button id="btn-rename-install" class="primary" title="Instalar el tema y aplicarlo al proyecto abierto en el editor">
+            ✓ Instalar y aplicar al proyecto
+        </button>
+    </div>
+</div>
+
 <script src="{{ '/libs/fflate/fflate.umd.js' | asset }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <script>
 (function () {
     const basePath = {{ basePath | json | safe }};
     const viewerUrl = basePath + '/viewer/index.html';
+    const QUICK_BLOCK_START = '/* style-lab-quick:start */';
+    const QUICK_BLOCK_END = '/* style-lab-quick:end */';
+    const CLICK_BLOCK_START = '/* style-lab-click:start */';
+    const CLICK_BLOCK_END = '/* style-lab-click:end */';
     let swRegistration = null;
     let previewReady = false;
     let selectedExport = 'html5';
@@ -662,6 +802,26 @@
     let clickEditSelector = '';
     let applyDebounce = 0;
     let quickState = {};        // collected from [data-quick] inputs
+    let themeReloadToken = Date.now();
+
+    function replaceControlledBlock(css, start, end, content) {
+        const trimmed = String(content || '').trim();
+        const block = trimmed ? `${start}\n${trimmed}\n${end}` : '';
+        const escapeRe = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp(`${escapeRe(start)}[\\s\\S]*?${escapeRe(end)}`);
+        if (re.test(css)) {
+            return css.replace(re, block).replace(/\n{3,}/g, '\n\n').trimEnd();
+        }
+        return block ? `${css.trimEnd()}\n\n${block}` : css;
+    }
+
+    function appendToControlledBlock(css, start, end, content) {
+        const escapeRe = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp(`${escapeRe(start)}\\n?([\\s\\S]*?)\\n?${escapeRe(end)}`);
+        const existing = re.exec(css)?.[1]?.trim();
+        const next = [existing, String(content || '').trim()].filter(Boolean).join('\n\n');
+        return replaceControlledBlock(css, start, end, next);
+    }
 
     // ─── Highlight.js for CSS editor ─────────────────────────
     function updateHighlight() {
@@ -793,9 +953,11 @@
         const theme = loadedThemes.find(t => t.dirName === themeDirName);
         if (!theme?.url) return;
         themeFiles = {};
+        const cacheToken = encodeURIComponent(String(themeReloadToken));
+        const withCacheToken = url => url + (url.includes('?') ? '&' : '?') + 'slReload=' + cacheToken;
         const toFetch = [
-            ...(theme.cssFiles || ['style.css']).map(f => ({ path: f, url: theme.url + '/' + f })),
-            ...(theme.js     || ['style.js' ]).map(f => ({ path: f, url: theme.url + '/' + f })),
+            ...(theme.cssFiles || ['style.css']).map(f => ({ path: f, url: withCacheToken(theme.url + '/' + f) })),
+            ...(theme.js     || ['style.js' ]).map(f => ({ path: f, url: withCacheToken(theme.url + '/' + f) })),
         ];
         await Promise.allSettled(toFetch.map(async ({ path, url }) => {
             try {
@@ -999,9 +1161,8 @@
         if (fontWeight) rule += `  font-weight: ${fontWeight} !important;\n`;
         if (textAlign) rule += `  text-align: ${textAlign} !important;\n`;
         rule += `}\n`;
-        // Append to CSS editor
         const ta = document.getElementById('sl-css-textarea');
-        ta.value += '\n/* click-edit */\n' + rule;
+        ta.value = appendToControlledBlock(ta.value, CLICK_BLOCK_START, CLICK_BLOCK_END, rule);
         markModified(true);
         updateHighlight();
         injectEditorCss(ta.value);
@@ -1050,52 +1211,182 @@
         setInspect(!inspectMode);
     });
 
-    // ─── Export all CSS modal ─────────────────────────────────
-    function buildExportCss() {
-        const parts = [];
-        const editorCss = document.getElementById('sl-css-textarea').value.trim();
-        const quickCss = buildQuickCss(quickState).trim();
-        // click-edit CSS is already merged into editorCss via the textarea
-        if (editorCss) parts.push('/* === Theme CSS (editor) === */\n' + editorCss);
-        if (quickCss)  parts.push('/* === Quick settings === */\n' + quickCss);
-        return parts.join('\n\n');
+    // ─── Theme export / install ───────────────────────────────
+    function buildFileOverrides() {
+        const overrides = {};
+        if (activeCssFile) {
+            let css = document.getElementById('sl-css-textarea').value;
+            const quickCss = buildQuickCss(quickState);
+            css = replaceControlledBlock(css, QUICK_BLOCK_START, QUICK_BLOCK_END, quickCss);
+            overrides[activeCssFile] = css;
+        }
+        return overrides;
     }
 
-    document.getElementById('btn-export-all-css').addEventListener('click', async () => {
+    function collectThemeMetadata() {
+        return {
+            name: document.getElementById('sl-new-dir-name').value.trim(),
+            title: document.getElementById('sl-new-display-name').value.trim(),
+            version: document.getElementById('sl-meta-version').value.trim(),
+            compatibility: document.getElementById('sl-meta-compatibility').value.trim(),
+            author: document.getElementById('sl-meta-author').value.trim(),
+            license: document.getElementById('sl-meta-license').value.trim(),
+            licenseUrl: document.getElementById('sl-meta-license-url').value.trim(),
+            description: document.getElementById('sl-meta-description').value.trim(),
+            downloadable: document.getElementById('sl-meta-downloadable').value,
+        };
+    }
+
+    function setThemeMetadataControls(theme) {
+        const metadata = loadedThemes.find(t => t.dirName === theme) || {};
+        document.getElementById('sl-meta-version').value = metadata.version || '1.0';
+        document.getElementById('sl-meta-compatibility').value = metadata.compatibility || '3.0';
+        document.getElementById('sl-meta-author').value = metadata.author || '';
+        document.getElementById('sl-meta-license').value = metadata.license || '';
+        document.getElementById('sl-meta-license-url').value = metadata.licenseUrl || metadata.licenseURL || '';
+        document.getElementById('sl-meta-description').value = metadata.description || '';
+        document.getElementById('sl-meta-downloadable').value = String(metadata.downloadable ?? '1') === '0' ? '0' : '1';
+    }
+
+    function isBaseTheme(dirName) {
+        const t = loadedThemes.find(t => t.dirName === dirName);
+        return t ? t.type === 'base' : false;
+    }
+
+    function slugify(str) {
+        return str.toLowerCase()
+            .replace(/[áàäâ]/g, 'a').replace(/[éèëê]/g, 'e')
+            .replace(/[íìïî]/g, 'i').replace(/[óòöô]/g, 'o')
+            .replace(/[úùüû]/g, 'u').replace(/ñ/g, 'n')
+            .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+
+    // Rename/install modal
+    function openRenameModal(theme) {
+        const modal = document.getElementById('sl-rename-modal');
+        const warning = document.getElementById('sl-rename-warning');
+        const installBtn = document.getElementById('btn-rename-install');
+        const errEl = document.getElementById('sl-rename-error');
+
+        warning.style.display = isBaseTheme(theme) ? '' : 'none';
+        errEl.style.display = 'none';
+
+        // Prefill with modified theme name
+        const displayEl = document.getElementById('sl-new-display-name');
+        const dirEl = document.getElementById('sl-new-dir-name');
+        displayEl.value = theme + '-custom';
+        dirEl.value = slugify(theme + '-custom');
+        setThemeMetadataControls(theme);
+
+        // "Install & apply" only works if a session is selected
+        const fixtureVal = document.getElementById('sl-fixture').value;
+        const hasSession = fixtureVal.startsWith('session:');
+        installBtn.disabled = !hasSession;
+        installBtn.title = hasSession
+            ? 'Instalar el tema y aplicarlo al proyecto abierto en el editor'
+            : 'Abre un proyecto en el editor para poder aplicar el tema directamente';
+
+        modal.classList.add('open');
+        displayEl.focus();
+        displayEl.select();
+    }
+
+    document.getElementById('sl-rename-modal-close').addEventListener('click', () => {
+        document.getElementById('sl-rename-modal').classList.remove('open');
+    });
+
+    // Auto-generate dirName from displayName
+    document.getElementById('sl-new-display-name').addEventListener('input', e => {
+        document.getElementById('sl-new-dir-name').value = slugify(e.target.value);
+    });
+
+    document.getElementById('btn-export-all-css').addEventListener('click', () => {
         const theme = document.getElementById('sl-theme').value;
         if (!theme) { setStatus('Selecciona un tema primero.'); return; }
-        const btn = document.getElementById('btn-export-all-css');
-        btn.disabled = true;
-        btn.textContent = 'Exportando…';
-        try {
-            // Build cssOverrides: active CSS file + quick CSS appended
-            const cssOverrides = {};
-            if (activeCssFile) {
-                let css = document.getElementById('sl-css-textarea').value;
-                const quickCss = buildQuickCss(quickState);
-                if (quickCss) css += '\n\n/* === Quick settings === */\n' + quickCss;
-                cssOverrides[activeCssFile] = css;
-            }
-            const res = await fetch(basePath + '/api/developer/style-lab/export-theme', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ theme, cssOverrides }),
-            });
-            if (!res.ok) throw new Error((await res.json().catch(() => ({}))).message || res.statusText);
-            const blob = await res.blob();
-            const a = Object.assign(document.createElement('a'), {
-                href: URL.createObjectURL(blob),
-                download: theme + '-custom.zip',
-            });
-            a.click(); URL.revokeObjectURL(a.href);
-            setStatus('Tema exportado: ' + theme + '-custom.zip');
-        } catch(e) {
-            setStatus('Error exportando tema: ' + e.message);
-        } finally {
-            btn.disabled = false;
-            btn.textContent = 'Export theme ZIP';
-        }
+        openRenameModal(theme);
     });
+
+    async function doExportOrInstall(install) {
+        const theme = document.getElementById('sl-theme').value;
+        const newDisplayName = document.getElementById('sl-new-display-name').value.trim();
+        const newDirName = document.getElementById('sl-new-dir-name').value.trim();
+        const errEl = document.getElementById('sl-rename-error');
+        errEl.style.display = 'none';
+
+        if (!newDisplayName || !newDirName) {
+            errEl.textContent = 'Rellena el nombre y el identificador.';
+            errEl.style.display = '';
+            return;
+        }
+        if (!/^[a-z0-9_-]+$/.test(newDirName)) {
+            errEl.textContent = 'El identificador solo puede contener minúsculas, números, - y _.';
+            errEl.style.display = '';
+            return;
+        }
+
+        const dlBtn = document.getElementById('btn-rename-download');
+        const instBtn = document.getElementById('btn-rename-install');
+        dlBtn.disabled = true; instBtn.disabled = true;
+
+        try {
+            const fileOverrides = buildFileOverrides();
+            const themeMetadata = collectThemeMetadata();
+
+            if (install) {
+                const fixtureVal = document.getElementById('sl-fixture').value;
+                const sessionId = fixtureVal.startsWith('session:') ? fixtureVal.slice(8) : null;
+                const res = await fetch(basePath + '/api/developer/style-lab/install-theme', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    errEl.textContent = data.error || res.statusText;
+                    errEl.style.display = '';
+                    return;
+                }
+                document.getElementById('sl-rename-modal').classList.remove('open');
+                setStatus('Tema instalado: ' + newDisplayName);
+                if (sessionId) {
+                    setStatus('Tema aplicado al proyecto. Vuelve al editor…');
+                    setTimeout(() => { window.location.href = basePath + '/workarea'; }, 1500);
+                }
+            } else {
+                // Just download
+                const res = await fetch(basePath + '/api/developer/style-lab/export-theme', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ theme, fileOverrides, themeMetadata }),
+                });
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    errEl.textContent = data.message || res.statusText;
+                    errEl.style.display = '';
+                    return;
+                }
+                const blob = await res.blob();
+                const a = Object.assign(document.createElement('a'), {
+                    href: URL.createObjectURL(blob),
+                    download: newDirName + '.zip',
+                });
+                a.click(); URL.revokeObjectURL(a.href);
+                document.getElementById('sl-rename-modal').classList.remove('open');
+                setStatus('Descargado: ' + newDirName + '.zip');
+            }
+        } catch(e) {
+            errEl.textContent = 'Error: ' + e.message;
+            errEl.style.display = '';
+        } finally {
+            dlBtn.disabled = false;
+            // re-enable install only if session is active
+            const fixtureVal = document.getElementById('sl-fixture').value;
+            instBtn.disabled = !fixtureVal.startsWith('session:');
+        }
+    }
+
+    document.getElementById('btn-rename-download').addEventListener('click', () => doExportOrInstall(false));
+    document.getElementById('btn-rename-install').addEventListener('click', () => doExportOrInstall(true));
 
     // ─── Tabs ─────────────────────────────────────────────────
     function switchTab(name) {
@@ -1179,7 +1470,7 @@
             updateActions();
             showPreview();
             loadThemeFiles(theme).catch(() => {});
-            setStatus(n + ' files · ' + fixture + ' · ' + theme);
+            setStatus(n + ' files · ' + fixtureVal + ' · ' + theme);
         } catch(e) {
             setStatus('Error: ' + e.message);
             console.error('[Style Lab]', e);
@@ -1210,6 +1501,7 @@
     });
     document.getElementById('btn-reload-theme').addEventListener('click', async () => {
         try { await fetch(basePath + '/api/developer/reload-theme', { method: 'POST' }); } catch {}
+        themeReloadToken = Date.now();
         const f = document.getElementById('sl-fixture').value;
         const t = document.getElementById('sl-theme').value;
         if (f && t) runPreview(); else setStatus('Select fixture and theme first.');

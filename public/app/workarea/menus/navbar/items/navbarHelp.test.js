@@ -317,7 +317,7 @@ describe('NavbarHelp', () => {
     it('should open API docs URL in new tab', () => {
       navbarHelp.apiDocsEvent();
 
-      expect(window.open).toHaveBeenCalledWith('/api/docs', '_blank');
+      expect(window.open).toHaveBeenCalledWith('/api/v1/docs', '_blank');
     });
 
     it('should focus the new tab', () => {
