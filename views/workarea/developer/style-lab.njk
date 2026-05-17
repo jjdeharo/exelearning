@@ -913,23 +913,30 @@
                 fetch(basePath + '/api/developer/fixtures').then(r => r.json()),
                 fetch(basePath + '/api/developer/sessions').then(r => r.json()).catch(() => ({ sessions: [] })),
             ]);
+
+            // Auto-select: prefer URL param, then first session, then nothing
+            let autoVal = val;
+            if (!autoVal && sessions.length > 0) autoVal = 'session:' + sessions[0].sessionId;
+
             let html = '<option value="">— select —</option>';
             if (sessions.length > 0) {
                 html += '<optgroup label="Proyecto abierto en el editor">';
                 html += sessions.map(s => {
                     const v = 'session:' + s.sessionId;
-                    return `<option value="${v}"${v === val ? ' selected' : ''}>▶ ${s.fileName}</option>`;
+                    const name = s.fileName.replace(/\.elpx?$/, '');
+                    return `<option value="${v}"${v === autoVal ? ' selected' : ''}>▶ ${name}</option>`;
                 }).join('');
                 html += '</optgroup>';
                 hint.style.display = 'none';
             }
             if (fixtures.length > 0) {
                 html += '<optgroup label="Fixtures de prueba">';
-                html += fixtures.map(f => `<option value="${f}"${f === val ? ' selected' : ''}>${f}</option>`).join('');
+                html += fixtures.map(f => `<option value="${f}"${f === autoVal ? ' selected' : ''}>${f}</option>`).join('');
                 html += '</optgroup>';
             }
             sel.innerHTML = html;
-        } catch { sel.innerHTML = '<option value="">Error loading</option>'; }
+            return autoVal; // devuelve el valor efectivo para que init() lo use
+        } catch { sel.innerHTML = '<option value="">Error loading</option>'; return val; }
     }
 
     async function loadThemes(val) {
@@ -1514,9 +1521,9 @@
     // ─── Init ─────────────────────────────────────────────────
     async function init() {
         const { fixture, theme } = applyUrlParams();
-        await Promise.all([loadFixtures(fixture), loadThemes(theme)]);
+        const [effectiveFixture] = await Promise.all([loadFixtures(fixture), loadThemes(theme)]);
         updateActions();
-        if (fixture && theme) runPreview();
+        if (effectiveFixture && theme) runPreview();
         if (navigator.serviceWorker) ensureServiceWorker().catch(() => {});
     }
 

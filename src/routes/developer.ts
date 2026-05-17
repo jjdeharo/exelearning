@@ -82,7 +82,7 @@ function listFixtures(dir: string): string[] {
     if (!fs.existsSync(dir)) return [];
     return fs
         .readdirSync(dir, { withFileTypes: true })
-        .filter(e => e.isFile() && (e.name.endsWith('.elpx') || e.name.endsWith('.elp')))
+        .filter(e => e.isFile() && e.name.endsWith('.elpx'))
         .map(e => e.name)
         .sort();
 }
@@ -270,17 +270,17 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
     })
 
     // List active project sessions (projects open in the editor right now)
+    // sessionId === project UUID (odeId is never set on session objects)
     .get('/api/developer/sessions', ({ set }) => {
         if (!isDev()) {
             set.status = 404;
             return { error: 'Not Found' };
         }
         const sessions = getAllSessions()
-            .filter(s => s.odeId)
+            .filter(s => s.fileName) // only real project sessions (have a file name)
             .map(s => ({
                 sessionId: s.sessionId,
                 fileName: s.fileName || 'Untitled',
-                odeId: s.odeId,
             }));
         return { sessions };
     })
@@ -377,11 +377,8 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                     set.status = 404;
                     return { error: `Session not found: ${session}` };
                 }
-                if (!liveSession.odeId) {
-                    set.status = 400;
-                    return { error: 'Session has no project (no odeId)' };
-                }
-                const project = await findProjectByUuid(db, liveSession.odeId);
+                // sessionId === project UUID (odeId is never set on session objects)
+                const project = await findProjectByUuid(db, liveSession.sessionId);
                 if (!project) {
                     set.status = 404;
                     return { error: 'Project not found in database' };
@@ -404,7 +401,7 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
                 const tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'exe-style-lab-'));
                 try {
-                    const wrapper = new ServerYjsDocumentWrapper(ydoc, liveSession.odeId);
+                    const wrapper = new ServerYjsDocumentWrapper(ydoc, liveSession.sessionId);
                     const document = new YjsDocumentAdapter(wrapper);
                     const resources = new FileSystemResourceProvider(PUBLIC_DIR);
                     const dbAssets = new DatabaseAssetProvider(db, project.id, tempDir);
@@ -593,10 +590,11 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             });
 
             // Optionally apply theme to an open project
+            // sessionId === project UUID (odeId is never set on session objects)
             if (sessionId) {
                 const liveSession = getAllSessions().find(s => s.sessionId === sessionId);
-                if (liveSession?.odeId) {
-                    const project = await findProjectByUuid(db, liveSession.odeId);
+                if (liveSession) {
+                    const project = await findProjectByUuid(db, liveSession.sessionId);
                     if (project) {
                         const ydoc = await reconstructDocument(project.id);
                         if (ydoc) {
