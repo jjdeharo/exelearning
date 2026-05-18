@@ -24,7 +24,7 @@ import { db } from '../db/client';
 import { findProjectByUuid } from '../db/queries';
 import {
     createTheme,
-    themeDirNameExists,
+    updateTheme,
     getNextSiteThemeSortOrder,
     findThemeByDirName,
     deleteTheme,
@@ -241,6 +241,11 @@ async function buildThemeZip(
     async function addDir(dir: string, prefix: string) {
         const entries = await fs.promises.readdir(dir, { withFileTypes: true });
         for (const entry of entries) {
+            // Skip files with non-standard names (spaces, parentheses, etc.)
+            // that may be created by sync tools (e.g. Syncthing conflict copies).
+            // Only allow safe filename characters to prevent invalid CSS/JS from
+            // being packaged into the theme ZIP and later linked in exported HTML.
+            if (!/^[a-zA-Z0-9._-]+$/.test(entry.name)) continue;
             const fullPath = path.join(dir, entry.name);
             const zipPath = prefix ? `${prefix}/${entry.name}` : entry.name;
             if (entry.isDirectory()) {
@@ -331,12 +336,8 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             sl_button_text: trans('Button text', {}, locale),
             sl_generating_preview: trans('Generating preview...', {}, locale),
             sl_placeholder_hint: trans('Select a project and theme, then click Preview', {}, locale),
-            sl_edit_element: trans('Edit element', {}, locale),
             sl_font_size_px: trans('Font size (px)', {}, locale),
-            sl_weight: trans('Weight', {}, locale),
-            sl_alignment: trans('Alignment', {}, locale),
             sl_apply_to_css: trans('Apply to CSS', {}, locale),
-            sl_cancel: trans('Cancel', {}, locale),
             sl_export_install_modal: trans('Export / install theme', {}, locale),
             sl_base_theme_warning_title: trans('⚠ Predefined theme', {}, locale),
             sl_base_theme_warning_body: trans(
@@ -346,18 +347,11 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             ),
             sl_theme_name: trans('Theme name', {}, locale),
             sl_identifier: trans('Identifier (ID)', {}, locale),
-            sl_version: trans('Version', {}, locale),
             sl_compatibility: trans('Compatibility', {}, locale),
-            sl_author: trans('Author', {}, locale),
             sl_importable: trans('Importable', {}, locale),
-            sl_license: trans('License', {}, locale),
-            sl_license_url: trans('License URL', {}, locale),
-            sl_description: trans('Description', {}, locale),
             sl_theme_name_ph: trans('My custom theme', {}, locale),
             sl_dir_name_ph: trans('my-theme', {}, locale),
             sl_dir_name_hint: trans('Lowercase, numbers, hyphens and underscores only.', {}, locale),
-            sl_yes: trans('Yes', {}, locale),
-            sl_no: trans('No', {}, locale),
             sl_download_zip: trans('Download ZIP', {}, locale),
             sl_install_apply: trans('Install and apply to project', {}, locale),
             sl_install_apply_title: trans(
@@ -415,7 +409,6 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             sl_tab_files: trans('Files', {}, locale),
             sl_import_zip: trans('Import theme ZIP', {}, locale),
             sl_select_zip: trans('Select ZIP...', {}, locale),
-            sl_no_file_selected: trans('No file selected', {}, locale),
             sl_install_uploaded: trans('Install uploaded theme', {}, locale),
             sl_export_install_section: trans('Export / install', {}, locale),
             sl_manage: trans('Manage', {}, locale),
@@ -424,6 +417,25 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             sl_js_reading_zip: trans('Reading ZIP...', {}, locale),
             sl_js_uploading_theme: trans('Uploading theme...', {}, locale),
             sl_js_theme_uploaded: trans('Theme installed: ', {}, locale),
+            // Inspect modal
+            sl_inspect: trans('Inspect', {}, locale),
+            sl_inspect_title: trans('Click-to-edit: click an element in the preview', {}, locale),
+            sl_text_transparency: trans('Text transparency (%)', {}, locale),
+            sl_bg_transparency: trans('Background transparency (%)', {}, locale),
+            sl_margin_left: trans('Margin left', {}, locale),
+            sl_margin_right: trans('Margin right', {}, locale),
+            sl_width: trans('Width', {}, locale),
+            sl_max_width: trans('Max width', {}, locale),
+            sl_margin_bottom: trans('Margin bottom', {}, locale),
+            sl_padding: trans('Padding', {}, locale),
+            sl_hover_states: trans('Hover/focus/active too', {}, locale),
+            sl_align_justify: trans('Justify', {}, locale),
+            // Custom fonts
+            sl_custom_fonts: trans('Custom fonts', {}, locale),
+            sl_add_fonts: trans('Add...', {}, locale),
+            sl_no_custom_fonts: trans('No custom fonts', {}, locale),
+            sl_js_no_valid_fonts: trans('No valid font files (.woff, .woff2, .ttf, .otf).', {}, locale),
+            sl_js_fonts_added: trans('Fonts added: {n}. Available in Typography selectors.', {}, locale),
         };
 
         const html = renderTemplate('workarea/developer/style-lab', {
@@ -656,12 +668,14 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return new Response('Not Found', { status: 404 });
         }
 
-        const { theme, cssOverrides, fileOverrides, themeMetadata, screenshotBase64 } = body as {
+        const { theme, cssOverrides, fileOverrides, themeMetadata, screenshotBase64, fontFiles, assetFiles } = body as {
             theme: string;
             cssOverrides?: Record<string, string>;
             fileOverrides?: Record<string, string>;
             themeMetadata?: StyleLabThemeMetadata;
             screenshotBase64?: string;
+            fontFiles?: Record<string, string>;
+            assetFiles?: Record<string, string>;
         };
         if (!theme) {
             set.status = 400;
@@ -686,6 +700,12 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             }
             const binaryOverrides: Record<string, Uint8Array> = {};
             if (screenshotBase64) binaryOverrides['screenshot.png'] = Buffer.from(screenshotBase64, 'base64');
+            for (const [p, b64] of Object.entries(fontFiles || {})) {
+                binaryOverrides[p] = Buffer.from(b64, 'base64');
+            }
+            for (const [p, b64] of Object.entries(assetFiles || {})) {
+                binaryOverrides[p] = Buffer.from(b64, 'base64');
+            }
             const zipBuffer = await buildThemeZip(themeDir, overrides, binaryOverrides);
             return new Response(zipBuffer, {
                 headers: {
@@ -710,7 +730,7 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return new Response('Not Found', { status: 404 });
         }
 
-        const { theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId, screenshotBase64 } =
+        const { theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId, screenshotBase64, fontFiles, assetFiles } =
             body as {
                 theme: string;
                 fileOverrides?: Record<string, string>;
@@ -719,6 +739,8 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 newDisplayName: string;
                 sessionId?: string;
                 screenshotBase64?: string;
+                fontFiles?: Record<string, string>;
+                assetFiles?: Record<string, string>;
             };
 
         if (!theme || !newDirName || !newDisplayName) {
@@ -736,11 +758,12 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return { error: `Theme not found: ${theme}` };
         }
 
-        const exists = await themeDirNameExists(db, newDirName);
-        if (exists) {
+        const existingTheme = await findThemeByDirName(db, newDirName);
+        if (existingTheme?.is_builtin) {
             set.status = 409;
             return { error: `Theme directory "${newDirName}" already exists. Choose a different identifier.` };
         }
+        const isOverwrite = !!existingTheme;
 
         try {
             const overrides: Record<string, string> = { ...(fileOverrides || {}) };
@@ -761,11 +784,22 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
             const binaryOverrides: Record<string, Uint8Array> = {};
             if (screenshotBase64) binaryOverrides['screenshot.png'] = Buffer.from(screenshotBase64, 'base64');
+            for (const [p, b64] of Object.entries(fontFiles || {})) {
+                binaryOverrides[p] = Buffer.from(b64, 'base64');
+            }
+            for (const [p, b64] of Object.entries(assetFiles || {})) {
+                binaryOverrides[p] = Buffer.from(b64, 'base64');
+            }
             const zipBuffer = await buildThemeZip(themeDir, overrides, binaryOverrides);
 
-            // Extract files to site themes directory
+            // Install theme: replace directory completely so stale files (e.g. sync
+            // tool conflict copies) don't survive. buildThemeZip already captured
+            // every valid file, so the ZIP is the authoritative source of truth.
             const filesDir = process.env.FILES_DIR || './data';
             const targetDir = path.join(filesDir, 'themes', 'site', newDirName);
+            if (isOverwrite) {
+                await fs.promises.rm(targetDir, { recursive: true, force: true });
+            }
             await fs.promises.mkdir(targetDir, { recursive: true });
             const files = fflate.unzipSync(zipBuffer);
             for (const [filePath, data] of Object.entries(files)) {
@@ -774,21 +808,31 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 await fs.promises.writeFile(fullPath, data);
             }
 
-            // Register in database
-            const sortOrder = await getNextSiteThemeSortOrder(db);
-            await createTheme(db, {
-                dir_name: newDirName,
-                display_name: newDisplayName,
-                description: themeMetadata?.description || null,
-                version: themeMetadata?.version || null,
-                author: themeMetadata?.author || null,
-                license: themeMetadata?.license || null,
-                is_builtin: 0,
-                is_enabled: 1,
-                is_default: 0,
-                sort_order: sortOrder,
-                storage_path: `themes/site/${newDirName}`,
-            });
+            // Register or update in database
+            if (isOverwrite) {
+                await updateTheme(db, existingTheme.id, {
+                    display_name: newDisplayName,
+                    description: themeMetadata?.description || null,
+                    version: themeMetadata?.version || null,
+                    author: themeMetadata?.author || null,
+                    license: themeMetadata?.license || null,
+                });
+            } else {
+                const sortOrder = await getNextSiteThemeSortOrder(db);
+                await createTheme(db, {
+                    dir_name: newDirName,
+                    display_name: newDisplayName,
+                    description: themeMetadata?.description || null,
+                    version: themeMetadata?.version || null,
+                    author: themeMetadata?.author || null,
+                    license: themeMetadata?.license || null,
+                    is_builtin: 0,
+                    is_enabled: 1,
+                    is_default: 0,
+                    sort_order: sortOrder,
+                    storage_path: `themes/site/${newDirName}`,
+                });
+            }
 
             // Apply theme to the open project via the live doc (or DB if no live session).
             // withDocument loads from cache or DB by itself — no live session required.
@@ -881,11 +925,12 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return { error: 'newDirName must contain only lowercase letters, numbers, hyphens and underscores' };
         }
 
-        const exists = await themeDirNameExists(db, newDirName);
-        if (exists) {
+        const existingUploadTheme = await findThemeByDirName(db, newDirName);
+        if (existingUploadTheme?.is_builtin) {
             set.status = 409;
             return { error: `Theme directory "${newDirName}" already exists. Choose a different identifier.` };
         }
+        const isUploadOverwrite = !!existingUploadTheme;
 
         try {
             const zipBytes = Buffer.from(zipBase64, 'base64');
@@ -919,20 +964,30 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 await fs.promises.writeFile(configPath, defaultConfigXml(metadataUpdates));
             }
 
-            const sortOrder = await getNextSiteThemeSortOrder(db);
-            await createTheme(db, {
-                dir_name: newDirName,
-                display_name: newDisplayName,
-                description: themeMetadata?.description || null,
-                version: themeMetadata?.version || null,
-                author: themeMetadata?.author || null,
-                license: themeMetadata?.license || null,
-                is_builtin: 0,
-                is_enabled: 1,
-                is_default: 0,
-                sort_order: sortOrder,
-                storage_path: `themes/site/${newDirName}`,
-            });
+            if (isUploadOverwrite) {
+                await updateTheme(db, existingUploadTheme.id, {
+                    display_name: newDisplayName,
+                    description: themeMetadata?.description || null,
+                    version: themeMetadata?.version || null,
+                    author: themeMetadata?.author || null,
+                    license: themeMetadata?.license || null,
+                });
+            } else {
+                const sortOrder = await getNextSiteThemeSortOrder(db);
+                await createTheme(db, {
+                    dir_name: newDirName,
+                    display_name: newDisplayName,
+                    description: themeMetadata?.description || null,
+                    version: themeMetadata?.version || null,
+                    author: themeMetadata?.author || null,
+                    license: themeMetadata?.license || null,
+                    is_builtin: 0,
+                    is_enabled: 1,
+                    is_default: 0,
+                    sort_order: sortOrder,
+                    storage_path: `themes/site/${newDirName}`,
+                });
+            }
 
             return { ok: true, dirName: newDirName, displayName: newDisplayName };
         } catch (err) {

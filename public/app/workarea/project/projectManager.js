@@ -277,6 +277,12 @@ export default class projectManager {
                     if (this.app.menus?.navbar?.styles?.updateSelectedTheme) {
                         this.app.menus.navbar.styles.updateSelectedTheme(applyTheme);
                     }
+                    // Save immediately so the theme change doesn't leave the project dirty
+                    try {
+                        await this._yjsBridge?.saveManager?.save?.();
+                    } catch (saveErr) {
+                        Logger.warn('[ProjectManager] Could not save after apply_theme:', saveErr);
+                    }
                     // Clean the param from URL
                     const cleanParams = new URLSearchParams(window.location.search);
                     cleanParams.delete('apply_theme');

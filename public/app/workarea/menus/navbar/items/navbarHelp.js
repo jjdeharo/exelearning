@@ -9,6 +9,9 @@ export default class NavbarFile {
         this.tutorialButton = this.menu.navbar.querySelector(
             '#navbar-button-exe-tutorial'
         );
+        this.styleLabButton = this.menu.navbar.querySelector(
+            '#navbar-button-style-lab'
+        );
         this.apiDocsButton = this.menu.navbar.querySelector(
             '#navbar-button-api-docs'
         );
@@ -36,6 +39,7 @@ export default class NavbarFile {
     setEvents() {
         this.setAssistantEvent();
         this.setTutorialEvent();
+        this.setStyleLabEvent();
         this.setApiDocsEvent();
         this.setReleaseNotesEvent();
         this.setLegalNotesEvent();
@@ -74,6 +78,19 @@ export default class NavbarFile {
      * API Docs
      * Help -> API Docs (Swagger)
      */
+    setStyleLabEvent() {
+        if (!this.styleLabButton) return;
+        this.styleLabButton.addEventListener('click', (e) => {
+            const sessionId = eXeLearning.app.project?.odeSession;
+            if (sessionId) {
+                e.preventDefault();
+                const base = this.styleLabButton.href.split('?')[0];
+                window.location.href = base + '?fixture=session:' + encodeURIComponent(sessionId);
+            }
+            // No sessionId → default href navigates normally
+        });
+    }
+
     setApiDocsEvent() {
         this.apiDocsButton.addEventListener('click', () => {
             this.apiDocsEvent();

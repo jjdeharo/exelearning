@@ -60,9 +60,11 @@
         #sl-shell {
             display: grid;
             grid-template-columns: minmax(400px, 480px) 1fr;
+            grid-template-rows: 1fr;
             gap: 10px;
             padding: 10px;
             flex: 1;
+            min-height: 0;
             overflow: hidden;
         }
 
@@ -74,6 +76,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            min-height: 0;
             box-shadow: 0 1px 4px rgba(0,0,0,.06);
         }
 
@@ -102,12 +105,13 @@
         .sl-tab:hover:not(.active) { color: var(--ink); }
 
         /* Tab panels */
-        .sl-tab-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+        .sl-tab-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; min-height: 0; }
         .sl-tab-panel.active { display: flex; }
 
         /* Scrollable inner content */
         .sl-panel-scroll {
             flex: 1;
+            min-height: 0;
             overflow-y: auto;
             padding: 14px;
             display: flex;
@@ -170,26 +174,8 @@
         #sl-actions button { width: 100%; }
 
         /* ── CSS editor tab ──────────────────────────────────── */
-        #sl-file-list {
-            list-style: none;
-            border: 1px solid var(--line);
-            border-radius: 6px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        .sl-file-item {
-            display: flex; align-items: center;
-            padding: 7px 10px; font-size: 12px;
-            color: var(--muted); cursor: pointer;
-            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-            border-bottom: 1px solid var(--line-soft);
-            transition: background .1s;
-        }
-        .sl-file-item:last-child { border-bottom: none; }
-        .sl-file-item:hover { background: #f0fdfd; color: var(--ink); }
-        .sl-file-item.active { background: #e0f7f7; color: var(--action-dark); font-weight: 600; }
-        .sl-file-ext { font-size: 10px; margin-left: auto; opacity: .5; }
-        .sl-file-empty { padding: 12px; text-align: center; color: var(--muted); font-size: 12px; }
+        .sl-fb-item.sl-fb-active { background: #e0f7f7; border-radius: 4px; }
+        .sl-fb-item.sl-fb-active .sl-fb-path { color: var(--action-dark); font-weight: 600; }
 
         /* Editor surface with syntax highlight overlay */
         .sl-editor-wrap {
@@ -277,6 +263,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            min-height: 0;
             box-shadow: 0 1px 4px rgba(0,0,0,.06);
         }
         #sl-preview-toolbar {
@@ -289,6 +276,13 @@
         .sl-scope-sep { width: 1px; height: 18px; background: var(--line); margin: 0 2px; margin-left: auto; }
         .sl-scope-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
         #btn-inspect.active { background: var(--brand-primary) !important; border-color: var(--brand-primary) !important; color: #fff !important; }
+        #sl-scope-notice {
+            background: #fff8e1; border: 1px solid #f9a825; border-radius: 4px;
+            color: #5d4037; font-size: 11px; padding: 6px 10px; margin: 6px 8px 0;
+            line-height: 1.4;
+        }
+        #sl-css-textarea:read-only { opacity: 0.45; cursor: not-allowed; }
+        [data-quick]:disabled { opacity: 0.45; cursor: not-allowed; }
         #sl-status {
             font-size: 11px; color: var(--muted);
             padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;
@@ -441,6 +435,41 @@
         }
         #btn-files-install:disabled, #btn-files-download:disabled,
         #btn-files-upload-install:disabled { opacity: .4; cursor: not-allowed; }
+
+        /* ── Font list ───────────────────────────────────────── */
+        #sl-font-list { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+        .sl-font-item { display: flex; align-items: center; gap: 6px; font-size: 11px; padding: 4px 7px; background: #f4f7fb; border: 1px solid var(--line-soft); border-radius: 4px; }
+        .sl-font-item-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; }
+        .sl-font-remove { border: none; background: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0; line-height: 1; }
+        .sl-font-remove:hover { color: #dc3545; }
+        .sl-font-empty { font-size: 11px; color: var(--muted); font-style: italic; }
+        .sl-asset-row { display: flex; align-items: center; gap: 6px; padding: 3px 0; flex-wrap: wrap; }
+        .sl-asset-row label { min-width: 110px; font-size: 12px; color: var(--text); flex-shrink: 0; }
+        .sl-asset-controls { display: flex; align-items: center; gap: 4px; flex: 1; min-width: 0; }
+        .sl-asset-name { font-size: 10px; color: var(--muted); font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+        .sl-asset-remove { border: none; background: none; color: var(--muted); cursor: pointer; font-size: 13px; padding: 0 2px; line-height: 1; }
+        .sl-asset-remove:hover { color: #dc3545; }
+        .sl-assets-subhead { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; padding: 6px 0 2px; }
+
+        /* ── File browser ────────────────────────────────────── */
+        .sl-ftype-btn { padding: 2px 9px; font-size: 11px; border: 1px solid var(--line); border-radius: 12px; background: none; cursor: pointer; color: var(--muted); transition: background .1s, color .1s; }
+        .sl-ftype-btn.active { background: var(--action); color: #fff; border-color: var(--action); }
+        .sl-ftype-btn:hover:not(.active) { background: var(--line); color: var(--ink); }
+        .sl-fb-list { display: flex; flex-direction: column; margin-top: 4px; }
+        .sl-fb-item { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+        .sl-fb-item:last-child { border-bottom: none; }
+        .sl-fb-badge { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: .3px; flex-shrink: 0; }
+        .sl-fb-badge-css { background: #dbeafe; color: #1d4ed8; }
+        .sl-fb-badge-js  { background: #fef9c3; color: #854d0e; }
+        .sl-fb-badge-img { background: #dcfce7; color: #15803d; }
+        .sl-fb-badge-font { background: #f3e8ff; color: #7e22ce; }
+        .sl-fb-badge-other { background: #f1f5f9; color: #475569; }
+        .sl-fb-thumb { width: 36px; height: 36px; object-fit: contain; border-radius: 3px; border: 1px solid var(--line); background: #f8f8f8; flex-shrink: 0; }
+        .sl-fb-path { font-size: 11px; font-family: monospace; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+        .sl-fb-actions { display: flex; gap: 3px; flex-shrink: 0; }
+        .sl-fb-btn { padding: 2px 6px !important; font-size: 11px !important; }
+        /* JS-specific editor hint */
+        .sl-js-hint { font-size: 11px; color: #854d0e; background: #fef9c3; border: 1px solid #fde68a; border-radius: 5px; padding: 5px 9px; display: none; }
     </style>
 </head>
 <body>
@@ -460,10 +489,12 @@
     <div id="sl-panel">
         <div class="sl-tabs">
             <button class="sl-tab active" data-tab="controls" data-testid="sl-tab-controls">{{ t.sl_tab_settings or 'Settings' }}</button>
-            <button class="sl-tab" data-tab="css" data-testid="sl-tab-css">CSS</button>
+            <button class="sl-tab" data-tab="css" data-testid="sl-tab-css">{{ t.sl_tab_editor or 'Editor' }}</button>
             <button class="sl-tab" data-tab="quick" data-testid="sl-tab-quick">Quick</button>
-            <button class="sl-tab" data-tab="files" data-testid="sl-tab-files">{{ t.sl_tab_files or 'Files' }}</button>
+            <button class="sl-tab" data-tab="files" data-testid="sl-tab-files">{{ t.sl_tab_export or 'Export' }}</button>
         </div>
+
+        <div id="sl-scope-notice" hidden></div>
 
         <!-- ── Controls tab ── -->
         <div class="sl-tab-panel active" data-panel="controls">
@@ -503,20 +534,33 @@
                 </div>
             </div>
             <div style="padding:12px 14px;border-top:1px solid var(--line-soft);flex-shrink:0;">
-                <button id="btn-goto-files" class="btn button-display" data-testid="style-lab-export-theme" style="width:100%;">✓ {{ t.sl_goto_files or 'Export / install theme...' }}</button>
+                <button id="btn-goto-files" class="btn button-tertiary" data-testid="style-lab-export-theme" style="width:100%;">{{ t.sl_goto_files or 'Export / install theme' }} →</button>
             </div>
         </div>
 
         <!-- ── CSS editor tab ── -->
         <div class="sl-tab-panel" data-panel="css">
             <div class="sl-panel-scroll" style="gap:10px;">
-                <ul id="sl-file-list">
-                    <li class="sl-file-empty">{{ t.sl_file_list_empty or 'Load a project and theme first.' }}</li>
-                </ul>
+                <!-- File browser -->
+                <div class="sl-section" id="sl-file-browser-section" style="display:none">
+                    <span class="sl-section-divider">{{ t.sl_all_files or 'Theme files' }}</span>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                        <input type="text" id="sl-file-search" placeholder="{{ t.sl_search or 'Search...' }}" style="flex:1;min-width:80px;padding:4px 8px;border:1px solid var(--line);border-radius:5px;font-size:12px;">
+                        <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                            <button class="sl-ftype-btn active" data-ftype="all">{{ t.sl_all or 'All' }}</button>
+                            <button class="sl-ftype-btn" data-ftype="css">CSS</button>
+                            <button class="sl-ftype-btn" data-ftype="js">JS</button>
+                            <button class="sl-ftype-btn" data-ftype="img">{{ t.sl_images or 'Images' }}</button>
+                            <button class="sl-ftype-btn" data-ftype="font">{{ t.sl_fonts or 'Fonts' }}</button>
+                        </div>
+                    </div>
+                    <div id="sl-file-browser" class="sl-fb-list"></div>
+                </div>
                 <div class="sl-editor-toolbar">
                     <span class="sl-editor-file-label" id="sl-editor-file-label">style.css</span>
                     <div class="sl-modified-dot" id="sl-modified-dot" title="{{ t.sl_unsaved_changes or 'Unsaved changes' }}"></div>
                 </div>
+                <p class="sl-js-hint" id="sl-js-hint">{{ t.sl_js_hint or 'JavaScript runs after export — changes are saved to the ZIP but not reflected in the preview.' }}</p>
                 <div class="sl-editor-wrap" style="min-height:260px;">
                     <pre id="sl-css-highlight"><code class="language-css"></code></pre>
                     <textarea id="sl-css-textarea" spellcheck="false" wrap="off" placeholder="{{ t.sl_css_placeholder or 'Load a project and theme to edit CSS...' }}"></textarea>
@@ -532,6 +576,29 @@
         <!-- ── Quick settings tab ── -->
         <div class="sl-tab-panel" data-panel="quick">
             <div class="sl-panel-scroll">
+                <details>
+                    <summary>{{ t.sl_layout or 'Layout' }}</summary>
+                    <div class="sl-quick-body">
+                        <div class="sl-quick-row">
+                            <label>{{ t.sl_content_width or 'Content width' }}</label>
+                            <select data-quick="contentWidthMode" id="sl-content-width-mode">
+                                <option value="default">{{ t.sl_width_default or 'Default (theme)' }}</option>
+                                <option value="px">px</option>
+                                <option value="percent">%</option>
+                                <option value="mixed">{{ t.sl_width_mixed or 'px + %' }}</option>
+                            </select>
+                        </div>
+                        <div id="sl-width-px-wrap" style="display:none">
+                            <div class="sl-quick-row"><label>{{ t.sl_max_width_px or 'Max width (px)' }}</label><input type="number" data-quick="contentWidth" value="1280" min="640" max="2000"></div>
+                        </div>
+                        <div id="sl-width-pct-wrap" style="display:none">
+                            <div class="sl-quick-row"><label>{{ t.sl_max_width_pct or 'Max width (%)' }}</label><input type="number" data-quick="contentWidthPercent" value="100" min="10" max="100"></div>
+                        </div>
+                        <div id="sl-width-center-wrap" style="display:none">
+                            <div class="sl-quick-row"><label>{{ t.sl_content_centered or 'Center content' }}</label><input type="checkbox" data-quick="contentCentered" checked></div>
+                        </div>
+                    </div>
+                </details>
                 <details open>
                     <summary>{{ t.sl_general_appearance or 'General appearance' }}</summary>
                     <div class="sl-quick-body">
@@ -568,6 +635,16 @@
                         </div>
                         <div class="sl-quick-row"><label>{{ t.sl_base_size or 'Base size (px)' }}</label><input type="number" data-quick="baseFontSize" value="18" min="12" max="28"></div>
                         <div class="sl-quick-row"><label>{{ t.sl_line_height or 'Line height' }}</label><input type="number" data-quick="lineHeight" value="1.45" min="1" max="2.2" step="0.05"></div>
+                        <div class="sl-quick-row">
+                            <label>{{ t.sl_custom_fonts or 'Custom fonts' }}</label>
+                            <button type="button" id="btn-add-fonts" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;">
+                                <span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add_fonts or 'Add...' }}
+                            </button>
+                            <input type="file" id="sl-font-input" accept=".woff,.woff2,.ttf,.otf" multiple style="display:none">
+                        </div>
+                        <div id="sl-font-list">
+                            <span class="sl-font-empty">{{ t.sl_no_custom_fonts or 'No custom fonts' }}</span>
+                        </div>
                     </div>
                 </details>
                 <details>
@@ -584,12 +661,34 @@
                             </select>
                         </div>
                         <div class="sl-quick-row"><label>{{ t.sl_uppercase_title or 'Uppercase title' }}</label><input type="checkbox" data-quick="pageTitleUppercase"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_letter_spacing or 'Letter spacing (px)' }}</label><input type="number" data-quick="pageTitleLetterSpacing" value="0" min="-2" max="10" step="0.5"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_margin_bottom or 'Margin bottom (rem)' }}</label><input type="number" data-quick="pageTitleMarginBottom" value="0.6" min="0" max="4" step="0.1"></div>
                         <div class="sl-quick-row"><label>{{ t.sl_project_title_color or 'Project title color' }}</label><input type="color" data-quick="packageTitleColor" value="#333333"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_project_title_size or 'Project title size (rem)' }}</label><input type="number" data-quick="packageTitleSize" value="1.25" min="0.8" max="3.2" step="0.05"></div>
+                        <div class="sl-quick-row">
+                            <label>{{ t.sl_project_title_weight or 'Project title weight' }}</label>
+                            <select data-quick="packageTitleWeight">
+                                <option value="400" selected>400</option>
+                                <option value="600">600</option>
+                                <option value="700">700</option>
+                                <option value="800">800</option>
+                            </select>
+                        </div>
                     </div>
                 </details>
                 <details>
                     <summary>{{ t.sl_nav_menu or 'Navigation menu' }}</summary>
                     <div class="sl-quick-body">
+                        <div class="sl-quick-row">
+                            <label>{{ t.sl_menu_font or 'Menu font' }}</label>
+                            <select data-quick="fontMenu">
+                                <option value="Georgia, 'Times New Roman', serif">Georgia (serif)</option>
+                                <option value="'Noto Serif', serif">Noto Serif</option>
+                                <option value="'Trebuchet MS', Trebuchet, sans-serif">Trebuchet</option>
+                                <option value="Verdana, Geneva, sans-serif">Verdana</option>
+                                <option value="system-ui, -apple-system, sans-serif">System UI</option>
+                            </select>
+                        </div>
                         <div class="sl-quick-row"><label>{{ t.sl_menu_bg or 'Menu background' }}</label><input type="color" data-quick="menuBgColor" value="#f6f6f6"></div>
                         <div class="sl-quick-row"><label>{{ t.sl_menu_text or 'Menu text' }}</label><input type="color" data-quick="menuTextColor" value="#000000"></div>
                         <div class="sl-quick-row"><label>{{ t.sl_hover_bg or 'Hover background' }}</label><input type="color" data-quick="menuHoverBgColor" value="#f2f2f2"></div>
@@ -604,8 +703,214 @@
                         <div class="sl-quick-row"><label>{{ t.sl_idevice_bg or 'iDevice background' }}</label><input type="color" data-quick="boxBgColor" value="#ffffff"></div>
                         <div class="sl-quick-row"><label>{{ t.sl_idevice_border or 'iDevice border' }}</label><input type="color" data-quick="boxBorderColor" value="#dddddd"></div>
                         <div class="sl-quick-row"><label>{{ t.sl_idevice_title_color or 'iDevice title color' }}</label><input type="color" data-quick="boxTitleColor" value="#054d4d"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_idevice_title_size or 'iDevice title size (rem)' }}</label><input type="number" data-quick="boxTitleSize" value="1.5" min="1" max="2.4" step="0.05"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_icon_title_gap or 'Icon / title gap (px)' }}</label><input type="number" data-quick="boxTitleGap" value="10" min="0" max="40"></div>
+                        <div class="sl-quick-row">
+                            <label>{{ t.sl_idevice_font_size or 'Content font size' }}</label>
+                            <select data-quick="boxFontSize">
+                                <option value="inherit" selected>{{ t.sl_inherit or 'Inherit' }}</option>
+                                <option value="14px">14px</option>
+                                <option value="16px">16px</option>
+                                <option value="18px">18px</option>
+                                <option value="20px">20px</option>
+                                <option value="22px">22px</option>
+                                <option value="24px">24px</option>
+                            </select>
+                        </div>
+                        <div class="sl-quick-row">
+                            <label>{{ t.sl_idevice_text_align or 'Content text align' }}</label>
+                            <select data-quick="boxTextAlign">
+                                <option value="inherit" selected>{{ t.sl_inherit or 'Inherit' }}</option>
+                                <option value="left">{{ t.sl_align_left or 'Left' }}</option>
+                                <option value="center">{{ t.sl_align_center or 'Center' }}</option>
+                                <option value="right">{{ t.sl_align_right or 'Right' }}</option>
+                                <option value="justify">{{ t.sl_align_justify or 'Justify' }}</option>
+                            </select>
+                        </div>
                         <div class="sl-quick-row"><label>{{ t.sl_button_bg or 'Button background' }}</label><input type="color" data-quick="buttonBgColor" value="#005f73"></div>
                         <div class="sl-quick-row"><label>{{ t.sl_button_text or 'Button text' }}</label><input type="color" data-quick="buttonTextColor" value="#ffffff"></div>
+                    </div>
+                </details>
+                <details>
+                    <summary>{{ t.sl_assets or 'Assets' }}</summary>
+                    <div class="sl-quick-body">
+                        <p class="sl-assets-subhead">{{ t.sl_assets_branding or 'Branding' }}</p>
+
+                        <div class="sl-asset-row">
+                            <label>{{ t.sl_logo or 'Logo' }}</label>
+                            <div class="sl-asset-controls">
+                                <button type="button" id="btn-add-logo" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;"><span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add or 'Add...' }}</button>
+                                <button type="button" id="btn-remove-logo" class="sl-asset-remove" style="display:none" title="{{ t.sl_remove or 'Remove' }}">✕</button>
+                                <span id="sl-logo-name" class="sl-asset-name"></span>
+                            </div>
+                            <input type="file" id="sl-logo-input" accept="image/*" style="display:none">
+                        </div>
+                        <div id="sl-logo-options" style="display:none" class="sl-quick-body" style="padding-left:1rem">
+                            <div class="sl-quick-row"><label>{{ t.sl_logo_size or 'Size (px)' }}</label><input type="number" id="sl-logo-size" value="130" min="40" max="500"></div>
+                        </div>
+
+                        <div class="sl-asset-row">
+                            <label>{{ t.sl_favicon or 'Favicon' }}</label>
+                            <div class="sl-asset-controls">
+                                <button type="button" id="btn-add-favicon" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;"><span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add or 'Add...' }}</button>
+                                <button type="button" id="btn-remove-favicon" class="sl-asset-remove" style="display:none" title="{{ t.sl_remove or 'Remove' }}">✕</button>
+                                <span id="sl-favicon-name" class="sl-asset-name"></span>
+                            </div>
+                            <input type="file" id="sl-favicon-input" accept=".ico,.png" style="display:none">
+                        </div>
+
+                        <p class="sl-assets-subhead">{{ t.sl_assets_images or 'Images' }}</p>
+
+                        <div class="sl-asset-row">
+                            <label>{{ t.sl_bg_image or 'Background' }}</label>
+                            <div class="sl-asset-controls">
+                                <button type="button" id="btn-add-bg-image" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;"><span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add or 'Add...' }}</button>
+                                <button type="button" id="btn-remove-bg-image" class="sl-asset-remove" style="display:none" title="{{ t.sl_remove or 'Remove' }}">✕</button>
+                                <span id="sl-bg-image-name" class="sl-asset-name"></span>
+                            </div>
+                            <input type="file" id="sl-bg-image-input" accept="image/*" style="display:none">
+                        </div>
+                        <div id="sl-bg-image-options" style="display:none" class="sl-quick-body">
+                            <div class="sl-quick-row">
+                                <label>{{ t.sl_bg_repeat or 'Repeat' }}</label>
+                                <select id="sl-bg-repeat">
+                                    <option value="no-repeat">{{ t.sl_repeat_none or 'No repeat' }}</option>
+                                    <option value="repeat-x">{{ t.sl_repeat_x or 'Horizontal' }}</option>
+                                    <option value="repeat-y">{{ t.sl_repeat_y or 'Vertical' }}</option>
+                                    <option value="repeat">{{ t.sl_repeat_both or 'Both' }}</option>
+                                </select>
+                            </div>
+                            <div class="sl-quick-row"><label>{{ t.sl_bg_softness or 'Softness (%)' }}</label><input type="number" id="sl-bg-softness" value="0" min="0" max="90" step="1"></div>
+                        </div>
+
+                        <div class="sl-asset-row">
+                            <label>{{ t.sl_header_image or 'Header image' }}</label>
+                            <div class="sl-asset-controls">
+                                <button type="button" id="btn-add-header-image" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;"><span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add or 'Add...' }}</button>
+                                <button type="button" id="btn-remove-header-image" class="sl-asset-remove" style="display:none" title="{{ t.sl_remove or 'Remove' }}">✕</button>
+                                <span id="sl-header-image-name" class="sl-asset-name"></span>
+                            </div>
+                            <input type="file" id="sl-header-image-input" accept="image/*" style="display:none">
+                        </div>
+                        <div id="sl-header-image-options" style="display:none" class="sl-quick-body">
+                            <div class="sl-quick-row"><label>{{ t.sl_header_height or 'Height (px)' }}</label><input type="number" id="sl-header-image-height" value="120" min="40" max="600"></div>
+                            <div class="sl-quick-row">
+                                <label>{{ t.sl_img_fit or 'Fit' }}</label>
+                                <select id="sl-header-image-fit">
+                                    <option value="contain">Contain</option>
+                                    <option value="cover" selected>Cover</option>
+                                    <option value="auto">Auto</option>
+                                </select>
+                            </div>
+                            <div class="sl-quick-row">
+                                <label>{{ t.sl_img_position or 'Position' }}</label>
+                                <select id="sl-header-image-position">
+                                    <option value="left top">↖</option>
+                                    <option value="center top">↑</option>
+                                    <option value="right top">↗</option>
+                                    <option value="left center">←</option>
+                                    <option value="center center" selected>·</option>
+                                    <option value="right center">→</option>
+                                    <option value="left bottom">↙</option>
+                                    <option value="center bottom">↓</option>
+                                    <option value="right bottom">↘</option>
+                                </select>
+                            </div>
+                            <div class="sl-quick-row">
+                                <label>{{ t.sl_bg_repeat or 'Repeat' }}</label>
+                                <select id="sl-header-image-repeat">
+                                    <option value="no-repeat" selected>{{ t.sl_repeat_none or 'No repeat' }}</option>
+                                    <option value="repeat-x">{{ t.sl_repeat_x or 'Horizontal' }}</option>
+                                    <option value="repeat-y">{{ t.sl_repeat_y or 'Vertical' }}</option>
+                                    <option value="repeat">{{ t.sl_repeat_both or 'Both' }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="sl-asset-row">
+                            <label>{{ t.sl_footer_image or 'Footer image' }}</label>
+                            <div class="sl-asset-controls">
+                                <button type="button" id="btn-add-footer-image" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;"><span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add or 'Add...' }}</button>
+                                <button type="button" id="btn-remove-footer-image" class="sl-asset-remove" style="display:none" title="{{ t.sl_remove or 'Remove' }}">✕</button>
+                                <span id="sl-footer-image-name" class="sl-asset-name"></span>
+                            </div>
+                            <input type="file" id="sl-footer-image-input" accept="image/*" style="display:none">
+                        </div>
+                        <div id="sl-footer-image-options" style="display:none" class="sl-quick-body">
+                            <div class="sl-quick-row"><label>{{ t.sl_footer_height or 'Height (px)' }}</label><input type="number" id="sl-footer-image-height" value="90" min="20" max="400"></div>
+                            <div class="sl-quick-row">
+                                <label>{{ t.sl_img_fit or 'Fit' }}</label>
+                                <select id="sl-footer-image-fit">
+                                    <option value="contain" selected>Contain</option>
+                                    <option value="cover">Cover</option>
+                                    <option value="auto">Auto</option>
+                                </select>
+                            </div>
+                            <div class="sl-quick-row">
+                                <label>{{ t.sl_img_position or 'Position' }}</label>
+                                <select id="sl-footer-image-position">
+                                    <option value="left top">↖</option>
+                                    <option value="center top">↑</option>
+                                    <option value="right top">↗</option>
+                                    <option value="left center">←</option>
+                                    <option value="center center" selected>·</option>
+                                    <option value="right center">→</option>
+                                    <option value="left bottom">↙</option>
+                                    <option value="center bottom">↓</option>
+                                    <option value="right bottom">↘</option>
+                                </select>
+                            </div>
+                            <div class="sl-quick-row">
+                                <label>{{ t.sl_bg_repeat or 'Repeat' }}</label>
+                                <select id="sl-footer-image-repeat">
+                                    <option value="no-repeat" selected>{{ t.sl_repeat_none or 'No repeat' }}</option>
+                                    <option value="repeat-x">{{ t.sl_repeat_x or 'Horizontal' }}</option>
+                                    <option value="repeat-y">{{ t.sl_repeat_y or 'Vertical' }}</option>
+                                    <option value="repeat">{{ t.sl_repeat_both or 'Both' }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <p class="sl-assets-subhead">{{ t.sl_assets_icons or 'Icons' }}</p>
+
+                        <div class="sl-asset-row">
+                            <label>{{ t.sl_nav_prev or 'Nav prev' }}</label>
+                            <div class="sl-asset-controls">
+                                <button type="button" id="btn-add-nav-prev" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;"><span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add or 'Add...' }}</button>
+                                <button type="button" id="btn-remove-nav-prev" class="sl-asset-remove" style="display:none" title="{{ t.sl_remove or 'Remove' }}">✕</button>
+                                <span id="sl-nav-prev-name" class="sl-asset-name"></span>
+                            </div>
+                            <input type="file" id="sl-nav-prev-input" accept="image/*" style="display:none">
+                        </div>
+
+                        <div class="sl-asset-row">
+                            <label>{{ t.sl_nav_next or 'Nav next' }}</label>
+                            <div class="sl-asset-controls">
+                                <button type="button" id="btn-add-nav-next" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;"><span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add or 'Add...' }}</button>
+                                <button type="button" id="btn-remove-nav-next" class="sl-asset-remove" style="display:none" title="{{ t.sl_remove or 'Remove' }}">✕</button>
+                                <span id="sl-nav-next-name" class="sl-asset-name"></span>
+                            </div>
+                            <input type="file" id="sl-nav-next-input" accept="image/*" style="display:none">
+                        </div>
+
+                        <div class="sl-asset-row">
+                            <label>{{ t.sl_nav_toggle or 'Nav toggle' }}</label>
+                            <div class="sl-asset-controls">
+                                <button type="button" id="btn-add-nav-toggle" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;"><span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add or 'Add...' }}</button>
+                                <button type="button" id="btn-remove-nav-toggle" class="sl-asset-remove" style="display:none" title="{{ t.sl_remove or 'Remove' }}">✕</button>
+                                <span id="sl-nav-toggle-name" class="sl-asset-name"></span>
+                            </div>
+                            <input type="file" id="sl-nav-toggle-input" accept="image/*" style="display:none">
+                        </div>
+
+                        <div class="sl-asset-row">
+                            <label>{{ t.sl_idevice_icons or 'iDevice icons' }}</label>
+                            <div class="sl-asset-controls">
+                                <button type="button" id="btn-add-idevice-icons" class="btn button-tertiary" style="flex:none;padding:3px 10px;font-size:11px;"><span class="auto-icon" style="font-size:14px" aria-hidden="true">upload_file</span> {{ t.sl_add or 'Add...' }}</button>
+                                <span id="sl-idevice-icons-info" class="sl-asset-name"></span>
+                            </div>
+                            <input type="file" id="sl-idevice-icons-input" accept="image/*" multiple style="display:none">
+                        </div>
                     </div>
                 </details>
             </div>
@@ -684,6 +989,7 @@
                     <div class="sl-rename-error" id="sl-files-error" style="display:none"></div>
                     <button id="btn-files-download" class="btn button-tertiary" data-testid="sl-files-download">⬇ {{ t.sl_download_zip or 'Download ZIP' }}</button>
                     <button id="btn-files-install" class="btn button-display" data-testid="sl-files-install"
+                        style="color:#fff;"
                         title="{{ t.sl_install_apply_title or 'Install the theme and apply it to the project open in the editor' }}">
                         ✓ {{ t.sl_install_apply or 'Install and apply to project' }}
                     </button>
@@ -714,7 +1020,7 @@
             <button class="btn button-tertiary sl-vp-btn" data-viewport="tablet" data-testid="vp-tablet">Tablet</button>
             <button class="btn button-tertiary sl-vp-btn" data-viewport="mobile" data-testid="vp-mobile">Mobile</button>
             <span id="sl-status" data-testid="style-lab-status">Ready</span>
-            <button id="btn-inspect" class="btn button-tertiary" title="Click-to-edit: click an element in the preview">⊕ Inspect</button>
+            <button id="btn-inspect" class="btn button-tertiary" title="{{ t.sl_inspect_title or 'Click-to-edit: click an element in the preview' }}">⊕ {{ t.sl_inspect or 'Inspect' }}</button>
             <button id="btn-undo" class="btn button-tertiary button-square" title="Undo" disabled><span class="auto-icon" aria-hidden="true">undo</span></button>
             <button id="btn-redo" class="btn button-tertiary button-square" title="Redo" disabled><span class="auto-icon" aria-hidden="true">redo</span></button>
             <span class="sl-scope-sep"></span>
@@ -725,8 +1031,8 @@
             <label class="sl-scope-chip checked" data-scope="exe-scorm">
                 <input type="checkbox" value="exe-scorm" checked> SCORM
             </label>
-            <label class="sl-scope-chip" data-scope="exe-single-page">
-                <input type="checkbox" value="exe-single-page"> Single
+            <label class="sl-scope-chip checked" data-scope="exe-single-page">
+                <input type="checkbox" value="exe-single-page" checked> Single
             </label>
         </div>
         <div id="sl-iframe-wrap" class="vp-desktop" style="position:relative">
@@ -746,7 +1052,7 @@
 </div>
 
 <!-- ── Click-to-edit modal ── -->
-<div id="sl-click-modal" role="dialog" aria-label="Click-to-edit">
+<div id="sl-click-modal" role="dialog" aria-label="{{ t.sl_inspect or 'Click-to-edit' }}">
     <div id="sl-click-modal-header">
         <span>{{ t.sl_edit_element or 'Edit element' }}</span>
         <button id="sl-click-modal-close">×</button>
@@ -755,8 +1061,8 @@
     <div id="sl-click-modal-body">
         <div class="sl-click-row"><label>{{ t.sl_text_color or 'Text color' }}</label><input type="color" id="ce-textColor" value="#333333"></div>
         <div class="sl-click-row"><label>{{ t.sl_content_bg or 'Background' }}</label><input type="color" id="ce-bgColor" value="#ffffff"></div>
-        <div class="sl-click-row"><label>Text transparency (%)</label><input type="number" id="ce-textAlpha" min="0" max="100" step="1" value="0"></div>
-        <div class="sl-click-row"><label>Background transparency (%)</label><input type="number" id="ce-bgAlpha" min="0" max="100" step="1" value="0"></div>
+        <div class="sl-click-row"><label>{{ t.sl_text_transparency or 'Text transparency (%)' }}</label><input type="number" id="ce-textAlpha" min="0" max="100" step="1" value="0"></div>
+        <div class="sl-click-row"><label>{{ t.sl_bg_transparency or 'Background transparency (%)' }}</label><input type="number" id="ce-bgAlpha" min="0" max="100" step="1" value="0"></div>
         <div class="sl-click-row"><label>{{ t.sl_font_size_px or 'Font size (px)' }}</label><input type="number" id="ce-fontSize" min="8" max="96" value="16"></div>
         <div class="sl-click-row">
             <label>{{ t.sl_weight or 'Weight' }}</label>
@@ -772,19 +1078,19 @@
             <label>{{ t.sl_alignment or 'Alignment' }}</label>
             <select id="ce-textAlign">
                 <option value="">—</option>
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-                <option value="justify">Justify</option>
+                <option value="left">{{ t.sl_align_left or 'Left' }}</option>
+                <option value="center">{{ t.sl_align_center or 'Center' }}</option>
+                <option value="right">{{ t.sl_align_right or 'Right' }}</option>
+                <option value="justify">{{ t.sl_align_justify or 'Justify' }}</option>
             </select>
         </div>
-        <div class="sl-click-row"><label>Margin left</label><input type="text" id="ce-marginLeft" placeholder="20px, 5%, auto"></div>
-        <div class="sl-click-row"><label>Margin right</label><input type="text" id="ce-marginRight" placeholder="20px, 5%, auto"></div>
-        <div class="sl-click-row"><label>Width</label><input type="text" id="ce-width" placeholder="320px, 80%"></div>
-        <div class="sl-click-row"><label>Max width</label><input type="text" id="ce-maxWidth" placeholder="1100px, 90%"></div>
-        <div class="sl-click-row"><label>Margin bottom</label><input type="text" id="ce-marginBottom" placeholder="16px, 2%"></div>
-        <div class="sl-click-row"><label>Padding</label><input type="text" id="ce-padding" placeholder="12px, 8px 2%"></div>
-        <div class="sl-click-row"><label>Hover/focus/active too</label><input type="checkbox" id="ce-interactiveStates"></div>
+        <div class="sl-click-row"><label>{{ t.sl_margin_left or 'Margin left' }}</label><input type="text" id="ce-marginLeft" placeholder="20px, 5%, auto"></div>
+        <div class="sl-click-row"><label>{{ t.sl_margin_right or 'Margin right' }}</label><input type="text" id="ce-marginRight" placeholder="20px, 5%, auto"></div>
+        <div class="sl-click-row"><label>{{ t.sl_width or 'Width' }}</label><input type="text" id="ce-width" placeholder="320px, 80%"></div>
+        <div class="sl-click-row"><label>{{ t.sl_max_width or 'Max width' }}</label><input type="text" id="ce-maxWidth" placeholder="1100px, 90%"></div>
+        <div class="sl-click-row"><label>{{ t.sl_margin_bottom or 'Margin bottom' }}</label><input type="text" id="ce-marginBottom" placeholder="16px, 2%"></div>
+        <div class="sl-click-row"><label>{{ t.sl_padding or 'Padding' }}</label><input type="text" id="ce-padding" placeholder="12px, 8px 2%"></div>
+        <div class="sl-click-row"><label>{{ t.sl_hover_states or 'Hover/focus/active too' }}</label><input type="checkbox" id="ce-interactiveStates"></div>
     </div>
     <div id="sl-click-modal-footer">
         <button id="btn-click-apply">{{ t.sl_apply_to_css or 'Apply to CSS' }}</button>
@@ -840,12 +1146,26 @@
         reading_zip:          {{ t.sl_js_reading_zip | json | safe }},
         uploading_theme:      {{ t.sl_js_uploading_theme | json | safe }},
         theme_uploaded:       {{ t.sl_js_theme_uploaded | json | safe }},
-        no_file_selected:     {{ t.sl_no_file_selected | json | safe }},
+        no_file_selected:     {{ (t.sl_no_file_selected or 'No file selected') | json | safe }},
+        no_valid_fonts:       {{ t.sl_js_no_valid_fonts | json | safe }},
+        fonts_added:          {{ t.sl_js_fonts_added | json | safe }},
+        apply_css:            {{ (t.sl_apply_css or 'Apply') | json | safe }},
+        save_js:              {{ (t.sl_save_js or 'Save') | json | safe }},
+        js_saved:             {{ (t.sl_js_saved or 'JS saved — will be included on export.') | json | safe }},
+        no_files_match:       {{ (t.sl_no_files_match or 'No files match.') | json | safe }},
     };
     const QUICK_BLOCK_START = '/* style-lab-quick:start */';
     const QUICK_BLOCK_END = '/* style-lab-quick:end */';
     const CLICK_BLOCK_START = '/* style-lab-click:start */';
     const CLICK_BLOCK_END = '/* style-lab-click:end */';
+    const FONT_BLOCK_START = '/* custom-fonts:start */';
+    const FONT_BLOCK_END = '/* custom-fonts:end */';
+    const ASSET_BLOCK_START = '/* style-lab-assets:start */';
+    const ASSET_BLOCK_END = '/* style-lab-assets:end */';
+    let fontBinaryFiles = {};   // "fonts/name.woff2" → Uint8Array
+    let fontBlobUrls = {};      // "fonts/name.woff2" → object URL (for live preview)
+    let assetBinaryFiles = {};  // "img/custom-logo.png" → Uint8Array
+    let assetBlobUrls = {};     // "img/custom-logo.png" → object URL (for live preview)
     let swRegistration = null;
     let previewReady = false;
     let selectedExport = 'html5';
@@ -854,10 +1174,24 @@
     let themeFiles = {};        // path → string
     let activeCssFile = 'style.css';
     let originalCss = '';
+    let fileBrowserFilter = 'all';
+    let fileBrowserSearch = '';
+    const assetRefreshers = [];
+    const ASSET_REMOVE_BTNS = {
+        'img/custom-logo.':       'btn-remove-logo',
+        'img/favicon.':           'btn-remove-favicon',
+        'img/custom-background.': 'btn-remove-bg-image',
+        'img/custom-header.':     'btn-remove-header-image',
+        'img/custom-footer.':     'btn-remove-footer-image',
+        'img/custom-nav-prev.':   'btn-remove-nav-prev',
+        'img/custom-nav-next.':   'btn-remove-nav-next',
+        'img/custom-nav-toggle.': 'btn-remove-nav-toggle',
+    };
     let inspectMode = false;
     let clickEditSelector = '';
     let applyDebounce = 0;
     let quickState = {};        // collected from [data-quick] inputs
+    let assetStateTouched = false;
     let themeReloadToken = Date.now();
 
     // ─── Undo / Redo stacks ───────────────────────────────────
@@ -885,6 +1219,8 @@
             const v = quickState[el.dataset.quick];
             if (v !== undefined) el.value = v;
         });
+        if (typeof updateContentWidthVisibility === 'function')
+            updateContentWidthVisibility(quickState.contentWidthMode || 'default');
         if (previewReady) injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
     }
 
@@ -921,7 +1257,7 @@
     const SCOPE_ALL = ['exe-web-site', 'exe-single-page', 'exe-scorm'];
 
     function getScopeClasses() {
-        return [...document.querySelectorAll('#sl-scope-grid input:checked')].map(i => i.value);
+        return [...document.querySelectorAll('#sl-preview-toolbar .sl-scope-chip input:checked')].map(i => i.value);
     }
 
     function buildScopeWrapped(innerCss) {
@@ -929,14 +1265,96 @@
         const trimmed = innerCss.trim();
         if (!trimmed) return '';
         if (classes.length === 0 || classes.length === SCOPE_ALL.length) return trimmed;
-        const selector = classes.map(c => `body.${c}`).join(',\n');
-        // indent each line of the inner CSS by 2 spaces
-        const indented = trimmed.split('\n').map(l => l ? `  ${l}` : l).join('\n');
-        return `${selector} {\n${indented}\n}`;
+        const prefixes = classes.map(c => `body.${c}`);
+
+        // Expand each top-level rule's selector instead of using CSS nesting,
+        // so the output works in all browsers and scopes are enforced correctly.
+        const out = [];
+        let rest = trimmed;
+        while (rest.length) {
+            rest = rest.trimStart();
+            if (!rest) break;
+            // pass CSS comments through unchanged
+            if (rest.startsWith('/*')) {
+                const end = rest.indexOf('*/', 2);
+                if (end === -1) { out.push(rest); break; }
+                out.push(rest.slice(0, end + 2));
+                rest = rest.slice(end + 2);
+                continue;
+            }
+            const braceIdx = rest.indexOf('{');
+            if (braceIdx === -1) { out.push(rest.trim()); break; }
+            const ruleSelector = rest.slice(0, braceIdx).trim();
+            rest = rest.slice(braceIdx + 1);
+            // find the matching closing brace
+            let depth = 1, idx = 0;
+            while (idx < rest.length && depth > 0) {
+                if (rest[idx] === '{') depth++;
+                else if (rest[idx] === '}') depth--;
+                idx++;
+            }
+            const block = rest.slice(0, idx - 1).trim();
+            rest = rest.slice(idx);
+            if (ruleSelector.startsWith('@')) {
+                // @-rules (e.g. @media) are passed through without scope prefix
+                out.push(`${ruleSelector} {\n${block}\n}`);
+            } else {
+                const parts = ruleSelector.split(',').map(s => s.trim()).filter(Boolean);
+                const expanded = prefixes.flatMap(p => parts.map(s => `${p} ${s}`));
+                const indented = block.split('\n').map(l => l ? `  ${l}` : l).join('\n');
+                out.push(`${expanded.join(',\n')} {\n${indented}\n}`);
+            }
+        }
+        return out.join('\n\n');
     }
 
-    function saveScope() {
-        localStorage.setItem('sl-scope-v2', JSON.stringify(getScopeClasses()));
+    // Maps each export-type button value to its corresponding body scope class
+    const EXPORT_SCOPE_MAP = {
+        'html5':    'exe-web-site',
+        'html5-sp': 'exe-single-page',
+        'scorm12':  'exe-scorm',
+    };
+
+    const SCOPE_LABELS = {
+        'exe-web-site':    'Website',
+        'exe-single-page': 'Single',
+        'exe-scorm':       'SCORM',
+    };
+
+    function isCurrentViewInScope() {
+        const classes = getScopeClasses();
+        // All or none selected → CSS is unwrapped (applies to every export type)
+        if (classes.length === 0 || classes.length === SCOPE_ALL.length) return true;
+        const viewScope = EXPORT_SCOPE_MAP[selectedExport];
+        return viewScope ? classes.includes(viewScope) : true;
+    }
+
+    function updateEditingAllowed() {
+        const allowed = isCurrentViewInScope();
+
+        // Inspect button — disable and turn off if active
+        const btnInspect = document.getElementById('btn-inspect');
+        btnInspect.disabled = !allowed;
+        if (!allowed && inspectMode) setInspect(false);
+
+        // CSS editor and its action buttons
+        document.getElementById('sl-css-textarea').readOnly = !allowed;
+        document.getElementById('btn-apply-css').disabled = !allowed;
+        document.getElementById('btn-wrap-scope').disabled = !allowed;
+
+        // Quick settings inputs
+        document.querySelectorAll('[data-quick]').forEach(el => { el.disabled = !allowed; });
+
+        // Notice banner
+        const notice = document.getElementById('sl-scope-notice');
+        if (!allowed) {
+            const viewScope = EXPORT_SCOPE_MAP[selectedExport];
+            const label = SCOPE_LABELS[viewScope] || selectedExport;
+            notice.textContent = `⚠ Editing disabled: enable "${label}" in Scope to make changes in this preview.`;
+            notice.hidden = false;
+        } else {
+            notice.hidden = true;
+        }
     }
 
     function enforceScopeNotEmpty() {
@@ -950,26 +1368,13 @@
         }
     }
 
-    function loadScope() {
-        try {
-            const saved = JSON.parse(localStorage.getItem('sl-scope-v2') || 'null');
-            if (Array.isArray(saved)) {
-                document.querySelectorAll('#sl-preview-toolbar input[type="checkbox"]').forEach(cb => {
-                    cb.checked = saved.includes(cb.value);
-                    cb.closest('.sl-scope-chip').classList.toggle('checked', cb.checked);
-                });
-                enforceScopeNotEmpty();
-            }
-        } catch {}
-    }
-
     document.querySelectorAll('#sl-preview-toolbar .sl-scope-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             const cb = chip.querySelector('input');
             cb.checked = !cb.checked;
             chip.classList.toggle('checked', cb.checked);
             enforceScopeNotEmpty();
-            saveScope();
+            updateEditingAllowed();
             if (previewReady) {
                 if (Object.keys(quickState).length) {
                     injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
@@ -1037,6 +1442,13 @@
         history.replaceState(null, '', '?' + p.toString());
     }
 
+    function pushQuickParams() {
+        const p = getParams();
+        for (const key of [...p.keys()]) if (key.startsWith('q_')) p.delete(key);
+        for (const [k, v] of Object.entries(quickState)) p.set('q_' + k, String(v));
+        history.replaceState(null, '', '?' + p.toString());
+    }
+
     // ─── Service Worker ───────────────────────────────────────
     async function ensureServiceWorker() {
         if (!navigator.serviceWorker) throw new Error('Service Workers not supported');
@@ -1097,10 +1509,19 @@
 
             loadedSessions = sessions;
 
-            // Auto-select: prefer URL param, then first session, then nothing
-            let autoVal = val;
+            // Determine which session to auto-select.
+            // If a specific session was requested via URL param, prefer it;
+            // if not found in the list (e.g. saved_once=0), fall back to first session.
+            const requestedSessionId = val && val.startsWith('session:') ? val.slice(8) : null;
+            const matchedSession = requestedSessionId
+                ? sessions.find(s => s.sessionId === requestedSessionId)
+                : null;
+
+            let autoVal = val || null;
             let autoTheme = null;
-            if (!autoVal && sessions.length > 0) {
+            if (matchedSession) {
+                autoTheme = matchedSession.theme || null;
+            } else if (!autoVal && sessions.length > 0) {
                 autoVal = 'session:' + sessions[0].sessionId;
                 autoTheme = sessions[0].theme || null;
             }
@@ -1165,20 +1586,35 @@
                 if (r.ok) themeFiles[path] = await r.text();
             } catch {}
         }));
-        renderFileList();
+        renderFileBrowser();
         const firstCss = toFetch.find(f => f.path.endsWith('.css'));
         if (firstCss && themeFiles[firstCss.path] != null) setEditorFile(firstCss.path, isReload);
     }
 
     function setEditorFile(path, forceReset = false) {
-        const newOriginal = themeFiles[path] || '';
         const ta = document.getElementById('sl-css-textarea');
         const isAlreadyActive = path === activeCssFile;
         const isModified = document.getElementById('sl-modified-dot').classList.contains('on');
 
+        // Auto-save current textarea content before switching files
+        if (!isAlreadyActive && activeCssFile && themeFiles[activeCssFile] !== undefined) {
+            themeFiles[activeCssFile] = ta.value;
+        }
+
+        const newOriginal = themeFiles[path] || '';
         activeCssFile = path;
         originalCss = newOriginal;
         document.getElementById('sl-editor-file-label').textContent = path;
+
+        // Update syntax highlighting language and editor UI for file type
+        const isJs = path.endsWith('.js');
+        const code = document.querySelector('#sl-css-highlight code');
+        code.className = isJs ? 'language-javascript' : 'language-css';
+        document.getElementById('sl-js-hint').style.display = isJs ? '' : 'none';
+        document.getElementById('btn-wrap-scope').style.display = isJs ? 'none' : '';
+        document.getElementById('btn-apply-css').textContent = isJs ? T.save_js : T.apply_css;
+
+        updateFileBrowserActiveState(path);
 
         // Preserve user edits when the same file reloads (e.g. export type switch)
         if (isAlreadyActive && isModified && !forceReset) return;
@@ -1188,23 +1624,524 @@
         updateHighlight();
     }
 
-    function renderFileList() {
-        const list = document.getElementById('sl-file-list');
-        const paths = Object.keys(themeFiles);
-        if (!paths.length) { list.innerHTML = '<li class="sl-file-empty">No editable files found.</li>'; return; }
-        list.innerHTML = paths.map(p => {
-            const ext = p.split('.').pop();
-            return `<li class="sl-file-item${p === activeCssFile ? ' active' : ''}" data-file="${p}">${p}<span class="sl-file-ext">${ext}</span></li>`;
+    function updateFileBrowserActiveState(path) {
+        document.querySelectorAll('#sl-file-browser .sl-fb-item').forEach(el => {
+            el.classList.toggle('sl-fb-active', el.dataset.fbPath === path);
+        });
+    }
+
+    // ─── File browser ─────────────────────────────────────────
+    function fbFileType(path) {
+        const ext = path.split('.').pop().toLowerCase();
+        if (ext === 'css') return 'css';
+        if (ext === 'js')  return 'js';
+        if (['png','jpg','jpeg','gif','svg','webp','ico'].includes(ext)) return 'img';
+        if (['woff','woff2','ttf','otf'].includes(ext)) return 'font';
+        return 'other';
+    }
+
+    function renderFileBrowser() {
+        const section   = document.getElementById('sl-file-browser-section');
+        const container = document.getElementById('sl-file-browser');
+        const seen = new Set();
+        const entries = [];
+        for (const path of Object.keys(themeFiles)) {
+            if (seen.has(path)) continue; seen.add(path);
+            entries.push({ path, type: fbFileType(path) });
+        }
+        for (const path of Object.keys(assetBinaryFiles)) {
+            if (seen.has(path)) continue; seen.add(path);
+            entries.push({ path, type: fbFileType(path) });
+        }
+        for (const path of Object.keys(fontBinaryFiles)) {
+            if (seen.has(path)) continue; seen.add(path);
+            entries.push({ path, type: 'font' });
+        }
+        section.style.display = entries.length ? '' : 'none';
+        if (!entries.length) { container.innerHTML = ''; return; }
+
+        const filtered = entries.filter(e => {
+            const typeOk   = fileBrowserFilter === 'all' || e.type === fileBrowserFilter;
+            const searchOk = !fileBrowserSearch || e.path.toLowerCase().includes(fileBrowserSearch.toLowerCase());
+            return typeOk && searchOk;
+        });
+
+        if (!filtered.length) {
+            container.innerHTML = `<p style="text-align:center;color:var(--muted);font-size:12px;padding:8px 0;">${T.no_files_match}</p>`;
+            return;
+        }
+
+        // Ensure blob URLs exist for images (may not if injectAssetsCss not yet called)
+        for (const [p, bytes] of Object.entries(assetBinaryFiles)) {
+            if (!assetBlobUrls[p]) {
+                assetBlobUrls[p] = URL.createObjectURL(new Blob([bytes], { type: assetMime(p) }));
+            }
+        }
+
+        container.innerHTML = filtered.map(e => {
+            const ext        = e.path.split('.').pop().toLowerCase();
+            const badgeCls   = `sl-fb-badge-${['css','js','img','font'].includes(e.type) ? e.type : 'other'}`;
+            const thumb      = (e.type === 'img' && assetBlobUrls[e.path])
+                ? `<img class="sl-fb-thumb" src="${assetBlobUrls[e.path]}" alt="">`
+                : '';
+            const isActive   = e.path === activeCssFile;
+            let actions = '';
+            if (e.type === 'css' || e.type === 'js') {
+                actions += `<button class="btn button-tertiary sl-fb-btn" data-fb-edit="${e.path}" title="Edit">✎</button>`;
+            }
+            if (e.type === 'img') {
+                actions += `<button class="btn button-tertiary sl-fb-btn" data-fb-replace="${e.path}" title="Replace">↑</button>`;
+                actions += `<button class="sl-asset-remove" data-fb-remove-asset="${e.path}" title="Remove">✕</button>`;
+            }
+            if (e.type === 'font') {
+                actions += `<button class="sl-asset-remove" data-fb-remove-font="${e.path}" title="Remove">✕</button>`;
+            }
+            return `<div class="sl-fb-item${isActive ? ' sl-fb-active' : ''}" data-fb-path="${e.path}">
+                <span class="sl-fb-badge ${badgeCls}">${ext}</span>
+                ${thumb}
+                <span class="sl-fb-path" title="${e.path}">${e.path}</span>
+                <div class="sl-fb-actions">${actions}</div>
+            </div>`;
         }).join('');
-        list.querySelectorAll('.sl-file-item').forEach(li => {
-            li.addEventListener('click', () => {
-                list.querySelectorAll('.sl-file-item').forEach(x => x.classList.remove('active'));
-                li.classList.add('active');
-                setEditorFile(li.dataset.file);
+
+        container.querySelectorAll('[data-fb-edit]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setEditorFile(btn.dataset.fbEdit);
                 switchTab('css');
             });
         });
+
+        container.querySelectorAll('[data-fb-remove-asset]').forEach(btn => {
+            btn.addEventListener('click', () => { removeAsset(btn.dataset.fbRemoveAsset); });
+        });
+
+        container.querySelectorAll('[data-fb-remove-font]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const path = btn.dataset.fbRemoveFont;
+                const fontBtn = document.querySelector(`.sl-font-remove[data-font="${CSS.escape(path)}"]`);
+                if (fontBtn) { fontBtn.click(); }
+                else {
+                    pushUndo();
+                    if (fontBlobUrls[path]) { URL.revokeObjectURL(fontBlobUrls[path]); delete fontBlobUrls[path]; }
+                    delete fontBinaryFiles[path];
+                    rebuildFontFacesInCss();
+                    updateFontFamilyOptions();
+                    renderFontList();
+                    injectFontFaces();
+                    renderFileBrowser();
+                }
+            });
+        });
+
+        container.querySelectorAll('[data-fb-replace]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const oldPath = btn.dataset.fbReplace;
+                const tmp = document.createElement('input');
+                tmp.type = 'file'; tmp.accept = 'image/*';
+                tmp.onchange = async () => {
+                    const file = tmp.files[0];
+                    if (!file) return;
+                    const newExt  = (file.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g,'') || 'png';
+                    const base    = oldPath.replace(/\.[^.]+$/, '');
+                    const newPath = `${base}.${newExt}`;
+                    pushUndo();
+                    if (oldPath !== newPath) {
+                        delete assetBinaryFiles[oldPath];
+                        if (assetBlobUrls[oldPath]) { URL.revokeObjectURL(assetBlobUrls[oldPath]); delete assetBlobUrls[oldPath]; }
+                    }
+                    assetBinaryFiles[newPath] = new Uint8Array(await file.arrayBuffer());
+                    assetStateTouched = true;
+                    for (const r of assetRefreshers) r();
+                    injectAssetsCss();
+                    markModified(true);
+                    renderFileBrowser();
+                };
+                tmp.click();
+            });
+        });
     }
+
+    function removeAsset(path) {
+        const prefix = path.replace(/\.[^.]+$/, '.');
+        const removeBtnId = ASSET_REMOVE_BTNS[prefix];
+        if (removeBtnId) {
+            document.getElementById(removeBtnId)?.click();
+        } else {
+            // Icon or unregistered asset
+            pushUndo();
+            delete assetBinaryFiles[path];
+            if (assetBlobUrls[path]) { URL.revokeObjectURL(assetBlobUrls[path]); delete assetBlobUrls[path]; }
+            assetStateTouched = true;
+            injectAssetsCss();
+            markModified(true);
+            renderFileBrowser();
+        }
+    }
+
+    // ─── Font helpers ─────────────────────────────────────────
+    function isFontFileName(n) { const l=n.toLowerCase(); return l.endsWith('.woff')||l.endsWith('.woff2')||l.endsWith('.ttf')||l.endsWith('.otf'); }
+    function safeFileName(name) { return String(name||'').replace(/[/\\]/g,'_').replace(/[^\w.\- ]/g,'_').trim(); }
+    function quoteFontFamily(name) { return `"${String(name||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"')}"`; }
+    function normalizeFontFamilyFromFileName(fileName) {
+        const base = fileName.replace(/\.[^.]+$/,'');
+        const cleaned = base.replace(/[_-]+/g,' ').replace(/\b(thin|extralight|ultralight|light|regular|book|normal|medium|semibold|demibold|bold|extrabold|ultrabold|black|heavy|italic|oblique)\b/gi,' ').replace(/\s+/g,' ').trim();
+        return cleaned || base;
+    }
+    function fontWeightFromFileName(f) {
+        const l=f.toLowerCase();
+        if(/\bthin\b/.test(l)) return 100;
+        if(/\b(extralight|ultralight)\b/.test(l)) return 200;
+        if(/\blight\b/.test(l)) return 300;
+        if(/\bmedium\b/.test(l)) return 500;
+        if(/\b(semibold|demibold)\b/.test(l)) return 600;
+        if(/\bbold\b/.test(l)) return 700;
+        if(/\b(extrabold|ultrabold)\b/.test(l)) return 800;
+        if(/\b(black|heavy)\b/.test(l)) return 900;
+        return 400;
+    }
+    function fontStyleFromFileName(f) { return /\b(italic|oblique)\b/i.test(f)?'italic':'normal'; }
+    function fontFormatFromFileName(f) {
+        const l=f.toLowerCase();
+        if(l.endsWith('.woff2')) return 'woff2';
+        if(l.endsWith('.woff')) return 'woff';
+        if(l.endsWith('.ttf')) return 'truetype';
+        if(l.endsWith('.otf')) return 'opentype';
+        return '';
+    }
+    function buildFontFaceRule(fileName) {
+        const family = normalizeFontFamilyFromFileName(fileName);
+        const weight = fontWeightFromFileName(fileName);
+        const style = fontStyleFromFileName(fileName);
+        const fmt = fontFormatFromFileName(fileName);
+        const src = fmt ? `url(fonts/${fileName}) format("${fmt}")` : `url(fonts/${fileName})`;
+        return `@font-face {\n  font-family: ${quoteFontFamily(family)};\n  src: ${src};\n  font-weight: ${weight};\n  font-style: ${style};\n  font-display: swap;\n}`;
+    }
+    function ensureFontFamilyOption(value, selectId) {
+        const sel = document.querySelector(`[data-quick="${selectId}"]`);
+        if (!sel || [...sel.options].some(o => o.value === value)) return;
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = normalizeFontFamilyFromFileName(value.split(',')[0].replace(/['"]/g,'').trim()) + ' (custom)';
+        opt.dataset.custom = '1';
+        sel.appendChild(opt);
+    }
+    function updateFontFamilyOptions() {
+        for (const id of ['fontBody','fontTitles']) {
+            const sel = document.querySelector(`[data-quick="${id}"]`);
+            if (!sel) continue;
+            [...sel.options].filter(o => o.dataset.custom).forEach(o => o.remove());
+        }
+        for (const fontPath of Object.keys(fontBinaryFiles)) {
+            const name = fontPath.replace('fonts/','');
+            const family = normalizeFontFamilyFromFileName(name);
+            const stack = `${quoteFontFamily(family)}, Arial, Verdana, Helvetica, sans-serif`;
+            ensureFontFamilyOption(stack, 'fontBody');
+            ensureFontFamilyOption(stack, 'fontTitles');
+        }
+    }
+    function rebuildFontFacesInCss() {
+        const ta = document.getElementById('sl-css-textarea');
+        const cur = ta.value;
+        const blockMatch = cur.match(/\/\* custom-fonts:start \*\/[\s\S]*?\/\* custom-fonts:end \*\//i);
+        const baseCss = blockMatch ? cur.replace(blockMatch[0],'').replace(/^\n+/,'').trimStart() : cur;
+        const fileNames = Object.keys(fontBinaryFiles).map(p => p.replace('fonts/',''));
+        if (!fileNames.length) {
+            ta.value = baseCss.trimStart();
+        } else {
+            const rules = fileNames.map(f => buildFontFaceRule(f)).join('\n\n');
+            ta.value = `${FONT_BLOCK_START}\n${rules}\n${FONT_BLOCK_END}\n\n${baseCss.trimStart()}`;
+        }
+        markModified(ta.value !== originalCss);
+        updateHighlight();
+        if (previewReady) injectEditorCss(ta.value);
+    }
+    function ensureCustomFontFacesInCss(fileNames) {
+        if (!fileNames.length) return [];
+        const ta = document.getElementById('sl-css-textarea');
+        const cur = ta.value;
+        const blockMatch = cur.match(/\/\* custom-fonts:start \*\/[\s\S]*?\/\* custom-fonts:end \*\//i);
+        const currentBlock = blockMatch ? blockMatch[0] : '';
+        const baseCss = blockMatch ? cur.replace(currentBlock,'').replace(/^\n+/,'').trimStart() : cur;
+        const existingUrls = new Set(Array.from(cur.matchAll(/url\(([^)]+)\)/gi)).map(m=>m[1]?.trim().replace(/^['"]|['"]$/g,'')).filter(Boolean));
+        const rules = [];
+        for (const fileName of fileNames) {
+            if (existingUrls.has(`fonts/${fileName}`)) continue;
+            rules.push(buildFontFaceRule(fileName));
+        }
+        const currentRules = currentBlock.replace(/\/\* custom-fonts:start \*\//i,'').replace(/\/\* custom-fonts:end \*\//i,'').trim();
+        if (!rules.length) return fileNames.map(f => normalizeFontFamilyFromFileName(f));
+        const merged = [currentRules, rules.join('\n\n')].filter(Boolean).join('\n\n');
+        ta.value = `${FONT_BLOCK_START}\n${merged}\n${FONT_BLOCK_END}\n\n${baseCss.trimStart()}`;
+        markModified(ta.value !== originalCss);
+        updateHighlight();
+        if (previewReady) injectEditorCss(ta.value);
+        return fileNames.map(f => normalizeFontFamilyFromFileName(f));
+    }
+    function renderFontList() {
+        const list = document.getElementById('sl-font-list');
+        const paths = Object.keys(fontBinaryFiles);
+        if (!paths.length) {
+            list.innerHTML = '<span class="sl-font-empty">{{ t.sl_no_custom_fonts or "No custom fonts" }}</span>';
+            return;
+        }
+        list.innerHTML = paths.map(p => {
+            const name = p.replace('fonts/','');
+            return `<div class="sl-font-item"><span class="sl-font-item-name">${name}</span><button class="sl-font-remove" data-font="${p}" title="Remove">✕</button></div>`;
+        }).join('');
+        list.querySelectorAll('.sl-font-remove').forEach(btn => {
+            btn.addEventListener('click', () => {
+                pushUndo();
+                const fp = btn.dataset.font;
+                const blobUrl = fontBlobUrls[fp];
+                if (blobUrl) { URL.revokeObjectURL(blobUrl); delete fontBlobUrls[fp]; }
+                delete fontBinaryFiles[fp];
+                rebuildFontFacesInCss();
+                updateFontFamilyOptions();
+                renderFontList();
+                injectFontFaces();
+                renderFileBrowser();
+            });
+        });
+    }
+    function injectFontFaces() {
+        if (!previewReady) return;
+        for (const url of Object.values(fontBlobUrls)) URL.revokeObjectURL(url);
+        fontBlobUrls = {};
+        const rules = [];
+        for (const [fontPath, bytes] of Object.entries(fontBinaryFiles)) {
+            const fileName = fontPath.replace('fonts/','');
+            const fmt = fontFormatFromFileName(fileName);
+            const mimeMap = { woff2:'font/woff2', woff:'font/woff', truetype:'font/ttf', opentype:'font/otf' };
+            const mime = mimeMap[fmt] || 'font/woff2';
+            const blob = new Blob([bytes], { type: mime });
+            const url = URL.createObjectURL(blob);
+            fontBlobUrls[fontPath] = url;
+            const family = normalizeFontFamilyFromFileName(fileName);
+            const weight = fontWeightFromFileName(fileName);
+            const style = fontStyleFromFileName(fileName);
+            rules.push(`@font-face { font-family: ${quoteFontFamily(family)}; src: url("${url}") format("${fmt}"); font-weight: ${weight}; font-style: ${style}; font-display: swap; }`);
+        }
+        injectStyle('sl-font-faces', rules.join('\n'));
+    }
+
+    // ─── Asset management ─────────────────────────────────────
+    function assetMime(path) {
+        const ext = (path.split('.').pop() || '').toLowerCase();
+        return { png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', gif:'image/gif',
+                 webp:'image/webp', svg:'image/svg+xml', ico:'image/x-icon' }[ext] || 'image/png';
+    }
+    function assetByPrefix(prefix) {
+        return Object.keys(assetBinaryFiles).find(p => p.startsWith(prefix)) || null;
+    }
+    function cssUrlForAsset(path, useBlobUrls = false) {
+        return useBlobUrls ? assetBlobUrls[path] : path.replace(/"/g, '\\"');
+    }
+    function cssClassName(value) {
+        return window.CSS?.escape ? CSS.escape(value) : value.replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+    }
+    function removeAssetByPrefix(prefix) {
+        const path = assetByPrefix(prefix);
+        if (!path) return;
+        URL.revokeObjectURL(assetBlobUrls[path]);
+        delete assetBlobUrls[path];
+        delete assetBinaryFiles[path];
+    }
+    function buildAssetsCss(useBlobUrls = false) {
+        let css = '';
+        const logo = assetByPrefix('img/custom-logo.');
+        if (logo) {
+            const size = parseInt(document.getElementById('sl-logo-size').value) || 130;
+            css += `body::after { content: "" !important; position: fixed !important; top: 14px !important; right: 20px !important; width: ${size}px !important; height: ${size}px !important; background: url("${cssUrlForAsset(logo, useBlobUrls)}") no-repeat center / contain !important; z-index: 450 !important; pointer-events: none !important; }\n`;
+        }
+        const bg = assetByPrefix('img/custom-background.');
+        if (bg) {
+            const bgRepeat   = document.getElementById('sl-bg-repeat').value || 'no-repeat';
+            const bgSoftness = Math.max(0, Math.min(90, parseInt(document.getElementById('sl-bg-softness').value) || 0));
+            const bgPos      = (bgRepeat === 'no-repeat') ? 'center center' : 'left top';
+            const bgImg      = bgSoftness > 0
+                ? `linear-gradient(rgba(255,255,255,${(bgSoftness/100).toFixed(2)}),rgba(255,255,255,${(bgSoftness/100).toFixed(2)})), url("${cssUrlForAsset(bg, useBlobUrls)}")`
+                : `url("${cssUrlForAsset(bg, useBlobUrls)}")`;
+            css += `body { background-image: ${bgImg} !important; background-repeat: ${bgRepeat} !important; background-position: ${bgPos} !important; background-attachment: fixed !important; }\n`;
+        }
+        const header = assetByPrefix('img/custom-header.');
+        if (header) {
+            const h          = parseInt(document.getElementById('sl-header-image-height').value) || 120;
+            const hFit       = document.getElementById('sl-header-image-fit').value || 'cover';
+            const hPos       = document.getElementById('sl-header-image-position').value || 'center center';
+            const hRepeat    = document.getElementById('sl-header-image-repeat').value || 'no-repeat';
+            css += `.exe-content .package-header, #header { background-image: url("${cssUrlForAsset(header, useBlobUrls)}") !important; background-size: ${hFit} !important; background-position: ${hPos} !important; background-repeat: ${hRepeat} !important; height: ${h}px !important; min-height: ${h}px !important; }\n`;
+        }
+        const footer = assetByPrefix('img/custom-footer.');
+        if (footer) {
+            const h          = parseInt(document.getElementById('sl-footer-image-height').value) || 90;
+            const fFit       = document.getElementById('sl-footer-image-fit').value || 'contain';
+            const fPos       = document.getElementById('sl-footer-image-position').value || 'center center';
+            const fRepeat    = document.getElementById('sl-footer-image-repeat').value || 'no-repeat';
+            css += `#siteFooter, #siteFooterContent { background-image: url("${cssUrlForAsset(footer, useBlobUrls)}") !important; background-size: ${fFit} !important; background-position: ${fPos} !important; background-repeat: ${fRepeat} !important; height: ${h}px !important; min-height: ${h}px !important; }\n`;
+        }
+        const navPrev = assetByPrefix('img/custom-nav-prev.');
+        if (navPrev) css += `.nav-buttons .nav-button-left { background-image: url("${cssUrlForAsset(navPrev, useBlobUrls)}") !important; }\n`;
+        const navNext = assetByPrefix('img/custom-nav-next.');
+        if (navNext) css += `.nav-buttons .nav-button-right { background-image: url("${cssUrlForAsset(navNext, useBlobUrls)}") !important; }\n`;
+        const navToggle = assetByPrefix('img/custom-nav-toggle.');
+        if (navToggle) css += `#siteNavToggler { background-image: url("${cssUrlForAsset(navToggle, useBlobUrls)}") !important; }\n`;
+        for (const [path] of Object.entries(assetBinaryFiles)) {
+            if (!path.startsWith('icons/')) continue;
+            const name = cssClassName(path.replace('icons/', '').replace(/\.[^.]+$/, ''));
+            css += `.iDevice.${name} .iDevice_header, .iDevice.${name}_idevice .iDevice_header { background-image: url("${cssUrlForAsset(path, useBlobUrls)}") !important; }\n`;
+        }
+        return css.trim();
+    }
+    function injectAssetsCss() {
+        if (!previewReady) return;
+        // Refresh blob URLs
+        for (const url of Object.values(assetBlobUrls)) URL.revokeObjectURL(url);
+        assetBlobUrls = {};
+        for (const [path, bytes] of Object.entries(assetBinaryFiles)) {
+            assetBlobUrls[path] = URL.createObjectURL(new Blob([bytes], { type: assetMime(path) }));
+        }
+        const css = buildAssetsCss(true);
+        injectStyle('sl-assets-css', css);
+        // Favicon (not CSS — swap the <link> element)
+        const favicon = assetByPrefix('img/favicon.');
+        const iframeDoc = document.getElementById('sl-iframe').contentDocument;
+        if (favicon && iframeDoc) {
+            let link = iframeDoc.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+            if (!link) { link = iframeDoc.createElement('link'); link.rel = 'icon'; iframeDoc.head.appendChild(link); }
+            link.href = assetBlobUrls[favicon];
+        }
+    }
+    function setupAsset({ prefix, btnId, removeId, inputId, nameId, optionsId = null, accept, logoSizeId = null, ext: fixedExt = null }) {
+        const btn    = document.getElementById(btnId);
+        const rmBtn  = document.getElementById(removeId);
+        const input  = document.getElementById(inputId);
+        const nameEl = document.getElementById(nameId);
+        const optEl  = optionsId ? document.getElementById(optionsId) : null;
+        function refresh() {
+            const path = assetByPrefix(prefix);
+            nameEl.textContent = path ? path.split('/').pop() : '';
+            rmBtn.style.display = path ? '' : 'none';
+            if (optEl) optEl.style.display = path ? '' : 'none';
+        }
+        assetRefreshers.push(refresh);
+        btn.addEventListener('click', () => { input.value = ''; input.click(); });
+        input.addEventListener('change', async () => {
+            const file = input.files[0];
+            if (!file) return;
+            pushUndo();
+            removeAssetByPrefix(prefix);
+            const ext = fixedExt || (file.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g, '') || 'png';
+            const path = `${prefix}${ext}`;
+            assetBinaryFiles[path] = new Uint8Array(await file.arrayBuffer());
+            assetStateTouched = true;
+            refresh();
+            injectAssetsCss();
+            markModified(true);
+            renderFileBrowser();
+        });
+        rmBtn.addEventListener('click', () => {
+            pushUndo();
+            removeAssetByPrefix(prefix);
+            assetStateTouched = true;
+            refresh();
+            injectAssetsCss();
+            markModified(true);
+            renderFileBrowser();
+        });
+        if (logoSizeId) {
+            document.getElementById(logoSizeId).addEventListener('input', () => {
+                assetStateTouched = true;
+                injectAssetsCss();
+                markModified(true);
+            });
+        }
+    }
+    function setupIdeviceIcons() {
+        const btn   = document.getElementById('btn-add-idevice-icons');
+        const input = document.getElementById('sl-idevice-icons-input');
+        const info  = document.getElementById('sl-idevice-icons-info');
+        function refresh() {
+            const count = Object.keys(assetBinaryFiles).filter(p => p.startsWith('icons/')).length;
+            info.textContent = count ? count + ' icon(s)' : '';
+        }
+        btn.addEventListener('click', () => { input.value = ''; input.click(); });
+        input.addEventListener('change', async () => {
+            const files = Array.from(input.files || []).filter(f => /\.(png|jpe?g|gif|webp|svg)$/i.test(f.name));
+            if (!files.length) return;
+            pushUndo();
+            for (const file of files) {
+                const name = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').toLowerCase();
+                const path = `icons/${name}`;
+                assetBinaryFiles[path] = new Uint8Array(await file.arrayBuffer());
+            }
+            assetStateTouched = true;
+            refresh();
+            injectAssetsCss();
+            markModified(true);
+            renderFileBrowser();
+        });
+        refresh();
+    }
+    // Wire up all asset controls
+    setupAsset({ prefix: 'img/custom-logo.',         btnId: 'btn-add-logo',          removeId: 'btn-remove-logo',          inputId: 'sl-logo-input',          nameId: 'sl-logo-name',          optionsId: 'sl-logo-options',         logoSizeId: 'sl-logo-size' });
+    setupAsset({ prefix: 'img/favicon.',             btnId: 'btn-add-favicon',        removeId: 'btn-remove-favicon',        inputId: 'sl-favicon-input',        nameId: 'sl-favicon-name',          fixedExt: null });
+    setupAsset({ prefix: 'img/custom-background.',   btnId: 'btn-add-bg-image',       removeId: 'btn-remove-bg-image',       inputId: 'sl-bg-image-input',       nameId: 'sl-bg-image-name',       optionsId: 'sl-bg-image-options' });
+    setupAsset({ prefix: 'img/custom-header.',       btnId: 'btn-add-header-image',   removeId: 'btn-remove-header-image',   inputId: 'sl-header-image-input',   nameId: 'sl-header-image-name',   optionsId: 'sl-header-image-options' });
+    setupAsset({ prefix: 'img/custom-footer.',       btnId: 'btn-add-footer-image',   removeId: 'btn-remove-footer-image',   inputId: 'sl-footer-image-input',   nameId: 'sl-footer-image-name',   optionsId: 'sl-footer-image-options' });
+    setupAsset({ prefix: 'img/custom-nav-prev.',     btnId: 'btn-add-nav-prev',       removeId: 'btn-remove-nav-prev',       inputId: 'sl-nav-prev-input',       nameId: 'sl-nav-prev-name' });
+    setupAsset({ prefix: 'img/custom-nav-next.',     btnId: 'btn-add-nav-next',       removeId: 'btn-remove-nav-next',       inputId: 'sl-nav-next-input',       nameId: 'sl-nav-next-name' });
+    setupAsset({ prefix: 'img/custom-nav-toggle.',   btnId: 'btn-add-nav-toggle',     removeId: 'btn-remove-nav-toggle',     inputId: 'sl-nav-toggle-input',     nameId: 'sl-nav-toggle-name' });
+    setupIdeviceIcons();
+    // Height option inputs trigger CSS update
+    for (const id of [
+        'sl-bg-repeat', 'sl-bg-softness',
+        'sl-header-image-height', 'sl-header-image-fit', 'sl-header-image-position', 'sl-header-image-repeat',
+        'sl-footer-image-height', 'sl-footer-image-fit', 'sl-footer-image-position', 'sl-footer-image-repeat',
+    ]) document.getElementById(id).addEventListener('input', () => {
+        assetStateTouched = true;
+        injectAssetsCss();
+        markModified(true);
+    });
+
+    function uint8ToBase64(bytes) {
+        let bin = '';
+        const chunk = 8192;
+        for (let i = 0; i < bytes.length; i += chunk) {
+            bin += String.fromCharCode(...bytes.subarray(i, i + chunk));
+        }
+        return btoa(bin);
+    }
+    async function onFontsSelected(fileList) {
+        const files = Array.from(fileList || []).filter(f => isFontFileName(f.name));
+        if (!files.length) { setStatus(T.no_valid_fonts); return; }
+        pushUndo();
+        const addedNames = [];
+        for (const file of files) {
+            const name = safeFileName(file.name);
+            if (!name) continue;
+            fontBinaryFiles[`fonts/${name}`] = new Uint8Array(await file.arrayBuffer());
+            addedNames.push(name);
+        }
+        if (!addedNames.length) return;
+        const families = ensureCustomFontFacesInCss(addedNames);
+        for (const family of families) {
+            const stack = `${quoteFontFamily(family)}, Arial, Verdana, Helvetica, sans-serif`;
+            ensureFontFamilyOption(stack, 'fontBody');
+            ensureFontFamilyOption(stack, 'fontTitles');
+        }
+        renderFontList();
+        injectFontFaces();
+        setStatus(T.fonts_added.replace('{n}', addedNames.length));
+        renderFileBrowser();
+    }
+    document.getElementById('btn-add-fonts').addEventListener('click', () => {
+        document.getElementById('sl-font-input').value = '';
+        document.getElementById('sl-font-input').click();
+    });
+    document.getElementById('sl-font-input').addEventListener('change', async e => {
+        if (e.target.files?.length) await onFontsSelected(e.target.files);
+        e.target.value = '';
+    });
 
     // ─── CSS injection ────────────────────────────────────────
     function injectStyle(id, css) {
@@ -1250,6 +2187,38 @@
             } catch { return null; }
         }
 
+        // Read :hover colors from CSS rules (getComputedStyle cannot simulate hover state)
+        function getHoverColors() {
+            const result = { bg: null, color: null };
+            try {
+                for (const sheet of doc.styleSheets) {
+                    let rules;
+                    try { rules = sheet.cssRules; } catch { continue; }
+                    for (const rule of rules) {
+                        if (!(rule instanceof doc.defaultView.CSSStyleRule)) continue;
+                        const sel = rule.selectorText || '';
+                        if (!sel.includes(':hover')) continue;
+                        if (!/#siteNav\s+a:hover|\.site-nav\s+a:hover/.test(sel)) continue;
+                        if (!result.bg) {
+                            const bg = rule.style.backgroundColor || rule.style.background;
+                            if (bg) {
+                                const m = bg.match(/rgba?\([^)]+\)|#[0-9a-f]{3,8}/i);
+                                if (m) result.bg = /^#/i.test(m[0]) ? m[0] : toHex(m[0]);
+                            }
+                        }
+                        if (!result.color) {
+                            const col = rule.style.color;
+                            if (col) result.color = toHex(col);
+                        }
+                        if (result.bg && result.color) break;
+                    }
+                    if (result.bg && result.color) break;
+                }
+            } catch {}
+            return result;
+        }
+
+        const hoverColors = getHoverColors();
         const updates = {
             linkColor:           toHex(gs('a', 'color')),
             titleColor:          toHex(gs('.page-title', 'color')),
@@ -1258,6 +2227,8 @@
             pageBgColor:         toHex(gs('body', 'backgroundColor')),
             menuBgColor:         toHex(gs('#siteNav', 'backgroundColor')),
             menuTextColor:       toHex(gs('#siteNav a', 'color')),
+            menuHoverBgColor:    hoverColors.bg,
+            menuHoverTextColor:  hoverColors.color,
             menuActiveBgColor:   toHex(gs('#siteNav a.active', 'backgroundColor'))
                               || toHex(gs('#siteNav li.active > a', 'backgroundColor')),
             menuActiveTextColor: toHex(gs('#siteNav a.active', 'color'))
@@ -1312,31 +2283,58 @@
     function buildQuickCss(q) {
         const bang = ' !important';
         let css = '';
-        if (q.linkColor) css += `a { color: ${q.linkColor}${bang}; }\n`;
-        if (q.titleColor) css += `.page-title, .exe-content h1, .exe-content h2 { color: ${q.titleColor}${bang}; }\n`;
-        if (q.textColor) css += `body, .exe-content p, .exe-content li { color: ${q.textColor}${bang}; }\n`;
+        // Content width
+        const mode = String(q.contentWidthMode || 'default').toLowerCase();
+        if (mode !== 'default') {
+            const mw = mode === 'percent'
+                ? `${q.contentWidthPercent || 100}%`
+                : mode === 'mixed'
+                    ? `min(${q.contentWidth || 1280}px, ${q.contentWidthPercent || 100}%)`
+                    : `${q.contentWidth || 1280}px`;
+            const center = q.contentCentered !== false;
+            css += `#node-content-container, .exe-content { max-width: ${mw}${bang}; margin-left: ${center ? 'auto' : '0'}${bang}; margin-right: ${center ? 'auto' : '0'}${bang}; }\n`;
+        }
+        // Colors
+        if (q.linkColor) css += `.exe-content a { color: ${q.linkColor}${bang}; }\n`;
+        if (q.titleColor) css += `.exe-content .page-title { color: ${q.titleColor}${bang}; }\n`;
+        if (q.textColor) css += `.exe-content { color: ${q.textColor}${bang}; }\n`;
         if (q.contentBgColor) css += `.exe-content, .page-content { background-color: ${q.contentBgColor}${bang}; }\n`;
         if (q.pageBgColor) css += `body { background-color: ${q.pageBgColor}${bang}; }\n`;
-        if (q.contentOuterBgColor) css += `.exe-web-site, .exe-scorm { background-color: ${q.contentOuterBgColor}${bang}; }\n`;
-        if (q.fontBody) css += `body, p, li, td { font-family: ${q.fontBody}${bang}; }\n`;
-        if (q.fontTitles) css += `h1, h2, h3, h4, .page-title { font-family: ${q.fontTitles}${bang}; }\n`;
+        if (q.contentOuterBgColor) css += `body.exe-export { background-color: ${q.contentOuterBgColor}${bang}; }\n`;
+        // Typography
+        if (q.fontBody) css += `body, .exe-content { font-family: ${q.fontBody}${bang}; }\n`;
+        if (q.fontTitles) css += `.exe-content .page-title, .exe-content .box-title, .exe-content .iDeviceTitle, .exe-content h1, .exe-content h2, .exe-content h3 { font-family: ${q.fontTitles}${bang}; }\n`;
         if (q.baseFontSize) css += `body { font-size: ${q.baseFontSize}px${bang}; }\n`;
         if (q.lineHeight) css += `body { line-height: ${q.lineHeight}${bang}; }\n`;
-        if (q.pageTitleSize) css += `.page-title { font-size: ${q.pageTitleSize}rem${bang}; }\n`;
-        if (q.pageTitleWeight) css += `.page-title { font-weight: ${q.pageTitleWeight}${bang}; }\n`;
-        if (q.pageTitleUppercase) css += `.page-title { text-transform: uppercase${bang}; }\n`;
-        if (q.packageTitleColor) css += `.package-title { color: ${q.packageTitleColor}${bang}; }\n`;
+        // Page title
+        if (q.pageTitleSize) css += `.exe-content .page-title { font-size: ${q.pageTitleSize}rem${bang}; }\n`;
+        if (q.pageTitleWeight) css += `.exe-content .page-title { font-weight: ${q.pageTitleWeight}${bang}; }\n`;
+        if (q.pageTitleUppercase) css += `.exe-content .page-title { text-transform: uppercase${bang}; }\n`;
+        if (q.pageTitleLetterSpacing) css += `.exe-content .page-title { letter-spacing: ${q.pageTitleLetterSpacing}px${bang}; }\n`;
+        if (q.pageTitleMarginBottom) css += `.exe-content .page-title { margin-bottom: ${q.pageTitleMarginBottom}rem${bang}; }\n`;
+        // Project (package) title
+        if (q.packageTitleColor) css += `.exe-content .package-title { color: ${q.packageTitleColor}${bang}; }\n`;
+        if (q.packageTitleSize) css += `.exe-content .package-title { font-size: ${q.packageTitleSize}rem${bang}; }\n`;
+        if (q.packageTitleWeight) css += `.exe-content .package-title { font-weight: ${q.packageTitleWeight}${bang}; }\n`;
+        // Navigation menu
+        if (q.fontMenu) css += `#siteNav a, .site-nav a { font-family: ${q.fontMenu}${bang}; }\n`;
         if (q.menuBgColor) css += `#siteNav, .site-nav { background-color: ${q.menuBgColor}${bang}; }\n`;
         if (q.menuTextColor) css += `#siteNav a, .site-nav a { color: ${q.menuTextColor}${bang}; }\n`;
         if (q.menuHoverBgColor) css += `#siteNav a:hover, .site-nav a:hover { background-color: ${q.menuHoverBgColor}${bang}; }\n`;
         if (q.menuHoverTextColor) css += `#siteNav a:hover, .site-nav a:hover { color: ${q.menuHoverTextColor}${bang}; }\n`;
-        if (q.menuActiveBgColor) css += `#siteNav a.active, #siteNav li.active > a, #siteNav .active > a, .site-nav a.active, .site-nav li.active > a { background-color: ${q.menuActiveBgColor}${bang}; }\n`;
-        if (q.menuActiveTextColor) css += `#siteNav a.active, #siteNav li.active > a, #siteNav .active > a, .site-nav a.active, .site-nav li.active > a { color: ${q.menuActiveTextColor}${bang}; }\n`;
-        if (q.boxBgColor) css += `.iDevice, .box { background-color: ${q.boxBgColor}${bang}; }\n`;
-        if (q.boxBorderColor) css += `.iDevice, .box { border-color: ${q.boxBorderColor}${bang}; }\n`;
-        if (q.boxTitleColor) css += `.iDevice_header, .box-head { color: ${q.boxTitleColor}${bang}; }\n`;
-        if (q.buttonBgColor) css += `.feedbackbutton, .exe-quiz-btn, button.btn { background-color: ${q.buttonBgColor}${bang}; }\n`;
-        if (q.buttonTextColor) css += `.feedbackbutton, .exe-quiz-btn, button.btn { color: ${q.buttonTextColor}${bang}; }\n`;
+        if (q.menuActiveBgColor) css += `#siteNav a.active, #siteNav li.active > a, .site-nav a.active { background-color: ${q.menuActiveBgColor}${bang}; }\n`;
+        if (q.menuActiveTextColor) css += `#siteNav a.active, #siteNav li.active > a, .site-nav a.active { color: ${q.menuActiveTextColor}${bang}; }\n`;
+        // iDevices
+        if (q.boxBgColor) css += `.exe-content .box-content, .exe-content .iDevice_content, .exe-content .iDevice_inner { background-color: ${q.boxBgColor}${bang}; }\n`;
+        if (q.boxBorderColor) css += `.exe-content .iDevice, .exe-content .box { border-color: ${q.boxBorderColor}${bang}; }\n`;
+        if (q.boxTitleColor) css += `.exe-content .box-title, .exe-content .iDeviceTitle { color: ${q.boxTitleColor}${bang}; }\n`;
+        if (q.boxTitleSize) css += `.exe-content .box-title, .exe-content .iDeviceTitle { font-size: ${q.boxTitleSize}rem${bang}; }\n`;
+        if (q.boxTitleGap) css += `.exe-content .box-head { gap: ${q.boxTitleGap}px${bang}; }\n`;
+        if (q.boxFontSize && q.boxFontSize !== 'inherit') css += `.exe-content .box-content, .exe-content .iDevice_content, .exe-content .iDevice_inner { font-size: ${q.boxFontSize}${bang}; }\n`;
+        if (q.boxTextAlign && q.boxTextAlign !== 'inherit') css += `.exe-content .box-content, .exe-content .iDevice_content { text-align: ${q.boxTextAlign}${bang}; }\n`;
+        // Buttons
+        if (q.buttonBgColor) css += `.exe-content .feedbackbutton, .exe-content .exe-quiz-btn, .exe-content button.btn { background-color: ${q.buttonBgColor}${bang}; border-color: ${q.buttonBgColor}${bang}; }\n`;
+        if (q.buttonTextColor) css += `.exe-content .feedbackbutton, .exe-content .exe-quiz-btn, .exe-content button.btn { color: ${q.buttonTextColor}${bang}; }\n`;
         return css;
     }
 
@@ -1348,15 +2346,24 @@
             const k = el.dataset.quick;
             const v = el.type === 'checkbox' ? el.checked : el.type === 'number' ? (parseFloat(el.value) || 0) : el.value;
             quickState = { ...quickState, [k]: v };
-            injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
+                injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
         });
     });
 
     // ─── Editor actions ───────────────────────────────────────
     document.getElementById('btn-apply-css').addEventListener('click', () => {
-        if (!previewReady) return;
-        injectEditorCss(document.getElementById('sl-css-textarea').value);
-        setStatus(T.css_applied);
+        const ta = document.getElementById('sl-css-textarea');
+        const isJs = activeCssFile.endsWith('.js');
+        if (isJs) {
+            // JS doesn't run in preview — just save to themeFiles
+            themeFiles[activeCssFile] = ta.value;
+            markModified(false);
+            setStatus(T.js_saved);
+        } else {
+            if (!previewReady) return;
+            injectEditorCss(ta.value);
+            setStatus(T.css_applied);
+        }
     });
 
     document.getElementById('btn-reset-css').addEventListener('click', () => {
@@ -1565,7 +2572,7 @@
         clearClickPreview();
         const rule = buildClickRule();
         const ta = document.getElementById('sl-css-textarea');
-        ta.value = appendToControlledBlock(ta.value, CLICK_BLOCK_START, CLICK_BLOCK_END, buildScopeWrapped(rule));
+        ta.value = appendToControlledBlock(ta.value, CLICK_BLOCK_START, CLICK_BLOCK_END, rule);
         markModified(true);
         updateHighlight();
         injectEditorCss(ta.value);
@@ -1615,49 +2622,36 @@
         setInspect(!inspectMode);
     });
 
-    // ─── Print simulation ─────────────────────────────────────
-    function applyPrintSim() {
-        const iframe = document.getElementById('sl-iframe');
-        const doc = iframe.contentDocument;
-        if (!doc) return;
-        doc.getElementById('sl-print-sim')?.remove();
-        if (selectedExport !== 'html5-sp') return;
-        const parts = [];
-        for (const sheet of doc.styleSheets) {
-            try {
-                for (const rule of sheet.cssRules) {
-                    if (rule instanceof CSSMediaRule) {
-                        const media = rule.conditionText || rule.media?.mediaText || '';
-                        if (/\bprint\b/.test(media)) {
-                            const inner = [...rule.cssRules].map(r => r.cssText).join('\n  ');
-                            parts.push(`@media screen {\n  ${inner}\n}`);
-                        }
-                    }
-                }
-            } catch { /* cross-origin sheet — skip */ }
-        }
-        if (!parts.length) return;
-        const style = doc.createElement('style');
-        style.id = 'sl-print-sim';
-        style.textContent = parts.join('\n\n');
-        doc.head.appendChild(style);
-    }
-
-    function updatePrintSimVisibility() {
-        applyPrintSim();
-    }
-
     // ─── Theme export / install ───────────────────────────────
     function buildFileOverrides() {
-        const overrides = {};
+        // Flush current textarea to themeFiles before building overrides
         if (activeCssFile) {
-            let css = document.getElementById('sl-css-textarea').value;
-            const quickCss = buildScopeWrapped(buildQuickCss(quickState));
-            css = replaceControlledBlock(css, QUICK_BLOCK_START, QUICK_BLOCK_END, quickCss);
-            overrides[activeCssFile] = css;
+            themeFiles[activeCssFile] = document.getElementById('sl-css-textarea').value;
+        }
+        // The primary CSS file receives Quick + Asset block merging;
+        // other files are included as-is.
+        const mainCss = Object.keys(themeFiles).find(p => p === 'style.css')
+                     || Object.keys(themeFiles).find(p => p.endsWith('.css'));
+        const overrides = {};
+        for (const [path, content] of Object.entries(themeFiles)) {
+            if (path === mainCss) {
+                let css = content;
+                // Quick CSS is saved unscoped so it applies to all export types and the editor preview.
+                // Scope wrapping is only used for the live Style Lab preview injection.
+                const quickCss = buildQuickCss(quickState);
+                css = replaceControlledBlock(css, QUICK_BLOCK_START, QUICK_BLOCK_END, quickCss);
+                const assetCss = buildAssetsCss(false);
+                if (assetStateTouched || assetCss) {
+                    css = replaceControlledBlock(css, ASSET_BLOCK_START, ASSET_BLOCK_END, assetCss);
+                }
+                overrides[path] = css;
+            } else {
+                overrides[path] = content;
+            }
         }
         return overrides;
     }
+    window.__styleLabBuildFileOverrides = buildFileOverrides;
 
     function collectThemeMetadata() {
         return {
@@ -1709,8 +2703,14 @@
 
         // Only prefill if empty or switching to a different source theme
         if (!displayEl.value || displayEl.dataset.srcTheme !== theme) {
-            displayEl.value = theme + '-custom';
-            dirEl.value = slugify(theme + '-custom');
+            const themeData = loadedThemes.find(t => t.dirName === theme);
+            if (themeData && themeData.type === 'site') {
+                displayEl.value = themeData.displayName || theme;
+                dirEl.value = theme;
+            } else {
+                displayEl.value = theme + '-custom';
+                dirEl.value = slugify(theme + '-custom');
+            }
             displayEl.dataset.srcTheme = theme;
         }
         setThemeMetadataControls(theme);
@@ -1783,6 +2783,14 @@
         try {
             const fileOverrides = buildFileOverrides();
             const themeMetadata = collectThemeMetadata();
+            const fontFiles = {};
+            for (const [p, bytes] of Object.entries(fontBinaryFiles)) {
+                fontFiles[p] = uint8ToBase64(bytes);
+            }
+            const assetFiles = {};
+            for (const [p, bytes] of Object.entries(assetBinaryFiles)) {
+                assetFiles[p] = uint8ToBase64(bytes);
+            }
 
             setStatus(T.capturing);
             const screenshotBase64 = previewReady ? await captureScreenshot() : null;
@@ -1794,7 +2802,7 @@
                 const res = await fetch(basePath + '/api/developer/style-lab/install-theme', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId, screenshotBase64 }),
+                    body: JSON.stringify({ theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId, screenshotBase64, fontFiles, assetFiles }),
                 });
                 const data = await res.json().catch(() => ({}));
                 if (!res.ok) {
@@ -1816,7 +2824,7 @@
                 const res = await fetch(basePath + '/api/developer/style-lab/export-theme', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ theme, fileOverrides, themeMetadata, screenshotBase64 }),
+                    body: JSON.stringify({ theme, fileOverrides, themeMetadata, screenshotBase64, fontFiles, assetFiles }),
                 });
                 if (!res.ok) {
                     const data = await res.json().catch(() => ({}));
@@ -1859,6 +2867,33 @@
         }
     }
     document.querySelectorAll('.sl-tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+    // ─── Content width mode: show/hide dependent inputs ──────
+    function updateContentWidthVisibility(mode) {
+        const hasPx  = mode === 'px' || mode === 'mixed';
+        const hasPct = mode === 'percent' || mode === 'mixed';
+        const hasCenter = mode !== 'default';
+        document.getElementById('sl-width-px-wrap').style.display  = hasPx  ? '' : 'none';
+        document.getElementById('sl-width-pct-wrap').style.display = hasPct ? '' : 'none';
+        document.getElementById('sl-width-center-wrap').style.display = hasCenter ? '' : 'none';
+    }
+    document.getElementById('sl-content-width-mode').addEventListener('input', e => {
+        updateContentWidthVisibility(e.target.value);
+    });
+    updateContentWidthVisibility('default');
+
+    // ─── File browser search + filter ────────────────────────
+    document.getElementById('sl-file-search').addEventListener('input', e => {
+        fileBrowserSearch = e.target.value;
+        renderFileBrowser();
+    });
+    document.querySelectorAll('.sl-ftype-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            fileBrowserFilter = btn.dataset.ftype;
+            document.querySelectorAll('.sl-ftype-btn').forEach(b => b.classList.toggle('active', b === btn));
+            renderFileBrowser();
+        });
+    });
 
     // ─── Upload theme ZIP ─────────────────────────────────────
     let uploadedZipBytes = null;
@@ -1976,18 +3011,18 @@
             btn.classList.add('active');
             selectedExport = btn.dataset.export;
             pushParams({ export: selectedExport });
-            updatePrintSimVisibility();
+            updateEditingAllowed();
             if (previewReady) runPreview();
         });
     });
     document.getElementById('sl-fixture').addEventListener('change', async e => {
         pushParams({ fixture: e.target.value || null });
         updateActions();
-        // If the selected fixture is a session with a known theme, auto-select it
+        // When switching to a session, always apply its theme (overrides previous selection)
         if (e.target.value && e.target.value.startsWith('session:')) {
             const sessionId = e.target.value.replace('session:', '');
             const session = loadedSessions.find(s => s.sessionId === sessionId);
-            if (session?.theme && !document.getElementById('sl-theme').value) {
+            if (session?.theme) {
                 await loadThemes(session.theme);
             }
         }
@@ -2073,7 +3108,7 @@
             await loadThemeFiles(theme);
             previewReady = true;
             updateActions();
-            showPreview();
+            await showPreview();
             setStatus(n + ' files · ' + fixtureVal + ' · ' + theme);
         } catch(e) {
             setStatus('Error: ' + e.message); // e.message is always technical/English
@@ -2082,23 +3117,27 @@
     }
 
     function showPreview() {
-        const iframe = document.getElementById('sl-iframe');
-        iframe.onload = () => {
-            injectInspector();
-            syncQuickFromTheme();   // read real theme colours BEFORE any injection
-            const css = document.getElementById('sl-css-textarea').value;
-            if (css) injectEditorCss(css);
-            if (Object.keys(quickState).length) injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
-            applyPrintSim();
-        };
-        if (iframe.src && iframe.src.includes('/viewer/')) {
-            iframe.src = 'about:blank';
-            setTimeout(() => { iframe.src = viewerUrl; }, 50);
-        } else {
-            iframe.src = viewerUrl;
-        }
-        iframe.style.display = '';
-        document.getElementById('sl-placeholder').style.display = 'none';
+        return new Promise(resolve => {
+            const iframe = document.getElementById('sl-iframe');
+            iframe.onload = () => {
+                injectInspector();
+                syncQuickFromTheme();   // read real theme colours BEFORE any injection
+                const css = document.getElementById('sl-css-textarea').value;
+                if (css) injectEditorCss(css);
+                if (Object.keys(quickState).length) injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
+                injectFontFaces();
+                injectAssetsCss();
+                resolve();
+            };
+            if (iframe.src && iframe.src.includes('/viewer/')) {
+                iframe.src = 'about:blank';
+                setTimeout(() => { iframe.src = viewerUrl; }, 50);
+            } else {
+                iframe.src = viewerUrl;
+            }
+            iframe.style.display = '';
+            document.getElementById('sl-placeholder').style.display = 'none';
+        });
     }
 
     document.getElementById('btn-files-open-window').addEventListener('click', () => {
@@ -2156,13 +3195,28 @@
         const vp = p.get('viewport');
         if (vp) { document.querySelectorAll('[data-viewport]').forEach(b => { const a = b.dataset.viewport === vp; b.classList.toggle('active', a); if (a) document.getElementById('sl-iframe-wrap').className = 'vp-' + vp; }); }
         document.querySelectorAll('[data-meta]').forEach(cb => { const v = p.get(cb.dataset.meta); if (v !== null) cb.checked = v === '1' || v === 'true'; });
+        for (const [param, value] of p.entries()) {
+            if (!param.startsWith('q_')) continue;
+            const k = param.slice(2);
+            const input = document.querySelector(`[data-quick="${k}"]`);
+            if (!input) continue;
+            let v;
+            if (input.type === 'checkbox') { v = value === 'true'; input.checked = v; }
+            else if (input.type === 'number') { v = parseFloat(value) || 0; input.value = v; }
+            else { v = value; input.value = v; }
+            quickState[k] = v;
+        }
         return { fixture: p.get('fixture'), theme: p.get('theme') };
     }
 
     // ─── Init ─────────────────────────────────────────────────
     async function init() {
-        loadScope();
         const { fixture, theme } = applyUrlParams();
+        // Clear all URL params immediately — each visit starts fresh.
+        // The one-time read above captures fixture/theme from post-install redirects
+        // or manual links; after that, the URL is kept clean.
+        history.replaceState(null, '', location.pathname);
+        updateEditingAllowed();
         const [fixtureResult] = await Promise.all([loadFixtures(fixture), loadThemes(theme)]);
         // If no theme in URL params but the loaded session has a known theme, apply it
         const effectiveFixture = fixtureResult.fixture;
@@ -2170,7 +3224,6 @@
             await loadThemes(fixtureResult.theme);
         }
         updateActions();
-        updatePrintSimVisibility();
         const effectiveTheme = document.getElementById('sl-theme').value;
         if (effectiveFixture && effectiveTheme) runPreview();
         if (navigator.serviceWorker) ensureServiceWorker().catch(() => {});

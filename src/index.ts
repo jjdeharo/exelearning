@@ -407,7 +407,7 @@ const app = new Elysia()
                 return new Response(content, {
                     headers: {
                         'Content-Type': contentType,
-                        'Cache-Control': 'public, max-age=31536000',
+                        'Cache-Control': 'no-cache, must-revalidate',
                     },
                 });
             }
@@ -488,7 +488,7 @@ const app = new Elysia()
 
             set.headers['Content-Type'] = contentType;
             set.headers['Content-Length'] = content.length.toString();
-            set.headers['Cache-Control'] = 'public, max-age=31536000'; // 1 year cache
+            set.headers['Cache-Control'] = 'no-cache, must-revalidate';
             return content;
         }
 
