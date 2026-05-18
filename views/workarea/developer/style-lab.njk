@@ -1844,7 +1844,7 @@
         label.textContent = path;
         viewer.style.display = 'flex';
     }
-    (function wireImageViewer() {
+    function wireImageViewer() {
         const viewer = document.getElementById('sl-img-viewer');
         viewer.addEventListener('click', () => { viewer.style.display = 'none'; });
         document.getElementById('sl-img-viewer-close').addEventListener('click', (e) => {
@@ -1853,7 +1853,7 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && viewer.style.display !== 'none') viewer.style.display = 'none';
         });
-    })();
+    }
 
     function removeAsset(path) {
         const prefix = path.replace(/\.[^.]+$/, '.');
@@ -3334,6 +3334,7 @@
 
     // ─── Init ─────────────────────────────────────────────────
     async function init() {
+        wireImageViewer();
         const { fixture, theme } = applyUrlParams();
         // Clear all URL params immediately — each visit starts fresh.
         // The one-time read above captures fixture/theme from post-install redirects
