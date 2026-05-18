@@ -1725,16 +1725,25 @@
             if ((e.type === 'css' || e.type === 'js') && (!isServer || e.editable)) {
                 actions += `<button class="btn button-tertiary sl-fb-btn" data-fb-edit="${e.path}" title="Edit">✎</button>`;
             }
-            if (e.type === 'img' && !isServer) {
-                actions += `<button class="btn button-tertiary sl-fb-btn" data-fb-replace="${e.path}" title="Replace">↑</button>`;
-                actions += `<button class="sl-asset-remove" data-fb-remove-asset="${e.path}" title="Remove">✕</button>`;
+            if (e.type === 'img') {
+                actions += `<button class="btn button-tertiary sl-fb-btn" data-fb-view="${e.path}" title="View">🔍</button>`;
+                actions += `<button class="btn button-tertiary sl-fb-btn" data-fb-replace="${e.path}" data-fb-server="${isServer}" title="Replace">↑</button>`;
+                if (!isServer) actions += `<button class="sl-asset-remove" data-fb-remove-asset="${e.path}" title="Remove">✕</button>`;
             }
             if (e.type === 'font' && !isServer) {
                 actions += `<button class="sl-asset-remove" data-fb-remove-font="${e.path}" title="Remove">✕</button>`;
             }
+            const serverThemeUrl = (() => {
+                const th = loadedThemes.find(t => t.dirName === document.getElementById('sl-theme').value);
+                return th?.url || '';
+            })();
+            const imgSrc = assetBlobUrls[e.path] || (isServer && serverThemeUrl ? serverThemeUrl + '/' + e.path : '');
+            const clickableThumb = e.type === 'img'
+                ? `<img class="sl-fb-thumb" src="${imgSrc}" alt="" data-fb-view="${e.path}" style="cursor:zoom-in;">`
+                : '';
             return `<div class="sl-fb-item${isActive ? ' sl-fb-active' : ''}" data-fb-path="${e.path}">
                 <span class="sl-fb-badge ${badgeCls}">${ext}</span>
-                ${thumb}
+                ${clickableThumb}
                 <span class="sl-fb-path" title="${e.path}">${e.path}</span>
                 ${sizeLabel}
                 <div class="sl-fb-actions">${actions}</div>
@@ -1782,9 +1791,17 @@
             });
         });
 
+        container.querySelectorAll('[data-fb-view]').forEach(el => {
+            el.addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                openImageViewer(el.dataset.fbView);
+            });
+        });
+
         container.querySelectorAll('[data-fb-replace]').forEach(btn => {
             btn.addEventListener('click', () => {
-                const oldPath = btn.dataset.fbReplace;
+                const oldPath  = btn.dataset.fbReplace;
+                const isServer = btn.dataset.fbServer === 'true';
                 const tmp = document.createElement('input');
                 tmp.type = 'file'; tmp.accept = 'image/*';
                 tmp.onchange = async () => {
@@ -1794,11 +1811,13 @@
                     const base    = oldPath.replace(/\.[^.]+$/, '');
                     const newPath = `${base}.${newExt}`;
                     pushUndo();
-                    if (oldPath !== newPath) {
+                    if (oldPath !== newPath && !isServer) {
                         delete assetBinaryFiles[oldPath];
                         if (assetBlobUrls[oldPath]) { URL.revokeObjectURL(assetBlobUrls[oldPath]); delete assetBlobUrls[oldPath]; }
                     }
                     assetBinaryFiles[newPath] = new Uint8Array(await file.arrayBuffer());
+                    if (assetBlobUrls[newPath]) URL.revokeObjectURL(assetBlobUrls[newPath]);
+                    assetBlobUrls[newPath] = URL.createObjectURL(new Blob([assetBinaryFiles[newPath]], { type: assetMime(newPath) }));
                     assetStateTouched = true;
                     for (const r of assetRefreshers) r();
                     injectAssetsCss();
@@ -1809,6 +1828,32 @@
             });
         });
     }
+
+    // ─── Image viewer ─────────────────────────────────────────
+    function openImageViewer(path) {
+        const viewer = document.getElementById('sl-img-viewer');
+        const img    = document.getElementById('sl-img-viewer-img');
+        const label  = document.getElementById('sl-img-viewer-label');
+        // Use blob URL if in memory; otherwise load from server theme URL
+        let src = assetBlobUrls[path] || null;
+        if (!src) {
+            const theme = loadedThemes.find(t => t.dirName === document.getElementById('sl-theme').value);
+            src = theme?.url ? theme.url + '/' + path : '';
+        }
+        img.src = src;
+        label.textContent = path;
+        viewer.style.display = 'flex';
+    }
+    (function wireImageViewer() {
+        const viewer = document.getElementById('sl-img-viewer');
+        viewer.addEventListener('click', () => { viewer.style.display = 'none'; });
+        document.getElementById('sl-img-viewer-close').addEventListener('click', (e) => {
+            e.stopPropagation(); viewer.style.display = 'none';
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && viewer.style.display !== 'none') viewer.style.display = 'none';
+        });
+    })();
 
     function removeAsset(path) {
         const prefix = path.replace(/\.[^.]+$/, '.');
@@ -3310,5 +3355,12 @@
     init();
 })();
 </script>
+
+<!-- ── Image viewer lightbox ── -->
+<div id="sl-img-viewer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:10px;cursor:pointer;" role="dialog" aria-label="Image viewer">
+    <button id="sl-img-viewer-close" style="position:absolute;top:14px;right:18px;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;line-height:1;">×</button>
+    <img id="sl-img-viewer-img" src="" alt="" style="max-width:90vw;max-height:80vh;object-fit:contain;border-radius:4px;box-shadow:0 4px 32px rgba(0,0,0,.6);">
+    <span id="sl-img-viewer-label" style="color:#ccc;font-size:12px;font-family:monospace;"></span>
+</div>
 </body>
 </html>
