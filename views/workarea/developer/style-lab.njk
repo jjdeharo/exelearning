@@ -489,7 +489,7 @@
     <div id="sl-panel">
         <div class="sl-tabs">
             <button class="sl-tab active" data-tab="controls" data-testid="sl-tab-controls">{{ t.sl_tab_settings or 'Settings' }}</button>
-            <button class="sl-tab" data-tab="css" data-testid="sl-tab-css">{{ t.sl_tab_editor or 'Editor' }}</button>
+            <button class="sl-tab" data-tab="css" data-testid="sl-tab-css">{{ t.sl_tab_files or 'Files' }}</button>
             <button class="sl-tab" data-tab="quick" data-testid="sl-tab-quick">Quick</button>
             <button class="sl-tab" data-tab="files" data-testid="sl-tab-files">{{ t.sl_tab_export or 'Export' }}</button>
         </div>
@@ -531,6 +531,16 @@
                         <label class="sl-option"><input type="checkbox" data-meta="addExeLink" checked data-testid="opt-exeLink"> eXeLearning link</label>
                         <label class="sl-option"><input type="checkbox" data-meta="exportSource" checked data-testid="opt-exportSource"> Include source</label>
                     </div>
+                </div>
+                <div class="sl-section">
+                    <span class="sl-label">{{ t.sl_editor_options or 'Editor options' }}</span>
+                    <label class="sl-option" style="align-items:flex-start;gap:8px;">
+                        <input type="checkbox" data-quick="applyInTinymce" style="margin-top:2px;flex-shrink:0;">
+                        <span>
+                            {{ t.sl_tinymce_compat or 'Apply theme styles inside eXeLearning editor (TinyMCE)' }}<br>
+                            <span style="font-size:11px;color:var(--muted);">{{ t.sl_tinymce_hint or 'Fonts and colours will also be visible while editing iDevices. Off by default to keep the editing interface clean.' }}</span>
+                        </span>
+                    </label>
                 </div>
             </div>
             <div style="padding:12px 14px;border-top:1px solid var(--line-soft);flex-shrink:0;">
@@ -576,15 +586,6 @@
         <!-- ── Quick settings tab ── -->
         <div class="sl-tab-panel" data-panel="quick">
             <div class="sl-panel-scroll">
-                <div class="sl-section" style="padding:8px 14px;">
-                    <label class="sl-option" style="align-items:flex-start;gap:8px;">
-                        <input type="checkbox" data-quick="applyInTinymce" style="margin-top:2px;flex-shrink:0;">
-                        <span>
-                            <strong style="font-size:12px;">{{ t.sl_tinymce_compat or 'Apply styles in eXeLearning editor (TinyMCE)' }}</strong><br>
-                            <span style="font-size:11px;color:var(--muted);">{{ t.sl_tinymce_hint or 'Fonts and colours will also be visible while editing iDevices. Off by default to keep the editing interface clean.' }}</span>
-                        </span>
-                    </label>
-                </div>
                 <details>
                     <summary>{{ t.sl_layout or 'Layout' }}</summary>
                     <div class="sl-quick-body">
@@ -1186,6 +1187,8 @@
     let fileBrowserFilter = 'all';
     let fileBrowserSearch = '';
     const assetRefreshers = [];
+    // Files present on the server for the current theme (path → {size, editable})
+    let serverThemeFileList = {};
     const ASSET_REMOVE_BTNS = {
         'img/custom-logo.':       'btn-remove-logo',
         'img/favicon.':           'btn-remove-favicon',
@@ -1583,18 +1586,31 @@
         const theme = loadedThemes.find(t => t.dirName === themeDirName);
         if (!theme?.url) return;
         themeFiles = {};
+        serverThemeFileList = {};
         const cacheToken = encodeURIComponent(String(themeReloadToken));
         const withCacheToken = url => url + (url.includes('?') ? '&' : '?') + 'slReload=' + cacheToken;
         const toFetch = [
             ...(theme.cssFiles || ['style.css']).map(f => ({ path: f, url: withCacheToken(theme.url + '/' + f) })),
             ...(theme.js     || ['style.js' ]).map(f => ({ path: f, url: withCacheToken(theme.url + '/' + f) })),
         ];
-        await Promise.allSettled(toFetch.map(async ({ path, url }) => {
-            try {
-                const r = await fetch(url);
-                if (r.ok) themeFiles[path] = await r.text();
-            } catch {}
-        }));
+        // Fetch editable text files + server file list in parallel
+        await Promise.allSettled([
+            ...toFetch.map(async ({ path, url }) => {
+                try {
+                    const r = await fetch(url);
+                    if (r.ok) themeFiles[path] = await r.text();
+                } catch {}
+            }),
+            (async () => {
+                try {
+                    const r = await fetch(`${basePath}/api/developer/style-lab/theme-files?theme=${encodeURIComponent(themeDirName)}`);
+                    if (r.ok) {
+                        const { files } = await r.json();
+                        for (const f of files) serverThemeFileList[f.path] = { size: f.size, editable: f.editable };
+                    }
+                } catch {}
+            })(),
+        ]);
         renderFileBrowser();
         const firstCss = toFetch.find(f => f.path.endsWith('.css'));
         if (firstCss && themeFiles[firstCss.path] != null) setEditorFile(firstCss.path, isReload);
@@ -1654,17 +1670,24 @@
         const container = document.getElementById('sl-file-browser');
         const seen = new Set();
         const entries = [];
+        // In-memory editable text files (CSS/JS loaded from server or ZIP)
         for (const path of Object.keys(themeFiles)) {
             if (seen.has(path)) continue; seen.add(path);
-            entries.push({ path, type: fbFileType(path) });
+            entries.push({ path, type: fbFileType(path), source: 'memory' });
         }
+        // In-memory binary assets uploaded via UI
         for (const path of Object.keys(assetBinaryFiles)) {
             if (seen.has(path)) continue; seen.add(path);
-            entries.push({ path, type: fbFileType(path) });
+            entries.push({ path, type: fbFileType(path), source: 'memory' });
         }
         for (const path of Object.keys(fontBinaryFiles)) {
             if (seen.has(path)) continue; seen.add(path);
-            entries.push({ path, type: 'font' });
+            entries.push({ path, type: 'font', source: 'memory' });
+        }
+        // Files on the server (icons, fonts, screenshot, etc.) not yet in memory
+        for (const [path, info] of Object.entries(serverThemeFileList)) {
+            if (seen.has(path)) continue; seen.add(path);
+            entries.push({ path, type: fbFileType(path), source: 'server', editable: info.editable, size: info.size });
         }
         section.style.display = entries.length ? '' : 'none';
         if (!entries.length) { container.innerHTML = ''; return; }
@@ -1694,28 +1717,45 @@
                 ? `<img class="sl-fb-thumb" src="${assetBlobUrls[e.path]}" alt="">`
                 : '';
             const isActive   = e.path === activeCssFile;
+            const isServer   = e.source === 'server';
+            const sizeLabel  = isServer && e.size != null
+                ? `<span style="font-size:10px;color:var(--muted);flex-shrink:0;">${e.size < 1024 ? e.size + ' B' : Math.round(e.size / 1024) + ' KB'}</span>`
+                : '';
             let actions = '';
-            if (e.type === 'css' || e.type === 'js') {
+            if ((e.type === 'css' || e.type === 'js') && (!isServer || e.editable)) {
                 actions += `<button class="btn button-tertiary sl-fb-btn" data-fb-edit="${e.path}" title="Edit">✎</button>`;
             }
-            if (e.type === 'img') {
+            if (e.type === 'img' && !isServer) {
                 actions += `<button class="btn button-tertiary sl-fb-btn" data-fb-replace="${e.path}" title="Replace">↑</button>`;
                 actions += `<button class="sl-asset-remove" data-fb-remove-asset="${e.path}" title="Remove">✕</button>`;
             }
-            if (e.type === 'font') {
+            if (e.type === 'font' && !isServer) {
                 actions += `<button class="sl-asset-remove" data-fb-remove-font="${e.path}" title="Remove">✕</button>`;
             }
             return `<div class="sl-fb-item${isActive ? ' sl-fb-active' : ''}" data-fb-path="${e.path}">
                 <span class="sl-fb-badge ${badgeCls}">${ext}</span>
                 ${thumb}
                 <span class="sl-fb-path" title="${e.path}">${e.path}</span>
+                ${sizeLabel}
                 <div class="sl-fb-actions">${actions}</div>
             </div>`;
         }).join('');
 
         container.querySelectorAll('[data-fb-edit]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                setEditorFile(btn.dataset.fbEdit);
+            btn.addEventListener('click', async () => {
+                const p = btn.dataset.fbEdit;
+                // If not yet in memory (server-only file), fetch it first
+                if (themeFiles[p] === undefined) {
+                    const theme = loadedThemes.find(t => t.dirName === document.getElementById('sl-theme').value);
+                    if (theme?.url) {
+                        try {
+                            const r = await fetch(theme.url + '/' + p);
+                            if (r.ok) themeFiles[p] = await r.text();
+                        } catch {}
+                    }
+                    if (themeFiles[p] === undefined) themeFiles[p] = '';
+                }
+                setEditorFile(p);
                 switchTab('css');
             });
         });

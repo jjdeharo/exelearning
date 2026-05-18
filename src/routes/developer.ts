@@ -543,6 +543,31 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
         };
     })
 
+    // List all files in a theme directory
+    .get('/api/developer/style-lab/theme-files', async ({ query, set }) => {
+        if (!isDev()) { set.status = 404; return new Response('Not Found', { status: 404 }); }
+        const { theme } = query as Record<string, string>;
+        if (!theme) { set.status = 400; return { error: 'theme required' }; }
+        const themeDir = resolveThemeDir(theme);
+        if (!themeDir) { set.status = 404; return { error: 'Theme not found' }; }
+        const TEXT_EXT = new Set(['css', 'js', 'xml', 'txt', 'svg', 'html', 'json']);
+        const results: { path: string; size: number; editable: boolean }[] = [];
+        async function walk(dir: string, prefix: string) {
+            const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+            for (const e of entries) {
+                const rel = prefix ? `${prefix}/${e.name}` : e.name;
+                if (e.isDirectory()) { await walk(path.join(dir, e.name), rel); }
+                else {
+                    const ext = e.name.split('.').pop()?.toLowerCase() ?? '';
+                    const stat = await fs.promises.stat(path.join(dir, e.name));
+                    results.push({ path: rel, size: stat.size, editable: TEXT_EXT.has(ext) });
+                }
+            }
+        }
+        await walk(themeDir, '');
+        return { files: results };
+    })
+
     // Generate preview ZIP from fixture + theme + export options
     .get('/api/developer/style-lab/preview', async ({ query, set }) => {
         if (!isDev()) {
