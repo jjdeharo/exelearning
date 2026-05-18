@@ -267,14 +267,26 @@
             box-shadow: 0 1px 4px rgba(0,0,0,.06);
         }
         #sl-preview-toolbar {
-            display: flex; align-items: center; gap: 8px;
-            padding: 6px 12px;
+            display: flex; align-items: center; gap: 6px;
+            padding: 5px 10px;
             background: #f8fafc; border-bottom: 1px solid var(--line);
-            flex-shrink: 0;
+            flex-shrink: 0; flex-wrap: wrap;
         }
         .sl-vp-btn.active { background: var(--gray-800) !important; border-color: var(--gray-800) !important; color: #fff !important; }
-        .sl-scope-sep { width: 1px; height: 18px; background: var(--line); margin: 0 2px; margin-left: auto; }
+        .sl-export-btn { font-size: 11px !important; padding: 3px 9px !important; }
+        .sl-export-btn.active { background: var(--action) !important; border-color: var(--action) !important; color: #fff !important; }
+        .sl-tb-sep { width: 1px; height: 18px; background: var(--line); margin: 0 2px; flex-shrink: 0; }
+        .sl-tb-spacer { flex: 1; min-width: 8px; }
         .sl-scope-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+        .sl-apply-chip {
+            display: flex; align-items: center; gap: 4px;
+            padding: 3px 9px; border-radius: 20px; font-size: 11px;
+            border: 1px solid var(--line); background: #fff; color: var(--muted);
+            cursor: pointer; transition: all .12s; user-select: none;
+        }
+        .sl-apply-chip input { display: none; }
+        .sl-apply-chip.checked { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+        .sl-apply-chip:not(.checked):hover { border-color: #7c3aed; color: #7c3aed; }
         #btn-inspect.active { background: var(--brand-primary) !important; border-color: var(--brand-primary) !important; color: #fff !important; }
         #sl-scope-notice {
             background: #fff8e1; border: 1px solid #f9a825; border-radius: 4px;
@@ -515,14 +527,6 @@
                     </select>
                 </div>
                 <div class="sl-section">
-                    <span class="sl-label">Export type</span>
-                    <div class="sl-btn-group" data-testid="style-lab-export-type">
-                        <button class="active" data-export="html5">Website</button>
-                        <button data-export="html5-sp">Single</button>
-                        <button data-export="scorm12">SCORM</button>
-                    </div>
-                </div>
-                <div class="sl-section">
                     <span class="sl-label">Export options</span>
                     <div class="sl-options-grid" data-testid="style-lab-export-options">
                         <label class="sl-option"><input type="checkbox" data-meta="addSearchBox" data-testid="opt-searchBox"> Search box</label>
@@ -531,23 +535,6 @@
                         <label class="sl-option"><input type="checkbox" data-meta="addExeLink" checked data-testid="opt-exeLink"> eXeLearning link</label>
                         <label class="sl-option"><input type="checkbox" data-meta="exportSource" checked data-testid="opt-exportSource"> Include source</label>
                     </div>
-                </div>
-                <div class="sl-section">
-                    <span class="sl-label">{{ t.sl_editor_options or 'Editor options' }}</span>
-                    <label class="sl-option" style="align-items:flex-start;gap:8px;">
-                        <input type="checkbox" data-quick="applyInWorkarea" style="margin-top:2px;flex-shrink:0;">
-                        <span>
-                            {{ t.sl_workarea_compat or 'Apply theme styles in workarea (saved iDevice view)' }}<br>
-                            <span style="font-size:11px;color:var(--muted);">{{ t.sl_workarea_hint or 'Text, fonts and colours will be visible in the saved (non-editing) iDevice view. Off by default.' }}</span>
-                        </span>
-                    </label>
-                    <label class="sl-option" style="align-items:flex-start;gap:8px;margin-top:6px;">
-                        <input type="checkbox" data-quick="applyInTinymce" style="margin-top:2px;flex-shrink:0;">
-                        <span>
-                            {{ t.sl_tinymce_compat or 'Apply theme styles inside eXeLearning editor (TinyMCE)' }}<br>
-                            <span style="font-size:11px;color:var(--muted);">{{ t.sl_tinymce_hint or 'Fonts and colours will also be visible while editing iDevices. Off by default to keep the editing interface clean.' }}</span>
-                        </span>
-                    </label>
                 </div>
             </div>
             <div style="padding:12px 14px;border-top:1px solid var(--line-soft);flex-shrink:0;">
@@ -1035,23 +1022,41 @@
     <!-- ── Preview area ── -->
     <div id="sl-preview-area">
         <div id="sl-preview-toolbar">
+            <!-- Viewport -->
             <button class="btn button-tertiary sl-vp-btn active" data-viewport="desktop" data-testid="vp-desktop">Desktop</button>
             <button class="btn button-tertiary sl-vp-btn" data-viewport="tablet" data-testid="vp-tablet">Tablet</button>
             <button class="btn button-tertiary sl-vp-btn" data-viewport="mobile" data-testid="vp-mobile">Mobile</button>
+            <span class="sl-tb-sep"></span>
+            <!-- Export type -->
+            <button class="btn button-tertiary sl-export-btn active" data-export="html5" data-testid="export-html5">Website</button>
+            <button class="btn button-tertiary sl-export-btn" data-export="html5-sp" data-testid="export-html5-sp">Single</button>
+            <button class="btn button-tertiary sl-export-btn" data-export="scorm12" data-testid="export-scorm12">SCORM</button>
+            <!-- Status + tools -->
+            <span class="sl-tb-spacer"></span>
             <span id="sl-status" data-testid="style-lab-status">Ready</span>
             <button id="btn-inspect" class="btn button-tertiary" title="{{ t.sl_inspect_title or 'Click-to-edit: click an element in the preview' }}">⊕ {{ t.sl_inspect or 'Inspect' }}</button>
             <button id="btn-undo" class="btn button-tertiary button-square" title="Undo" disabled><span class="auto-icon" aria-hidden="true">undo</span></button>
             <button id="btn-redo" class="btn button-tertiary button-square" title="Redo" disabled><span class="auto-icon" aria-hidden="true">redo</span></button>
-            <span class="sl-scope-sep"></span>
-            <span class="sl-scope-label">Scope:</span>
+            <span class="sl-tb-sep"></span>
+            <!-- CSS scope (preview wrapping) -->
+            <span class="sl-scope-label">{{ t.sl_scope or 'Scope' }}:</span>
             <label class="sl-scope-chip checked" data-scope="exe-web-site">
                 <input type="checkbox" value="exe-web-site" checked> Website
             </label>
             <label class="sl-scope-chip checked" data-scope="exe-scorm">
                 <input type="checkbox" value="exe-scorm" checked> SCORM
             </label>
-            <label class="sl-scope-chip checked" data-scope="exe-single-page">
-                <input type="checkbox" value="exe-single-page" checked> Single
+            <label class="sl-scope-chip" data-scope="exe-single-page">
+                <input type="checkbox" value="exe-single-page"> Single
+            </label>
+            <span class="sl-tb-sep"></span>
+            <!-- Apply in (extra CSS blocks in exported theme) -->
+            <span class="sl-scope-label">{{ t.sl_apply_in or 'Apply in' }}:</span>
+            <label class="sl-apply-chip" data-testid="chip-workarea" title="{{ t.sl_workarea_hint or 'Apply theme styles in the saved iDevice view in the workarea' }}">
+                <input type="checkbox" data-quick="applyInWorkarea"> {{ t.sl_workarea_short or 'Workarea' }}
+            </label>
+            <label class="sl-apply-chip" data-testid="chip-tinymce" title="{{ t.sl_tinymce_hint or 'Apply theme styles inside the TinyMCE editor (while editing iDevices)' }}">
+                <input type="checkbox" data-quick="applyInTinymce"> TinyMCE
             </label>
         </div>
         <div id="sl-iframe-wrap" class="vp-desktop" style="position:relative">
@@ -1245,7 +1250,13 @@
         quickState = JSON.parse(snap.qs);
         document.querySelectorAll('[data-quick]').forEach(el => {
             const v = quickState[el.dataset.quick];
-            if (v !== undefined) el.value = v;
+            if (v === undefined) return;
+            if (el.type === 'checkbox') {
+                el.checked = !!v;
+                el.closest('.sl-apply-chip')?.classList.toggle('checked', !!v);
+            } else {
+                el.value = v;
+            }
         });
         if (typeof updateContentWidthVisibility === 'function')
             updateContentWidthVisibility(quickState.contentWidthMode || 'default');
@@ -1409,6 +1420,17 @@
                 }
                 injectEditorCss(document.getElementById('sl-css-textarea').value);
             }
+        });
+    });
+
+    // Apply-in chips: visual sync + quickState update
+    document.querySelectorAll('#sl-preview-toolbar .sl-apply-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const cb = chip.querySelector('input[data-quick]');
+            cb.checked = !cb.checked;
+            chip.classList.toggle('checked', cb.checked);
+            // Dispatch input so the [data-quick] handler picks it up
+            cb.dispatchEvent(new Event('input', { bubbles: true }));
         });
     });
 
@@ -2367,17 +2389,21 @@
 
         // Detect workarea/TinyMCE compat from saved CSS selectors
         const mainCssText = themeFiles['style.css'] || Object.values(themeFiles).find(c => c?.includes('body#tinymce') || c?.includes('#node-content-container')) || '';
+        function syncApplyChip(key, present) {
+            const cb = document.querySelector(`[data-quick="${key}"]`);
+            if (!cb) return;
+            cb.checked = present;
+            cb.closest('.sl-apply-chip')?.classList.toggle('checked', present);
+        }
         if (!('applyInWorkarea' in quickState)) {
-            const hasWorkarea = mainCssText.includes('#node-content-container');
-            const cb = document.querySelector('[data-quick="applyInWorkarea"]');
-            if (cb) cb.checked = hasWorkarea;
-            if (hasWorkarea) updates.applyInWorkarea = true;
+            const has = mainCssText.includes('#node-content-container');
+            syncApplyChip('applyInWorkarea', has);
+            if (has) updates.applyInWorkarea = true;
         }
         if (!('applyInTinymce' in quickState)) {
-            const hasTinyMce = mainCssText.includes('body#tinymce');
-            const cb = document.querySelector('[data-quick="applyInTinymce"]');
-            if (cb) cb.checked = hasTinyMce;
-            if (hasTinyMce) updates.applyInTinymce = true;
+            const has = mainCssText.includes('body#tinymce');
+            syncApplyChip('applyInTinymce', has);
+            if (has) updates.applyInTinymce = true;
         }
 
         // Apply to inputs (skip keys already explicitly set by user)
