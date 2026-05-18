@@ -569,7 +569,7 @@
                     <button id="btn-open-editor-modal" class="btn button-tertiary button-square" style="margin-left:auto;" title="{{ t.sl_open_editor or 'Open in full editor' }}"><span class="auto-icon" aria-hidden="true">open_in_full</span></button>
                 </div>
                 <p class="sl-js-hint" id="sl-js-hint">{{ t.sl_js_hint or 'JavaScript runs after export — changes are saved to the ZIP but not reflected in the preview.' }}</p>
-                <div class="sl-editor-wrap" style="min-height:260px;">
+                <div id="sl-editor-wrap" class="sl-editor-wrap" style="min-height:260px;">
                     <pre id="sl-css-highlight"><code class="language-css"></code></pre>
                     <textarea id="sl-css-textarea" spellcheck="false" wrap="off" placeholder="{{ t.sl_css_placeholder or 'Load a project and theme to edit CSS...' }}"></textarea>
                 </div>
@@ -1845,7 +1845,8 @@
                 }
                 switchTab('css');
                 setEditorFile(p);
-                openEditorModal(p);
+                document.getElementById('sl-editor-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.getElementById('sl-css-textarea').focus();
             });
         });
 
