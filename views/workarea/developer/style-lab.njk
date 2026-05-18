@@ -719,11 +719,11 @@
             <label class="sl-scope-chip checked" data-scope="exe-web-site">
                 <input type="checkbox" value="exe-web-site" checked> Website
             </label>
-            <label class="sl-scope-chip" data-scope="exe-single-page">
-                <input type="checkbox" value="exe-single-page"> Single
-            </label>
             <label class="sl-scope-chip checked" data-scope="exe-scorm">
                 <input type="checkbox" value="exe-scorm" checked> SCORM
+            </label>
+            <label class="sl-scope-chip" data-scope="exe-single-page">
+                <input type="checkbox" value="exe-single-page"> Single
             </label>
         </div>
         <div id="sl-iframe-wrap" class="vp-desktop" style="position:relative">
@@ -916,24 +916,36 @@
         const trimmed = innerCss.trim();
         if (!trimmed) return '';
         if (classes.length === 0 || classes.length === SCOPE_ALL.length) return trimmed;
-        const selector = classes.map(c => `body.${c}`).join(',\nbody.');
+        const selector = classes.map(c => `body.${c}`).join(',\n');
         // indent each line of the inner CSS by 2 spaces
         const indented = trimmed.split('\n').map(l => l ? `  ${l}` : l).join('\n');
         return `${selector} {\n${indented}\n}`;
     }
 
     function saveScope() {
-        localStorage.setItem('sl-scope', JSON.stringify(getScopeClasses()));
+        localStorage.setItem('sl-scope-v2', JSON.stringify(getScopeClasses()));
+    }
+
+    function enforceScopeNotEmpty() {
+        const chips = [...document.querySelectorAll('#sl-preview-toolbar .sl-scope-chip')];
+        const anyChecked = chips.some(ch => ch.querySelector('input').checked);
+        if (!anyChecked) {
+            chips.forEach(ch => {
+                ch.querySelector('input').checked = true;
+                ch.classList.add('checked');
+            });
+        }
     }
 
     function loadScope() {
         try {
-            const saved = JSON.parse(localStorage.getItem('sl-scope') || 'null');
+            const saved = JSON.parse(localStorage.getItem('sl-scope-v2') || 'null');
             if (Array.isArray(saved)) {
                 document.querySelectorAll('#sl-preview-toolbar input[type="checkbox"]').forEach(cb => {
                     cb.checked = saved.includes(cb.value);
                     cb.closest('.sl-scope-chip').classList.toggle('checked', cb.checked);
                 });
+                enforceScopeNotEmpty();
             }
         } catch {}
     }
@@ -943,8 +955,8 @@
             const cb = chip.querySelector('input');
             cb.checked = !cb.checked;
             chip.classList.toggle('checked', cb.checked);
+            enforceScopeNotEmpty();
             saveScope();
-            // Re-inject scoped CSS so preview reflects new scope immediately
             if (previewReady) {
                 if (Object.keys(quickState).length) {
                     injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
@@ -1111,6 +1123,8 @@
                     const sel2 = val ? t.dirName === val : t.isDefault;
                     return `<option value="${t.dirName}"${sel2 ? ' selected' : ''}>${t.displayName}</option>`;
                 }).join('');
+            // Fall back to first theme if nothing was selected
+            if (!sel.value && themes.length > 0) sel.value = themes[0].dirName;
         } catch { sel.innerHTML = '<option value="">' + T.error_loading + '</option>'; }
         updateDeleteThemeBtn();
     }
@@ -1122,7 +1136,7 @@
         btn.style.display = (theme && theme.type === 'site') ? '' : 'none';
     }
 
-    async function loadThemeFiles(themeDirName) {
+    async function loadThemeFiles(themeDirName, isReload = false) {
         const theme = loadedThemes.find(t => t.dirName === themeDirName);
         if (!theme?.url) return;
         themeFiles = {};
@@ -1140,14 +1154,23 @@
         }));
         renderFileList();
         const firstCss = toFetch.find(f => f.path.endsWith('.css'));
-        if (firstCss && themeFiles[firstCss.path] != null) setEditorFile(firstCss.path);
+        if (firstCss && themeFiles[firstCss.path] != null) setEditorFile(firstCss.path, isReload);
     }
 
-    function setEditorFile(path) {
+    function setEditorFile(path, forceReset = false) {
+        const newOriginal = themeFiles[path] || '';
+        const ta = document.getElementById('sl-css-textarea');
+        const isAlreadyActive = path === activeCssFile;
+        const isModified = document.getElementById('sl-modified-dot').classList.contains('on');
+
         activeCssFile = path;
-        originalCss = themeFiles[path] || '';
-        document.getElementById('sl-css-textarea').value = originalCss;
+        originalCss = newOriginal;
         document.getElementById('sl-editor-file-label').textContent = path;
+
+        // Preserve user edits when the same file reloads (e.g. export type switch)
+        if (isAlreadyActive && isModified && !forceReset) return;
+
+        ta.value = originalCss;
         markModified(false);
         updateHighlight();
     }
@@ -1182,7 +1205,13 @@
         } catch(e) { console.warn('[Style Lab] inject:', e); }
     }
 
-    function injectEditorCss(css) { injectStyle('sl-editor-css', css); }
+    // CSS from the textarea comes from theme/style.css, so url() paths are relative to theme/.
+    // When injected as an inline <style> they must be relative to the document root, not theme/.
+    function rebaseThemeUrls(css) {
+        return css.replace(/url\(\s*(['"]?)(?!https?:|data:|\/|#)([^)'"]+)\1\s*\)/gi,
+            (_, q, p) => `url(${q}theme/${p}${q})`);
+    }
+    function injectEditorCss(css) { injectStyle('sl-editor-css', rebaseThemeUrls(css)); }
     function injectQuickCss(css)  { injectStyle('sl-quick-css', css); }
     function injectClickCss(css)  { injectStyle('sl-click-css', css); }
 
@@ -1379,18 +1408,63 @@
     }
 
     function rgbToHex(rgb) {
-        const m = rgb.match(/\d+/g);
-        if (!m || m.length < 3) return '#ffffff';
+        if (!rgb || rgb === 'transparent') return null;
+        const m = rgb.match(/[\d.]+/g);
+        if (!m || m.length < 3) return null;
+        // fully transparent (alpha = 0) → treat as no color
+        if (m.length >= 4 && parseFloat(m[3]) === 0) return null;
         return '#' + m.slice(0,3).map(x => parseInt(x).toString(16).padStart(2,'0')).join('');
     }
+
+    // ─── Click-edit live preview helpers ─────────────────────
+    function buildClickRule() {
+        const s = clickEditSelector;
+        if (!s) return '';
+        const textColor  = document.getElementById('ce-textColor').value;
+        const bgInput    = document.getElementById('ce-bgColor');
+        const bgColor    = bgInput.dataset.skip ? null : bgInput.value;
+        const fontSize   = document.getElementById('ce-fontSize').value;
+        const fontWeight = document.getElementById('ce-fontWeight').value;
+        const textAlign  = document.getElementById('ce-textAlign').value;
+        let rule = `${s} {\n`;
+        if (textColor)  rule += `  color: ${textColor} !important;\n`;
+        if (bgColor)    rule += `  background-color: ${bgColor} !important;\n`;
+        if (fontSize)   rule += `  font-size: ${fontSize}px !important;\n`;
+        if (fontWeight) rule += `  font-weight: ${fontWeight} !important;\n`;
+        if (textAlign)  rule += `  text-align: ${textAlign} !important;\n`;
+        rule += `}`;
+        return rule;
+    }
+
+    function injectClickPreview() {
+        if (previewReady) injectStyle('sl-click-preview', buildScopeWrapped(buildClickRule()));
+    }
+
+    function clearClickPreview() {
+        injectStyle('sl-click-preview', '');
+    }
+
+    // Live preview on any modal input change
+    document.getElementById('ce-bgColor').addEventListener('input', function() {
+        delete this.dataset.skip;
+        injectClickPreview();
+    });
+    ['ce-textColor', 'ce-fontSize', 'ce-fontWeight', 'ce-textAlign'].forEach(id => {
+        document.getElementById(id).addEventListener('input', injectClickPreview);
+        document.getElementById(id).addEventListener('change', injectClickPreview);
+    });
 
     window.addEventListener('message', e => {
         if (e.data?.type !== 'SL_CLICK') return;
         const { selector, textColor, bgColor, fontSize, fontWeight } = e.data;
         clickEditSelector = selector;
         document.getElementById('sl-click-modal-selector').textContent = selector;
-        document.getElementById('ce-textColor').value = rgbToHex(textColor || '#333333');
-        document.getElementById('ce-bgColor').value = rgbToHex(bgColor || '#ffffff');
+        const textHex = rgbToHex(textColor);
+        const bgHex   = rgbToHex(bgColor);
+        document.getElementById('ce-textColor').value = textHex || '#333333';
+        const bgInput = document.getElementById('ce-bgColor');
+        bgInput.value = bgHex || '#ffffff';
+        bgInput.dataset.skip = bgHex ? '' : '1';
         document.getElementById('ce-fontSize').value = Math.round(fontSize) || 16;
         document.getElementById('ce-fontWeight').value = ['400','600','700','800'].includes(fontWeight) ? fontWeight : '';
         document.getElementById('ce-textAlign').value = '';
@@ -1400,33 +1474,23 @@
 
     document.getElementById('btn-click-apply').addEventListener('click', () => {
         pushUndo();
-        const s = clickEditSelector;
-        const textColor = document.getElementById('ce-textColor').value;
-        const bgColor = document.getElementById('ce-bgColor').value;
-        const fontSize = document.getElementById('ce-fontSize').value;
-        const fontWeight = document.getElementById('ce-fontWeight').value;
-        const textAlign = document.getElementById('ce-textAlign').value;
-        let rule = `${s} {\n`;
-        if (textColor) rule += `  color: ${textColor} !important;\n`;
-        if (bgColor) rule += `  background-color: ${bgColor} !important;\n`;
-        if (fontSize) rule += `  font-size: ${fontSize}px !important;\n`;
-        if (fontWeight) rule += `  font-weight: ${fontWeight} !important;\n`;
-        if (textAlign) rule += `  text-align: ${textAlign} !important;\n`;
-        rule += `}`;
+        clearClickPreview();
+        const rule = buildClickRule();
         const ta = document.getElementById('sl-css-textarea');
         ta.value = appendToControlledBlock(ta.value, CLICK_BLOCK_START, CLICK_BLOCK_END, buildScopeWrapped(rule));
         markModified(true);
         updateHighlight();
         injectEditorCss(ta.value);
-        switchTab('css');
         document.getElementById('sl-click-modal').classList.remove('open');
         setStatus(T.rule_added);
     });
 
     document.getElementById('btn-click-cancel').addEventListener('click', () => {
+        clearClickPreview();
         document.getElementById('sl-click-modal').classList.remove('open');
     });
     document.getElementById('sl-click-modal-close').addEventListener('click', () => {
+        clearClickPreview();
         document.getElementById('sl-click-modal').classList.remove('open');
     });
 
@@ -1568,7 +1632,7 @@
         installBtn.disabled = !hasSession;
         installBtn.title = hasSession ? T.install_apply_title : T.no_session_title;
 
-        switchTab('files');
+        setActiveTab('files');
         displayEl.focus();
         displayEl.select();
     }
@@ -1694,9 +1758,13 @@
     document.getElementById('btn-files-install').addEventListener('click', () => doExportOrInstall(true));
 
     // ─── Tabs ─────────────────────────────────────────────────
-    function switchTab(name) {
+    function setActiveTab(name) {
         document.querySelectorAll('.sl-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
         document.querySelectorAll('.sl-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === name));
+    }
+
+    function switchTab(name) {
+        setActiveTab(name);
         if (name === 'files') {
             const theme = document.getElementById('sl-theme').value;
             if (theme) openFilesTab(theme);
@@ -1953,7 +2021,12 @@
         themeReloadToken = Date.now();
         const f = document.getElementById('sl-fixture').value;
         const t = document.getElementById('sl-theme').value;
-        if (f && t) runPreview(); else setStatus(T.select_fixture_theme);
+        if (f && t) {
+            await runPreview();
+            await loadThemeFiles(t, true); // force reset textarea on explicit reload
+        } else {
+            setStatus(T.select_fixture_theme);
+        }
     });
 
     function hasUnsavedChanges() {

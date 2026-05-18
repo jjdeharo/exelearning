@@ -18,11 +18,17 @@ import {
 } from '../shared/export';
 import { ElpxImporter, FileSystemAssetHandler } from '../shared/import';
 import { getAllSessions } from '../services/session-manager';
-import { reconstructDocument, storeUpdate } from '../websocket/yjs-persistence';
+import { reconstructDocument } from '../websocket/yjs-persistence';
 import { withDocument } from '../yjs';
 import { db } from '../db/client';
 import { findProjectByUuid } from '../db/queries';
-import { createTheme, themeDirNameExists, getNextSiteThemeSortOrder, findThemeByDirName, deleteTheme } from '../db/queries/themes';
+import {
+    createTheme,
+    themeDirNameExists,
+    getNextSiteThemeSortOrder,
+    findThemeByDirName,
+    deleteTheme,
+} from '../db/queries/themes';
 import { DatabaseAssetProvider } from '../shared/export/providers/DatabaseAssetProvider';
 import * as fflate from 'fflate';
 
@@ -88,7 +94,6 @@ function listFixtures(dir: string): string[] {
         .map(e => e.name)
         .sort();
 }
-
 
 async function buildPreview(
     fixturePath: string,
@@ -281,7 +286,11 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             sl_delete_theme: trans('Delete theme', {}, locale),
             sl_open_in_window: trans('Open in new window', {}, locale),
             sl_apply_export: trans('Apply / export theme...', {}, locale),
-            sl_apply_hint: trans('Use this button to save changes and install them in the project. If you have modified a base theme you will need to give it a new name.', {}, locale),
+            sl_apply_hint: trans(
+                'Use this button to save changes and install them in the project. If you have modified a base theme you will need to give it a new name.',
+                {},
+                locale,
+            ),
             sl_discard_back: trans('Back to editor (discard changes)', {}, locale),
             sl_reload_theme: trans('Reload theme from disk', {}, locale),
             sl_file_list_empty: trans('Load a project and theme first.', {}, locale),
@@ -330,7 +339,11 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             sl_cancel: trans('Cancel', {}, locale),
             sl_export_install_modal: trans('Export / install theme', {}, locale),
             sl_base_theme_warning_title: trans('⚠ Predefined theme', {}, locale),
-            sl_base_theme_warning_body: trans('You cannot save changes to a base theme with the same name. Enter a new name and identifier.', {}, locale),
+            sl_base_theme_warning_body: trans(
+                'You cannot save changes to a base theme with the same name. Enter a new name and identifier.',
+                {},
+                locale,
+            ),
             sl_theme_name: trans('Theme name', {}, locale),
             sl_identifier: trans('Identifier (ID)', {}, locale),
             sl_version: trans('Version', {}, locale),
@@ -347,7 +360,11 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             sl_no: trans('No', {}, locale),
             sl_download_zip: trans('Download ZIP', {}, locale),
             sl_install_apply: trans('Install and apply to project', {}, locale),
-            sl_install_apply_title: trans('Install the theme and apply it to the project open in the editor', {}, locale),
+            sl_install_apply_title: trans(
+                'Install the theme and apply it to the project open in the editor',
+                {},
+                locale,
+            ),
             sl_no_session_title: trans('Open a project in the editor to apply the theme directly', {}, locale),
             // JS strings injected into the T constant
             sl_js_undone: trans('Undone.', {}, locale),
@@ -371,7 +388,11 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             sl_js_capturing: trans('Capturing thumbnail...', {}, locale),
             sl_js_installing: trans('Installing theme...', {}, locale),
             sl_js_theme_applied: trans('Theme applied to project. Returning to editor...', {}, locale),
-            sl_js_theme_installed_no_apply: trans('Theme installed but could not be applied to project. Check the server console.', {}, locale),
+            sl_js_theme_installed_no_apply: trans(
+                'Theme installed but could not be applied to project. Check the server console.',
+                {},
+                locale,
+            ),
             sl_js_theme_installed: trans('Theme installed: ', {}, locale),
             sl_js_exporting: trans('Exporting theme...', {}, locale),
             sl_js_downloaded: trans('Downloaded: ', {}, locale),
@@ -383,7 +404,11 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             sl_js_decompressing: trans('Decompressing...', {}, locale),
             sl_js_sending_sw: trans('Sending to Service Worker...', {}, locale),
             sl_js_select_fixture_theme: trans('Select project and theme first.', {}, locale),
-            sl_js_confirm_unsaved: trans('You have unapplied style changes.\n\nIf you go back to the editor now the changes will be lost.\n\nTo keep them use the "✓ Apply / export theme..." button in the left panel.\n\nDiscard changes and go back to the editor?', {}, locale),
+            sl_js_confirm_unsaved: trans(
+                'You have unapplied style changes.\n\nIf you go back to the editor now the changes will be lost.\n\nTo keep them use the "✓ Apply / export theme..." button in the left panel.\n\nDiscard changes and go back to the editor?',
+                {},
+                locale,
+            ),
             sl_js_confirm_discard: trans('Discard changes and go back to the editor?', {}, locale),
             sl_js_confirm_delete: trans('Delete theme "{name}"?\nThis action cannot be undone.', {}, locale),
             // Files tab
@@ -443,9 +468,13 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 try {
                     const ydoc = await reconstructDocument(project.id);
                     theme = (ydoc?.getMap('metadata')?.get('theme') as string) || undefined;
-                } catch { /* theme stays undefined */ }
+                } catch {
+                    /* theme stays undefined */
+                }
                 results.push({ sessionId: s.sessionId, fileName: project.title, theme });
-            } catch { /* skip on error */ }
+            } catch {
+                /* skip on error */
+            }
         }
         return { sessions: results };
     })
@@ -681,15 +710,16 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return new Response('Not Found', { status: 404 });
         }
 
-        const { theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId, screenshotBase64 } = body as {
-            theme: string;
-            fileOverrides?: Record<string, string>;
-            themeMetadata?: StyleLabThemeMetadata;
-            newDirName: string;
-            newDisplayName: string;
-            sessionId?: string;
-            screenshotBase64?: string;
-        };
+        const { theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId, screenshotBase64 } =
+            body as {
+                theme: string;
+                fileOverrides?: Record<string, string>;
+                themeMetadata?: StyleLabThemeMetadata;
+                newDirName: string;
+                newDisplayName: string;
+                sessionId?: string;
+                screenshotBase64?: string;
+            };
 
         if (!theme || !newDirName || !newDisplayName) {
             set.status = 400;
@@ -767,7 +797,7 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 try {
                     const project = await findProjectByUuid(db, sessionId);
                     if (project) {
-                        await withDocument(sessionId, { type: 'rest' }, (ydoc) => {
+                        await withDocument(sessionId, { type: 'rest' }, ydoc => {
                             ydoc.getMap('metadata').set('theme', newDirName);
                         });
                         themeApplied = true;
@@ -793,12 +823,21 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
     // Delete a site theme (non-builtin only) — removes from DB and disk
     .delete('/api/developer/themes/:dirName', async ({ params, set }) => {
-        if (!isDev()) { set.status = 404; return { error: 'Not Found' }; }
+        if (!isDev()) {
+            set.status = 404;
+            return { error: 'Not Found' };
+        }
 
         const { dirName } = params;
         const theme = await findThemeByDirName(db, dirName);
-        if (!theme) { set.status = 404; return { error: `Theme not found: ${dirName}` }; }
-        if (theme.is_builtin) { set.status = 403; return { error: 'Cannot delete built-in themes' }; }
+        if (!theme) {
+            set.status = 404;
+            return { error: `Theme not found: ${dirName}` };
+        }
+        if (theme.is_builtin) {
+            set.status = 403;
+            return { error: 'Cannot delete built-in themes' };
+        }
 
         await deleteTheme(db, theme.id);
 
