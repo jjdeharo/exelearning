@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale or 'en' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Style Lab — Developer</title>
     <link rel="icon" href="{{ '/favicon.ico' | asset }}">
+    <link rel="stylesheet" href="{{ basePath }}/libs/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ basePath }}/style/workarea/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
     <style>
         :root {
             --bg: #eef1f4;
@@ -146,6 +149,17 @@
         }
         .sl-option input[type="checkbox"] { cursor: pointer; accent-color: var(--action); }
 
+        /* CSS Scope */
+        .sl-scope-chip {
+            display: flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: 20px; font-size: 11px;
+            border: 1px solid var(--line); background: #fff; color: var(--muted);
+            cursor: pointer; transition: all .12s; user-select: none;
+        }
+        .sl-scope-chip input { display: none; }
+        .sl-scope-chip.checked { background: var(--action); border-color: var(--action); color: #fff; }
+        .sl-scope-chip:not(.checked):hover { border-color: var(--action); color: var(--action); }
+
         /* Action buttons */
         #sl-actions {
             padding: 12px 14px;
@@ -153,18 +167,7 @@
             display: flex; flex-direction: column; gap: 6px;
             flex-shrink: 0;
         }
-        #sl-actions button {
-            width: 100%; padding: 8px;
-            border-radius: 6px; font-size: 12px; font-weight: 500;
-            cursor: pointer; border: 1px solid transparent; transition: all .12s;
-        }
-        #sl-actions button:disabled { opacity: .4; cursor: not-allowed; }
-        #btn-open-window { background: #fff; border-color: var(--line); color: var(--ink); }
-        #btn-open-window:not(:disabled):hover { border-color: var(--action); color: var(--action); }
-        #btn-export-all-css { background: var(--action); color: #fff; border-color: var(--action); }
-        #btn-export-all-css:hover { background: var(--action-dark); }
-        #btn-reload-theme { background: transparent; border-color: var(--line); color: var(--muted); font-size: 11px; }
-        #btn-reload-theme:hover { color: var(--ink); }
+        #sl-actions button { width: 100%; }
 
         /* ── CSS editor tab ──────────────────────────────────── */
         #sl-file-list {
@@ -216,15 +219,7 @@
             display: flex; gap: 5px; align-items: center;
             padding: 6px 0; flex-shrink: 0;
         }
-        .sl-editor-toolbar button {
-            padding: 4px 10px; border-radius: 5px;
-            font-size: 11px; font-weight: 500;
-            cursor: pointer; border: 1px solid transparent; transition: all .12s;
-        }
-        #btn-apply-css { background: var(--action); color: #fff; }
-        #btn-apply-css:hover { background: var(--action-dark); }
-        #btn-reset-css { background: #fff; border-color: var(--line); color: #c0392b; }
-        #btn-reset-css:hover { border-color: #c0392b; }
+        .sl-editor-toolbar { gap: 6px; }
         .sl-modified-dot {
             width: 7px; height: 7px; border-radius: 50%;
             background: #f9c23c; display: none; margin-left: auto;
@@ -290,23 +285,10 @@
             background: #f8fafc; border-bottom: 1px solid var(--line);
             flex-shrink: 0;
         }
-        .sl-vp-btn {
-            padding: 4px 14px;
-            border: 1px solid var(--line); border-radius: 20px;
-            background: #fff; font-size: 11px; cursor: pointer;
-            transition: all .12s; color: var(--muted);
-        }
-        .sl-vp-btn.active { background: #212529; border-color: #212529; color: #fff; }
-        .sl-vp-btn:not(.active):hover { border-color: var(--action); color: var(--action); }
-        #btn-inspect {
-            margin-left: auto;
-            padding: 4px 12px;
-            border: 1px solid var(--line); border-radius: 6px;
-            background: #fff; font-size: 11px; cursor: pointer;
-            transition: all .12s; color: var(--muted);
-        }
-        #btn-inspect.active { background: var(--action); border-color: var(--action); color: #fff; }
-        #btn-inspect:not(.active):hover { border-color: var(--action); color: var(--action); }
+        .sl-vp-btn.active { background: var(--gray-800) !important; border-color: var(--gray-800) !important; color: #fff !important; }
+        .sl-scope-sep { width: 1px; height: 18px; background: var(--line); margin: 0 2px; margin-left: auto; }
+        .sl-scope-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+        #btn-inspect.active { background: var(--brand-primary) !important; border-color: var(--brand-primary) !important; color: #fff !important; }
         #sl-status {
             font-size: 11px; color: var(--muted);
             padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;
@@ -485,7 +467,7 @@
 
 <!-- ── Header ── -->
 <div id="sl-header">
-    <a href="{{ basePath }}/workarea">← eXeLearning</a>
+    <a id="sl-back-link" href="{{ basePath }}/workarea">← {{ t.sl_back or 'Back to editor' }}</a>
     <span class="sep">/</span>
     <h1>Style Lab</h1>
     <span id="sl-badge">dev</span>
@@ -497,7 +479,7 @@
     <!-- ── Left panel ── -->
     <div id="sl-panel">
         <div class="sl-tabs">
-            <button class="sl-tab active" data-tab="controls" data-testid="sl-tab-controls">Ajustes</button>
+            <button class="sl-tab active" data-tab="controls" data-testid="sl-tab-controls">{{ t.sl_tab_settings or 'Settings' }}</button>
             <button class="sl-tab" data-tab="css" data-testid="sl-tab-css">CSS</button>
             <button class="sl-tab" data-tab="quick" data-testid="sl-tab-quick">Quick</button>
         </div>
@@ -506,19 +488,22 @@
         <div class="sl-tab-panel active" data-panel="controls">
             <div class="sl-panel-scroll">
                 <div class="sl-section">
-                    <span class="sl-label">Proyecto</span>
+                    <span class="sl-label">{{ t.sl_project or 'Project' }}</span>
                     <select id="sl-fixture" data-testid="style-lab-fixture">
                         <option value="">— select —</option>
                     </select>
                     <span id="sl-fixture-hint" style="font-size:10px;color:var(--muted);margin-top:3px;display:block;">
-                        Abre un proyecto en eXeLearning para verlo aquí como opción.
+                        {{ t.sl_project_hint or 'Open a project in eXeLearning to see it here.' }}
                     </span>
                 </div>
-                <div class="sl-section">
+                <div class="sl-section" id="sl-theme-section">
                     <span class="sl-label">Theme</span>
                     <select id="sl-theme" data-testid="style-lab-theme">
                         <option value="">— loading —</option>
                     </select>
+                    <button id="btn-delete-theme" class="btn button-tertiary" style="display:none;color:#dc3545;border-color:#dc3545;" title="{{ t.sl_delete_theme or 'Delete theme' }}">
+                        <span class="auto-icon" aria-hidden="true">delete</span> {{ t.sl_delete_theme or 'Delete theme' }}
+                    </button>
                 </div>
                 <div class="sl-section">
                     <span class="sl-label">Export type</span>
@@ -540,9 +525,13 @@
                 </div>
             </div>
             <div id="sl-actions">
-                <button id="btn-open-window" data-testid="style-lab-open-window" disabled>Open in new window</button>
-                <button id="btn-export-all-css" data-testid="style-lab-export-theme">⬇ Export / install theme</button>
-                <button id="btn-reload-theme" data-testid="style-lab-reload-theme">↺ Reload theme from disk</button>
+                <button id="btn-open-window" class="btn button-tertiary" data-testid="style-lab-open-window" disabled>{{ t.sl_open_in_window or 'Open in new window' }}</button>
+                <button id="btn-export-all-css" class="btn button-display" data-testid="style-lab-export-theme">✓ {{ t.sl_apply_export or 'Apply / export theme...' }}</button>
+                <p id="sl-apply-hint" style="font-size:10px;color:var(--muted);margin:0;line-height:1.4;">
+                    {{ t.sl_apply_hint or 'Use this button to save changes and install them in the project. If you have modified a base theme you will need to give it a new name.' }}
+                </p>
+                <button id="btn-discard-back" class="btn button-tertiary" data-testid="style-lab-discard-back" disabled>← {{ t.sl_discard_back or 'Back to editor (discard changes)' }}</button>
+                <button id="btn-reload-theme" class="btn button-tertiary" data-testid="style-lab-reload-theme">↺ {{ t.sl_reload_theme or 'Reload theme from disk' }}</button>
             </div>
         </div>
 
@@ -550,19 +539,20 @@
         <div class="sl-tab-panel" data-panel="css">
             <div class="sl-panel-scroll" style="gap:10px;">
                 <ul id="sl-file-list">
-                    <li class="sl-file-empty">Load a fixture and theme first.</li>
+                    <li class="sl-file-empty">{{ t.sl_file_list_empty or 'Load a project and theme first.' }}</li>
                 </ul>
                 <div class="sl-editor-toolbar">
                     <span class="sl-editor-file-label" id="sl-editor-file-label">style.css</span>
-                    <div class="sl-modified-dot" id="sl-modified-dot" title="Unsaved changes"></div>
+                    <div class="sl-modified-dot" id="sl-modified-dot" title="{{ t.sl_unsaved_changes or 'Unsaved changes' }}"></div>
                 </div>
                 <div class="sl-editor-wrap" style="min-height:260px;">
                     <pre id="sl-css-highlight"><code class="language-css"></code></pre>
-                    <textarea id="sl-css-textarea" spellcheck="false" wrap="off" placeholder="Load a fixture and theme to edit CSS…"></textarea>
+                    <textarea id="sl-css-textarea" spellcheck="false" wrap="off" placeholder="{{ t.sl_css_placeholder or 'Load a project and theme to edit CSS...' }}"></textarea>
                 </div>
                 <div class="sl-editor-toolbar">
-                    <button id="btn-apply-css">Apply</button>
-                    <button id="btn-reset-css">Reset</button>
+                    <button id="btn-apply-css" class="btn button-display">{{ t.sl_apply_css or 'Apply' }}</button>
+                    <button id="btn-reset-css" class="btn button-tertiary">{{ t.sl_reset_css or 'Reset' }}</button>
+                    <button id="btn-wrap-scope" class="btn button-tertiary" title="{{ t.sl_wrap_scope or 'Wrap scope' }}">{{ t.sl_wrap_scope or 'Wrap scope' }}</button>
                 </div>
             </div>
         </div>
@@ -571,21 +561,21 @@
         <div class="sl-tab-panel" data-panel="quick">
             <div class="sl-panel-scroll">
                 <details open>
-                    <summary>Apariencia general</summary>
+                    <summary>{{ t.sl_general_appearance or 'General appearance' }}</summary>
                     <div class="sl-quick-body">
-                        <div class="sl-quick-row"><label>Color enlaces</label><input type="color" data-quick="linkColor" value="#d76b4a"></div>
-                        <div class="sl-quick-row"><label>Color título página</label><input type="color" data-quick="titleColor" value="#078e8e"></div>
-                        <div class="sl-quick-row"><label>Color texto base</label><input type="color" data-quick="textColor" value="#333333"></div>
-                        <div class="sl-quick-row"><label>Fondo contenido</label><input type="color" data-quick="contentBgColor" value="#ffffff"></div>
-                        <div class="sl-quick-row"><label>Fondo global</label><input type="color" data-quick="pageBgColor" value="#ffffff"></div>
-                        <div class="sl-quick-row"><label>Fondo lateral</label><input type="color" data-quick="contentOuterBgColor" value="#eef1f4"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_link_color or 'Link color' }}</label><input type="color" data-quick="linkColor" value="#d76b4a"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_page_title_color or 'Page title color' }}</label><input type="color" data-quick="titleColor" value="#078e8e"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_text_color or 'Text color' }}</label><input type="color" data-quick="textColor" value="#333333"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_content_bg or 'Content background' }}</label><input type="color" data-quick="contentBgColor" value="#ffffff"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_page_bg or 'Page background' }}</label><input type="color" data-quick="pageBgColor" value="#ffffff"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_outer_bg or 'Outer background' }}</label><input type="color" data-quick="contentOuterBgColor" value="#eef1f4"></div>
                     </div>
                 </details>
                 <details>
-                    <summary>Tipografía</summary>
+                    <summary>{{ t.sl_typography or 'Typography' }}</summary>
                     <div class="sl-quick-body">
                         <div class="sl-quick-row">
-                            <label>Fuente cuerpo</label>
+                            <label>{{ t.sl_body_font or 'Body font' }}</label>
                             <select data-quick="fontBody">
                                 <option value="Georgia, 'Times New Roman', serif">Georgia (serif)</option>
                                 <option value="'Noto Serif', serif">Noto Serif</option>
@@ -595,7 +585,7 @@
                             </select>
                         </div>
                         <div class="sl-quick-row">
-                            <label>Fuente títulos</label>
+                            <label>{{ t.sl_headings_font or 'Headings font' }}</label>
                             <select data-quick="fontTitles">
                                 <option value="Georgia, 'Times New Roman', serif">Georgia (serif)</option>
                                 <option value="'Noto Serif', serif">Noto Serif</option>
@@ -604,16 +594,16 @@
                                 <option value="system-ui, -apple-system, sans-serif">System UI</option>
                             </select>
                         </div>
-                        <div class="sl-quick-row"><label>Tamaño base (px)</label><input type="number" data-quick="baseFontSize" value="18" min="12" max="28"></div>
-                        <div class="sl-quick-row"><label>Interlineado</label><input type="number" data-quick="lineHeight" value="1.45" min="1" max="2.2" step="0.05"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_base_size or 'Base size (px)' }}</label><input type="number" data-quick="baseFontSize" value="18" min="12" max="28"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_line_height or 'Line height' }}</label><input type="number" data-quick="lineHeight" value="1.45" min="1" max="2.2" step="0.05"></div>
                     </div>
                 </details>
                 <details>
-                    <summary>Títulos</summary>
+                    <summary>{{ t.sl_headings or 'Headings' }}</summary>
                     <div class="sl-quick-body">
-                        <div class="sl-quick-row"><label>Tamaño título página (rem)</label><input type="number" data-quick="pageTitleSize" value="1.7" min="1.1" max="3.2" step="0.05"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_page_title_size or 'Page title size (rem)' }}</label><input type="number" data-quick="pageTitleSize" value="1.7" min="1.1" max="3.2" step="0.05"></div>
                         <div class="sl-quick-row">
-                            <label>Peso título página</label>
+                            <label>{{ t.sl_page_title_weight or 'Page title weight' }}</label>
                             <select data-quick="pageTitleWeight">
                                 <option value="400">400</option>
                                 <option value="600">600</option>
@@ -621,29 +611,29 @@
                                 <option value="800">800</option>
                             </select>
                         </div>
-                        <div class="sl-quick-row"><label>Mayúsculas título</label><input type="checkbox" data-quick="pageTitleUppercase"></div>
-                        <div class="sl-quick-row"><label>Color título proyecto</label><input type="color" data-quick="packageTitleColor" value="#333333"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_uppercase_title or 'Uppercase title' }}</label><input type="checkbox" data-quick="pageTitleUppercase"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_project_title_color or 'Project title color' }}</label><input type="color" data-quick="packageTitleColor" value="#333333"></div>
                     </div>
                 </details>
                 <details>
-                    <summary>Menú de navegación</summary>
+                    <summary>{{ t.sl_nav_menu or 'Navigation menu' }}</summary>
                     <div class="sl-quick-body">
-                        <div class="sl-quick-row"><label>Fondo menú</label><input type="color" data-quick="menuBgColor" value="#f6f6f6"></div>
-                        <div class="sl-quick-row"><label>Texto menú</label><input type="color" data-quick="menuTextColor" value="#000000"></div>
-                        <div class="sl-quick-row"><label>Fondo hover</label><input type="color" data-quick="menuHoverBgColor" value="#f2f2f2"></div>
-                        <div class="sl-quick-row"><label>Texto hover</label><input type="color" data-quick="menuHoverTextColor" value="#000000"></div>
-                        <div class="sl-quick-row"><label>Fondo activo</label><input type="color" data-quick="menuActiveBgColor" value="#ffffff"></div>
-                        <div class="sl-quick-row"><label>Texto activo</label><input type="color" data-quick="menuActiveTextColor" value="#d76b4a"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_menu_bg or 'Menu background' }}</label><input type="color" data-quick="menuBgColor" value="#f6f6f6"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_menu_text or 'Menu text' }}</label><input type="color" data-quick="menuTextColor" value="#000000"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_hover_bg or 'Hover background' }}</label><input type="color" data-quick="menuHoverBgColor" value="#f2f2f2"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_hover_text or 'Hover text' }}</label><input type="color" data-quick="menuHoverTextColor" value="#000000"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_active_bg or 'Active background' }}</label><input type="color" data-quick="menuActiveBgColor" value="#ffffff"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_active_text or 'Active text' }}</label><input type="color" data-quick="menuActiveTextColor" value="#d76b4a"></div>
                     </div>
                 </details>
                 <details>
-                    <summary>iDevices y botones</summary>
+                    <summary>{{ t.sl_idevices_buttons or 'iDevices and buttons' }}</summary>
                     <div class="sl-quick-body">
-                        <div class="sl-quick-row"><label>Fondo iDevice</label><input type="color" data-quick="boxBgColor" value="#ffffff"></div>
-                        <div class="sl-quick-row"><label>Borde iDevice</label><input type="color" data-quick="boxBorderColor" value="#dddddd"></div>
-                        <div class="sl-quick-row"><label>Color título iDevice</label><input type="color" data-quick="boxTitleColor" value="#054d4d"></div>
-                        <div class="sl-quick-row"><label>Fondo botón</label><input type="color" data-quick="buttonBgColor" value="#005f73"></div>
-                        <div class="sl-quick-row"><label>Texto botón</label><input type="color" data-quick="buttonTextColor" value="#ffffff"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_idevice_bg or 'iDevice background' }}</label><input type="color" data-quick="boxBgColor" value="#ffffff"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_idevice_border or 'iDevice border' }}</label><input type="color" data-quick="boxBorderColor" value="#dddddd"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_idevice_title_color or 'iDevice title color' }}</label><input type="color" data-quick="boxTitleColor" value="#054d4d"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_button_bg or 'Button background' }}</label><input type="color" data-quick="buttonBgColor" value="#005f73"></div>
+                        <div class="sl-quick-row"><label>{{ t.sl_button_text or 'Button text' }}</label><input type="color" data-quick="buttonTextColor" value="#ffffff"></div>
                     </div>
                 </details>
             </div>
@@ -653,22 +643,35 @@
     <!-- ── Preview area ── -->
     <div id="sl-preview-area">
         <div id="sl-preview-toolbar">
-            <button class="sl-vp-btn active" data-viewport="desktop" data-testid="vp-desktop">Desktop</button>
-            <button class="sl-vp-btn" data-viewport="tablet" data-testid="vp-tablet">Tablet</button>
-            <button class="sl-vp-btn" data-viewport="mobile" data-testid="vp-mobile">Mobile</button>
+            <button class="btn button-tertiary sl-vp-btn active" data-viewport="desktop" data-testid="vp-desktop">Desktop</button>
+            <button class="btn button-tertiary sl-vp-btn" data-viewport="tablet" data-testid="vp-tablet">Tablet</button>
+            <button class="btn button-tertiary sl-vp-btn" data-viewport="mobile" data-testid="vp-mobile">Mobile</button>
             <span id="sl-status" data-testid="style-lab-status">Ready</span>
-            <button id="btn-inspect" title="Click-to-edit: click an element in the preview">⊕ Inspect</button>
+            <button id="btn-inspect" class="btn button-tertiary" title="Click-to-edit: click an element in the preview">⊕ Inspect</button>
+            <button id="btn-undo" class="btn button-tertiary button-square" title="Undo" disabled><span class="auto-icon" aria-hidden="true">undo</span></button>
+            <button id="btn-redo" class="btn button-tertiary button-square" title="Redo" disabled><span class="auto-icon" aria-hidden="true">redo</span></button>
+            <span class="sl-scope-sep"></span>
+            <span class="sl-scope-label">Scope:</span>
+            <label class="sl-scope-chip checked" data-scope="exe-web-site">
+                <input type="checkbox" value="exe-web-site" checked> Website
+            </label>
+            <label class="sl-scope-chip" data-scope="exe-single-page">
+                <input type="checkbox" value="exe-single-page"> Single
+            </label>
+            <label class="sl-scope-chip checked" data-scope="exe-scorm">
+                <input type="checkbox" value="exe-scorm" checked> SCORM
+            </label>
         </div>
         <div id="sl-iframe-wrap" class="vp-desktop" style="position:relative">
             <div id="sl-loading-overlay">
                 <div class="sl-spinner"></div>
-                <span id="sl-loading-label">Generating preview…</span>
+                <span id="sl-loading-label">{{ t.sl_generating_preview or 'Generating preview...' }}</span>
             </div>
             <div id="sl-placeholder">
                 <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 3h18v14H3zm16 12V5H5v10h14zM1 18h22v2H1z"/>
                 </svg>
-                <span>Select a fixture and theme, then click <strong>Preview</strong></span>
+                <span>{{ t.sl_placeholder_hint or 'Select a project and theme, then click Preview' }}</span>
             </div>
             <iframe id="sl-iframe" style="display:none" data-testid="style-lab-iframe"></iframe>
         </div>
@@ -678,16 +681,16 @@
 <!-- ── Click-to-edit modal ── -->
 <div id="sl-click-modal" role="dialog" aria-label="Click-to-edit">
     <div id="sl-click-modal-header">
-        <span>Edit element</span>
+        <span>{{ t.sl_edit_element or 'Edit element' }}</span>
         <button id="sl-click-modal-close">×</button>
     </div>
     <div id="sl-click-modal-selector">—</div>
     <div id="sl-click-modal-body">
-        <div class="sl-click-row"><label>Color texto</label><input type="color" id="ce-textColor" value="#333333"></div>
-        <div class="sl-click-row"><label>Fondo</label><input type="color" id="ce-bgColor" value="#ffffff"></div>
-        <div class="sl-click-row"><label>Tamaño fuente (px)</label><input type="number" id="ce-fontSize" min="8" max="96" value="16"></div>
+        <div class="sl-click-row"><label>{{ t.sl_text_color or 'Text color' }}</label><input type="color" id="ce-textColor" value="#333333"></div>
+        <div class="sl-click-row"><label>{{ t.sl_content_bg or 'Background' }}</label><input type="color" id="ce-bgColor" value="#ffffff"></div>
+        <div class="sl-click-row"><label>{{ t.sl_font_size_px or 'Font size (px)' }}</label><input type="number" id="ce-fontSize" min="8" max="96" value="16"></div>
         <div class="sl-click-row">
-            <label>Peso</label>
+            <label>{{ t.sl_weight or 'Weight' }}</label>
             <select id="ce-fontWeight">
                 <option value="">—</option>
                 <option value="400">400</option>
@@ -697,7 +700,7 @@
             </select>
         </div>
         <div class="sl-click-row">
-            <label>Alineación</label>
+            <label>{{ t.sl_alignment or 'Alignment' }}</label>
             <select id="ce-textAlign">
                 <option value="">—</option>
                 <option value="left">Left</option>
@@ -707,72 +710,72 @@
         </div>
     </div>
     <div id="sl-click-modal-footer">
-        <button id="btn-click-apply">Apply to CSS</button>
-        <button id="btn-click-cancel">Cancel</button>
+        <button id="btn-click-apply">{{ t.sl_apply_to_css or 'Apply to CSS' }}</button>
+        <button id="btn-click-cancel">{{ t.sl_cancel or 'Cancel' }}</button>
     </div>
 </div>
 
 <!-- ── Theme rename/install modal ── -->
 <div id="sl-rename-modal" role="dialog" aria-label="Export or install theme">
     <div id="sl-rename-modal-header">
-        <span>Exportar / instalar tema</span>
+        <span>{{ t.sl_export_install_modal or 'Export / install theme' }}</span>
         <button id="sl-rename-modal-close">×</button>
     </div>
     <div id="sl-rename-modal-body">
         <div class="sl-rename-warning" id="sl-rename-warning">
-            <strong>⚠ Tema predefinido</strong><br>
-            No puedes guardar cambios sobre un tema base con el mismo nombre. Introduce un nombre e identificador nuevos.
+            <strong>{{ t.sl_base_theme_warning_title or '⚠ Predefined theme' }}</strong><br>
+            {{ t.sl_base_theme_warning_body or 'You cannot save changes to a base theme with the same name. Enter a new name and identifier.' }}
         </div>
         <div class="sl-rename-row">
-            <label for="sl-new-display-name">Nombre del tema</label>
-            <input type="text" id="sl-new-display-name" placeholder="Mi tema personalizado" maxlength="64">
+            <label for="sl-new-display-name">{{ t.sl_theme_name or 'Theme name' }}</label>
+            <input type="text" id="sl-new-display-name" placeholder="{{ t.sl_theme_name_ph or 'My custom theme' }}" maxlength="64">
         </div>
         <div class="sl-rename-row">
-            <label for="sl-new-dir-name">Identificador (ID)</label>
-            <input type="text" id="sl-new-dir-name" placeholder="mi-tema" maxlength="48" pattern="[a-z0-9_-]+">
-            <span class="sl-rename-hint">Solo minúsculas, números, guiones y guiones bajos.</span>
+            <label for="sl-new-dir-name">{{ t.sl_identifier or 'Identifier (ID)' }}</label>
+            <input type="text" id="sl-new-dir-name" placeholder="{{ t.sl_dir_name_ph or 'my-theme' }}" maxlength="48" pattern="[a-z0-9_-]+">
+            <span class="sl-rename-hint">{{ t.sl_dir_name_hint or 'Lowercase, numbers, hyphens and underscores only.' }}</span>
         </div>
         <div class="sl-rename-grid">
             <div class="sl-rename-row">
-                <label for="sl-meta-version">Versión</label>
+                <label for="sl-meta-version">{{ t.sl_version or 'Version' }}</label>
                 <input type="text" id="sl-meta-version" placeholder="1.0" maxlength="32">
             </div>
             <div class="sl-rename-row">
-                <label for="sl-meta-compatibility">Compatibilidad</label>
+                <label for="sl-meta-compatibility">{{ t.sl_compatibility or 'Compatibility' }}</label>
                 <input type="text" id="sl-meta-compatibility" placeholder="3.0" maxlength="32">
             </div>
         </div>
         <div class="sl-rename-grid">
             <div class="sl-rename-row">
-                <label for="sl-meta-author">Autor</label>
+                <label for="sl-meta-author">{{ t.sl_author or 'Author' }}</label>
                 <input type="text" id="sl-meta-author" maxlength="128">
             </div>
             <div class="sl-rename-row">
-                <label for="sl-meta-downloadable">Importable</label>
+                <label for="sl-meta-downloadable">{{ t.sl_importable or 'Importable' }}</label>
                 <select id="sl-meta-downloadable">
-                    <option value="1">Sí</option>
-                    <option value="0">No</option>
+                    <option value="1">{{ t.sl_yes or 'Yes' }}</option>
+                    <option value="0">{{ t.sl_no or 'No' }}</option>
                 </select>
             </div>
         </div>
         <div class="sl-rename-row">
-            <label for="sl-meta-license">Licencia</label>
+            <label for="sl-meta-license">{{ t.sl_license or 'License' }}</label>
             <input type="text" id="sl-meta-license" maxlength="128">
         </div>
         <div class="sl-rename-row">
-            <label for="sl-meta-license-url">URL licencia</label>
+            <label for="sl-meta-license-url">{{ t.sl_license_url or 'License URL' }}</label>
             <input type="url" id="sl-meta-license-url" maxlength="256">
         </div>
         <div class="sl-rename-row">
-            <label for="sl-meta-description">Descripción</label>
+            <label for="sl-meta-description">{{ t.sl_description or 'Description' }}</label>
             <textarea id="sl-meta-description" maxlength="1000"></textarea>
         </div>
         <div class="sl-rename-error" id="sl-rename-error" style="display:none"></div>
     </div>
     <div id="sl-rename-modal-footer">
-        <button id="btn-rename-download">⬇ Descargar ZIP</button>
-        <button id="btn-rename-install" class="primary" title="Instalar el tema y aplicarlo al proyecto abierto en el editor">
-            ✓ Instalar y aplicar al proyecto
+        <button id="btn-rename-download">⬇ {{ t.sl_download_zip or 'Download ZIP' }}</button>
+        <button id="btn-rename-install" class="primary" title="{{ t.sl_install_apply_title or 'Install the theme and apply it to the project open in the editor' }}">
+            ✓ {{ t.sl_install_apply or 'Install and apply to project' }}
         </button>
     </div>
 </div>
@@ -783,6 +786,46 @@
 (function () {
     const basePath = {{ basePath | json | safe }};
     const viewerUrl = basePath + '/viewer/index.html';
+    const T = {
+        undone:               {{ t.sl_js_undone | json | safe }},
+        redone:               {{ t.sl_js_redone | json | safe }},
+        open_project:         {{ t.sl_js_open_project | json | safe }},
+        fixtures:             {{ t.sl_js_fixtures | json | safe }},
+        error_loading:        {{ t.sl_js_error_loading | json | safe }},
+        select_theme:         {{ t.sl_js_select_theme | json | safe }},
+        css_applied:          {{ t.sl_js_css_applied | json | safe }},
+        css_reset:            {{ t.sl_js_css_reset | json | safe }},
+        scope_all:            {{ t.sl_js_scope_all | json | safe }},
+        select_css_first:     {{ t.sl_js_select_css_first | json | safe }},
+        wrapped:              {{ t.sl_js_wrapped | json | safe }},
+        rule_added:           {{ t.sl_js_rule_added | json | safe }},
+        inspect_hint:         {{ t.sl_js_inspect_hint | json | safe }},
+        ready:                {{ t.sl_js_ready | json | safe }},
+        load_preview_first:   {{ t.sl_js_load_preview_first | json | safe }},
+        select_theme_first:   {{ t.sl_js_select_theme_first | json | safe }},
+        fill_name_id:         {{ t.sl_js_fill_name_id | json | safe }},
+        id_invalid:           {{ t.sl_js_id_invalid | json | safe }},
+        capturing:            {{ t.sl_js_capturing | json | safe }},
+        installing:           {{ t.sl_js_installing | json | safe }},
+        theme_applied:        {{ t.sl_js_theme_applied | json | safe }},
+        theme_no_apply:       {{ t.sl_js_theme_installed_no_apply | json | safe }},
+        theme_installed:      {{ t.sl_js_theme_installed | json | safe }},
+        exporting:            {{ t.sl_js_exporting | json | safe }},
+        downloaded:           {{ t.sl_js_downloaded | json | safe }},
+        error_deleting:       {{ t.sl_js_error_deleting | json | safe }},
+        error_deleting_theme: {{ t.sl_js_error_deleting_theme | json | safe }},
+        theme_deleted:        {{ t.sl_js_theme_deleted | json | safe }},
+        generating:           {{ t.sl_js_generating | json | safe }},
+        fetching:             {{ t.sl_js_fetching | json | safe }},
+        decompressing:        {{ t.sl_js_decompressing | json | safe }},
+        sending_sw:           {{ t.sl_js_sending_sw | json | safe }},
+        select_fixture_theme: {{ t.sl_js_select_fixture_theme | json | safe }},
+        confirm_unsaved:      {{ t.sl_js_confirm_unsaved | json | safe }},
+        confirm_discard:      {{ t.sl_js_confirm_discard | json | safe }},
+        confirm_delete:       {{ t.sl_js_confirm_delete | json | safe }},
+        install_apply_title:  {{ t.sl_install_apply_title | json | safe }},
+        no_session_title:     {{ t.sl_no_session_title | json | safe }},
+    };
     const QUICK_BLOCK_START = '/* style-lab-quick:start */';
     const QUICK_BLOCK_END = '/* style-lab-quick:end */';
     const CLICK_BLOCK_START = '/* style-lab-click:start */';
@@ -791,6 +834,7 @@
     let previewReady = false;
     let selectedExport = 'html5';
     let loadedThemes = [];
+    let loadedSessions = [];    // sessions with theme info
     let themeFiles = {};        // path → string
     let activeCssFile = 'style.css';
     let originalCss = '';
@@ -800,6 +844,114 @@
     let quickState = {};        // collected from [data-quick] inputs
     let themeReloadToken = Date.now();
 
+    // ─── Undo / Redo stacks ───────────────────────────────────
+    const UNDO_MAX = 30;
+    let undoStack = [];
+    let redoStack = [];
+
+    function updateUndoRedoBtns() {
+        document.getElementById('btn-undo').disabled = undoStack.length === 0;
+        document.getElementById('btn-redo').disabled = redoStack.length === 0;
+    }
+
+    function currentSnap() {
+        return { css: document.getElementById('sl-css-textarea').value, qs: JSON.stringify(quickState) };
+    }
+
+    function applySnap(snap) {
+        const ta = document.getElementById('sl-css-textarea');
+        ta.value = snap.css;
+        markModified(ta.value !== originalCss);
+        updateHighlight();
+        if (previewReady) injectEditorCss(snap.css);
+        quickState = JSON.parse(snap.qs);
+        document.querySelectorAll('[data-quick]').forEach(el => {
+            const v = quickState[el.dataset.quick];
+            if (v !== undefined) el.value = v;
+        });
+        if (previewReady) injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
+    }
+
+    function pushUndo() {
+        const snap = currentSnap();
+        const last = undoStack[undoStack.length - 1];
+        if (last && last.css === snap.css && last.qs === snap.qs) return;
+        undoStack.push(snap);
+        if (undoStack.length > UNDO_MAX) undoStack.shift();
+        redoStack = []; // new action clears redo
+        updateUndoRedoBtns();
+    }
+
+    function doUndo() {
+        if (!undoStack.length) return;
+        redoStack.push(currentSnap());
+        applySnap(undoStack.pop());
+        updateUndoRedoBtns();
+        setStatus(T.undone);
+    }
+
+    function doRedo() {
+        if (!redoStack.length) return;
+        undoStack.push(currentSnap());
+        applySnap(redoStack.pop());
+        updateUndoRedoBtns();
+        setStatus(T.redone);
+    }
+
+    document.getElementById('btn-undo').addEventListener('click', doUndo);
+    document.getElementById('btn-redo').addEventListener('click', doRedo);
+
+    // ─── CSS Scope ────────────────────────────────────────────
+    const SCOPE_ALL = ['exe-web-site', 'exe-single-page', 'exe-scorm'];
+
+    function getScopeClasses() {
+        return [...document.querySelectorAll('#sl-scope-grid input:checked')].map(i => i.value);
+    }
+
+    function buildScopeWrapped(innerCss) {
+        const classes = getScopeClasses();
+        const trimmed = innerCss.trim();
+        if (!trimmed) return '';
+        if (classes.length === 0 || classes.length === SCOPE_ALL.length) return trimmed;
+        const selector = classes.map(c => `body.${c}`).join(',\nbody.');
+        // indent each line of the inner CSS by 2 spaces
+        const indented = trimmed.split('\n').map(l => l ? `  ${l}` : l).join('\n');
+        return `${selector} {\n${indented}\n}`;
+    }
+
+    function saveScope() {
+        localStorage.setItem('sl-scope', JSON.stringify(getScopeClasses()));
+    }
+
+    function loadScope() {
+        try {
+            const saved = JSON.parse(localStorage.getItem('sl-scope') || 'null');
+            if (Array.isArray(saved)) {
+                document.querySelectorAll('#sl-preview-toolbar input[type="checkbox"]').forEach(cb => {
+                    cb.checked = saved.includes(cb.value);
+                    cb.closest('.sl-scope-chip').classList.toggle('checked', cb.checked);
+                });
+            }
+        } catch {}
+    }
+
+    document.querySelectorAll('#sl-preview-toolbar .sl-scope-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const cb = chip.querySelector('input');
+            cb.checked = !cb.checked;
+            chip.classList.toggle('checked', cb.checked);
+            saveScope();
+            // Re-inject scoped CSS so preview reflects new scope immediately
+            if (previewReady) {
+                if (Object.keys(quickState).length) {
+                    injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
+                }
+                injectEditorCss(document.getElementById('sl-css-textarea').value);
+            }
+        });
+    });
+
+    // ─── Controlled blocks ────────────────────────────────────
     function replaceControlledBlock(css, start, end, content) {
         const trimmed = String(content || '').trim();
         const block = trimmed ? `${start}\n${trimmed}\n${end}` : '';
@@ -835,6 +987,7 @@
         pre.scrollLeft = ta.scrollLeft;
     }
 
+    document.getElementById('sl-css-textarea').addEventListener('focus', pushUndo);
     document.getElementById('sl-css-textarea').addEventListener('input', () => {
         markModified(true);
         updateHighlight();
@@ -914,13 +1067,19 @@
                 fetch(basePath + '/api/developer/sessions').then(r => r.json()).catch(() => ({ sessions: [] })),
             ]);
 
+            loadedSessions = sessions;
+
             // Auto-select: prefer URL param, then first session, then nothing
             let autoVal = val;
-            if (!autoVal && sessions.length > 0) autoVal = 'session:' + sessions[0].sessionId;
+            let autoTheme = null;
+            if (!autoVal && sessions.length > 0) {
+                autoVal = 'session:' + sessions[0].sessionId;
+                autoTheme = sessions[0].theme || null;
+            }
 
             let html = '<option value="">— select —</option>';
             if (sessions.length > 0) {
-                html += '<optgroup label="Proyecto abierto en el editor">';
+                html += '<optgroup label="' + T.open_project + '">';
                 html += sessions.map(s => {
                     const v = 'session:' + s.sessionId;
                     const name = s.fileName.replace(/\.elpx?$/, '');
@@ -930,13 +1089,13 @@
                 hint.style.display = 'none';
             }
             if (fixtures.length > 0) {
-                html += '<optgroup label="Fixtures de prueba">';
+                html += '<optgroup label="' + T.fixtures + '">';
                 html += fixtures.map(f => `<option value="${f}"${f === autoVal ? ' selected' : ''}>${f}</option>`).join('');
                 html += '</optgroup>';
             }
             sel.innerHTML = html;
-            return autoVal; // devuelve el valor efectivo para que init() lo use
-        } catch { sel.innerHTML = '<option value="">Error loading</option>'; return val; }
+            return { fixture: autoVal, theme: autoTheme };
+        } catch { sel.innerHTML = '<option value="">' + T.error_loading + '</option>'; return { fixture: val, theme: null }; }
     }
 
     async function loadThemes(val) {
@@ -944,12 +1103,20 @@
         try {
             const { themes } = await fetch(basePath + '/api/themes/installed').then(r => r.json());
             loadedThemes = themes;
-            sel.innerHTML = '<option value="">— select theme —</option>' +
+            sel.innerHTML = '<option value="">' + T.select_theme + '</option>' +
                 themes.map(t => {
                     const sel2 = val ? t.dirName === val : t.isDefault;
                     return `<option value="${t.dirName}"${sel2 ? ' selected' : ''}>${t.displayName}</option>`;
                 }).join('');
-        } catch { sel.innerHTML = '<option value="">Error loading</option>'; }
+        } catch { sel.innerHTML = '<option value="">' + T.error_loading + '</option>'; }
+        updateDeleteThemeBtn();
+    }
+
+    function updateDeleteThemeBtn() {
+        const dirName = document.getElementById('sl-theme').value;
+        const theme = loadedThemes.find(t => t.dirName === dirName);
+        const btn = document.getElementById('btn-delete-theme');
+        btn.style.display = (theme && theme.type === 'site') ? '' : 'none';
     }
 
     async function loadThemeFiles(themeDirName) {
@@ -1016,6 +1183,71 @@
     function injectQuickCss(css)  { injectStyle('sl-quick-css', css); }
     function injectClickCss(css)  { injectStyle('sl-click-css', css); }
 
+    // ─── Sync Quick inputs from real theme colours ────────────
+    function syncQuickFromTheme() {
+        const doc = document.getElementById('sl-iframe').contentDocument;
+        if (!doc?.body) return;
+
+        function toHex(v) {
+            if (!v || v === 'transparent') return null;
+            const m = v.match(/[\d.]+/g);
+            if (!m || m.length < 3) return null;
+            // fully transparent → skip
+            if (m.length >= 4 && parseFloat(m[3]) === 0) return null;
+            return '#' + m.slice(0, 3).map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
+        }
+
+        function gs(sel, prop) {
+            try {
+                // querySelector supports comma lists only partially; try first match
+                const el = doc.querySelector(sel);
+                return el ? getComputedStyle(el)[prop] : null;
+            } catch { return null; }
+        }
+
+        const updates = {
+            linkColor:           toHex(gs('a', 'color')),
+            titleColor:          toHex(gs('.page-title', 'color')),
+            textColor:           toHex(gs('body', 'color')),
+            contentBgColor:      toHex(gs('.exe-content', 'backgroundColor')),
+            pageBgColor:         toHex(gs('body', 'backgroundColor')),
+            menuBgColor:         toHex(gs('#siteNav', 'backgroundColor')),
+            menuTextColor:       toHex(gs('#siteNav a', 'color')),
+            menuActiveBgColor:   toHex(gs('#siteNav a.active', 'backgroundColor'))
+                              || toHex(gs('#siteNav li.active > a', 'backgroundColor')),
+            menuActiveTextColor: toHex(gs('#siteNav a.active', 'color'))
+                              || toHex(gs('#siteNav li.active > a', 'color')),
+            packageTitleColor:   toHex(gs('.package-title', 'color')),
+            boxBgColor:          toHex(gs('.iDevice', 'backgroundColor')),
+            boxBorderColor:      toHex(gs('.iDevice', 'borderTopColor')),
+            boxTitleColor:       toHex(gs('.iDevice_header', 'color') || gs('.box-head', 'color')),
+            buttonBgColor:       toHex(gs('.feedbackbutton, .exe-quiz-btn', 'backgroundColor')
+                                     || gs('.feedbackbutton', 'backgroundColor')),
+            buttonTextColor:     toHex(gs('.feedbackbutton', 'color')),
+        };
+
+        // Font/size values
+        const bodyFs = parseFloat(gs('body', 'fontSize'));
+        if (bodyFs) updates.baseFontSize = Math.round(bodyFs);
+        const bodyLh = parseFloat(gs('body', 'lineHeight'));
+        if (bodyLh && bodyFs) updates.lineHeight = Math.round((bodyLh / bodyFs) * 10) / 10;
+        const fontBody = gs('body', 'fontFamily');
+        if (fontBody) updates.fontBody = fontBody.split(',')[0].trim().replace(/['"]/g, '');
+        const titleEl = doc.querySelector('h1, h2, .page-title');
+        if (titleEl) {
+            const ff = getComputedStyle(titleEl).fontFamily;
+            if (ff) updates.fontTitles = ff.split(',')[0].trim().replace(/['"]/g, '');
+        }
+
+        // Apply to inputs (skip keys already explicitly set by user)
+        for (const [key, value] of Object.entries(updates)) {
+            if (value === null || value === undefined) continue;
+            if (key in quickState) continue; // user already changed this, don't overwrite
+            const input = document.querySelector(`[data-quick="${key}"]`);
+            if (input) input.value = value;
+        }
+    }
+
     function markModified(on) {
         document.getElementById('sl-modified-dot').classList.toggle('on', on);
     }
@@ -1053,8 +1285,8 @@
         if (q.menuTextColor) css += `#siteNav a, .site-nav a { color: ${q.menuTextColor}${bang}; }\n`;
         if (q.menuHoverBgColor) css += `#siteNav a:hover, .site-nav a:hover { background-color: ${q.menuHoverBgColor}${bang}; }\n`;
         if (q.menuHoverTextColor) css += `#siteNav a:hover, .site-nav a:hover { color: ${q.menuHoverTextColor}${bang}; }\n`;
-        if (q.menuActiveBgColor) css += `#siteNav a.active, .site-nav a.active { background-color: ${q.menuActiveBgColor}${bang}; }\n`;
-        if (q.menuActiveTextColor) css += `#siteNav a.active, .site-nav a.active { color: ${q.menuActiveTextColor}${bang}; }\n`;
+        if (q.menuActiveBgColor) css += `#siteNav a.active, #siteNav li.active > a, #siteNav .active > a, .site-nav a.active, .site-nav li.active > a { background-color: ${q.menuActiveBgColor}${bang}; }\n`;
+        if (q.menuActiveTextColor) css += `#siteNav a.active, #siteNav li.active > a, #siteNav .active > a, .site-nav a.active, .site-nav li.active > a { color: ${q.menuActiveTextColor}${bang}; }\n`;
         if (q.boxBgColor) css += `.iDevice, .box { background-color: ${q.boxBgColor}${bang}; }\n`;
         if (q.boxBorderColor) css += `.iDevice, .box { border-color: ${q.boxBorderColor}${bang}; }\n`;
         if (q.boxTitleColor) css += `.iDevice_header, .box-head { color: ${q.boxTitleColor}${bang}; }\n`;
@@ -1066,8 +1298,12 @@
     document.querySelectorAll('[data-quick]').forEach(el => {
         el.addEventListener('input', () => {
             if (!previewReady) return;
-            quickState = collectQuick();
-            injectQuickCss(buildQuickCss(quickState));
+            pushUndo();
+            // Only update the changed key — avoids overriding theme values for untouched controls
+            const k = el.dataset.quick;
+            const v = el.type === 'checkbox' ? el.checked : el.type === 'number' ? (parseFloat(el.value) || 0) : el.value;
+            quickState = { ...quickState, [k]: v };
+            injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
         });
     });
 
@@ -1075,7 +1311,7 @@
     document.getElementById('btn-apply-css').addEventListener('click', () => {
         if (!previewReady) return;
         injectEditorCss(document.getElementById('sl-css-textarea').value);
-        setStatus('CSS applied.');
+        setStatus(T.css_applied);
     });
 
     document.getElementById('btn-reset-css').addEventListener('click', () => {
@@ -1083,7 +1319,25 @@
         markModified(false);
         updateHighlight();
         if (previewReady) injectEditorCss(originalCss);
-        setStatus('CSS reset.');
+        setStatus(T.css_reset);
+    });
+
+    document.getElementById('btn-wrap-scope').addEventListener('click', () => {
+        const classes = getScopeClasses();
+        if (classes.length === 0 || classes.length === SCOPE_ALL.length) {
+            setStatus(T.scope_all);
+            return;
+        }
+        const ta = document.getElementById('sl-css-textarea');
+        const start = ta.selectionStart, end = ta.selectionEnd;
+        const selected = ta.value.substring(start, end).trim();
+        if (!selected) { setStatus(T.select_css_first); return; }
+        const wrapped = buildScopeWrapped(selected);
+        ta.setRangeText(wrapped, start, end, 'select');
+        markModified(true);
+        updateHighlight();
+        if (previewReady) injectEditorCss(ta.value);
+        setStatus(T.wrapped);
     });
 
     // ─── Click-to-edit (inspect mode) ────────────────────────
@@ -1142,6 +1396,7 @@
     });
 
     document.getElementById('btn-click-apply').addEventListener('click', () => {
+        pushUndo();
         const s = clickEditSelector;
         const textColor = document.getElementById('ce-textColor').value;
         const bgColor = document.getElementById('ce-bgColor').value;
@@ -1154,15 +1409,15 @@
         if (fontSize) rule += `  font-size: ${fontSize}px !important;\n`;
         if (fontWeight) rule += `  font-weight: ${fontWeight} !important;\n`;
         if (textAlign) rule += `  text-align: ${textAlign} !important;\n`;
-        rule += `}\n`;
+        rule += `}`;
         const ta = document.getElementById('sl-css-textarea');
-        ta.value = appendToControlledBlock(ta.value, CLICK_BLOCK_START, CLICK_BLOCK_END, rule);
+        ta.value = appendToControlledBlock(ta.value, CLICK_BLOCK_START, CLICK_BLOCK_END, buildScopeWrapped(rule));
         markModified(true);
         updateHighlight();
         injectEditorCss(ta.value);
         switchTab('css');
         document.getElementById('sl-click-modal').classList.remove('open');
-        setStatus('Rule added to CSS editor.');
+        setStatus(T.rule_added);
     });
 
     document.getElementById('btn-click-cancel').addEventListener('click', () => {
@@ -1197,20 +1452,52 @@
         document.body.classList.toggle('sl-inspect', on);
         const iw = document.getElementById('sl-iframe');
         try { iw.contentWindow.__slInspect = on; } catch {}
-        setStatus(on ? '⊕ Click an element in the preview…' : 'Ready');
+        setStatus(on ? T.inspect_hint : T.ready);
     }
 
     document.getElementById('btn-inspect').addEventListener('click', () => {
-        if (!previewReady) { setStatus('Load a preview first.'); return; }
+        if (!previewReady) { setStatus(T.load_preview_first); return; }
         setInspect(!inspectMode);
     });
+
+    // ─── Print simulation ─────────────────────────────────────
+    function applyPrintSim() {
+        const iframe = document.getElementById('sl-iframe');
+        const doc = iframe.contentDocument;
+        if (!doc) return;
+        doc.getElementById('sl-print-sim')?.remove();
+        if (selectedExport !== 'html5-sp') return;
+        const parts = [];
+        for (const sheet of doc.styleSheets) {
+            try {
+                for (const rule of sheet.cssRules) {
+                    if (rule instanceof CSSMediaRule) {
+                        const media = rule.conditionText || rule.media?.mediaText || '';
+                        if (/\bprint\b/.test(media)) {
+                            const inner = [...rule.cssRules].map(r => r.cssText).join('\n  ');
+                            parts.push(`@media screen {\n  ${inner}\n}`);
+                        }
+                    }
+                }
+            } catch { /* cross-origin sheet — skip */ }
+        }
+        if (!parts.length) return;
+        const style = doc.createElement('style');
+        style.id = 'sl-print-sim';
+        style.textContent = parts.join('\n\n');
+        doc.head.appendChild(style);
+    }
+
+    function updatePrintSimVisibility() {
+        applyPrintSim();
+    }
 
     // ─── Theme export / install ───────────────────────────────
     function buildFileOverrides() {
         const overrides = {};
         if (activeCssFile) {
             let css = document.getElementById('sl-css-textarea').value;
-            const quickCss = buildQuickCss(quickState);
+            const quickCss = buildScopeWrapped(buildQuickCss(quickState));
             css = replaceControlledBlock(css, QUICK_BLOCK_START, QUICK_BLOCK_END, quickCss);
             overrides[activeCssFile] = css;
         }
@@ -1276,9 +1563,7 @@
         const fixtureVal = document.getElementById('sl-fixture').value;
         const hasSession = fixtureVal.startsWith('session:');
         installBtn.disabled = !hasSession;
-        installBtn.title = hasSession
-            ? 'Instalar el tema y aplicarlo al proyecto abierto en el editor'
-            : 'Abre un proyecto en el editor para poder aplicar el tema directamente';
+        installBtn.title = hasSession ? T.install_apply_title : T.no_session_title;
 
         modal.classList.add('open');
         displayEl.focus();
@@ -1296,9 +1581,31 @@
 
     document.getElementById('btn-export-all-css').addEventListener('click', () => {
         const theme = document.getElementById('sl-theme').value;
-        if (!theme) { setStatus('Selecciona un tema primero.'); return; }
+        if (!theme) { setStatus(T.select_theme_first); return; }
         openRenameModal(theme);
     });
+
+    async function captureScreenshot() {
+        const iframe = document.getElementById('sl-iframe');
+        if (!iframe || !iframe.contentDocument?.body) return null;
+        if (typeof html2canvas === 'undefined') return null;
+        try {
+            const iw = iframe.contentWindow;
+            const canvas = await html2canvas(iframe.contentDocument.body, {
+                allowTaint: true, useCORS: true, scale: 1,
+                width: iw.innerWidth || 1200, height: iw.innerHeight || 550,
+                windowWidth: iw.innerWidth || 1200, windowHeight: iw.innerHeight || 550,
+                x: 0, y: 0, scrollX: 0, scrollY: 0,
+            });
+            const out = document.createElement('canvas');
+            out.width = 1200; out.height = 550;
+            out.getContext('2d').drawImage(canvas, 0, 0, 1200, 550);
+            return out.toDataURL('image/png').split(',')[1];
+        } catch(e) {
+            console.warn('[Style Lab] Screenshot failed:', e);
+            return null;
+        }
+    }
 
     async function doExportOrInstall(install) {
         const theme = document.getElementById('sl-theme').value;
@@ -1308,12 +1615,12 @@
         errEl.style.display = 'none';
 
         if (!newDisplayName || !newDirName) {
-            errEl.textContent = 'Rellena el nombre y el identificador.';
+            errEl.textContent = T.fill_name_id;
             errEl.style.display = '';
             return;
         }
         if (!/^[a-z0-9_-]+$/.test(newDirName)) {
-            errEl.textContent = 'El identificador solo puede contener minúsculas, números, - y _.';
+            errEl.textContent = T.id_invalid;
             errEl.style.display = '';
             return;
         }
@@ -1326,13 +1633,17 @@
             const fileOverrides = buildFileOverrides();
             const themeMetadata = collectThemeMetadata();
 
+            setStatus(T.capturing);
+            const screenshotBase64 = previewReady ? await captureScreenshot() : null;
+
             if (install) {
                 const fixtureVal = document.getElementById('sl-fixture').value;
                 const sessionId = fixtureVal.startsWith('session:') ? fixtureVal.slice(8) : null;
+                setStatus(T.installing);
                 const res = await fetch(basePath + '/api/developer/style-lab/install-theme', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId }),
+                    body: JSON.stringify({ theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId, screenshotBase64 }),
                 });
                 const data = await res.json().catch(() => ({}));
                 if (!res.ok) {
@@ -1341,17 +1652,21 @@
                     return;
                 }
                 document.getElementById('sl-rename-modal').classList.remove('open');
-                setStatus('Tema instalado: ' + newDisplayName);
-                if (sessionId) {
-                    setStatus('Tema aplicado al proyecto. Vuelve al editor…');
-                    setTimeout(() => { window.location.href = basePath + '/workarea'; }, 1500);
+                if (sessionId && data.themeApplied) {
+                    setStatus(T.theme_applied);
+                    setTimeout(() => { window.location.href = basePath + '/workarea?project=' + sessionId + '&apply_theme=' + encodeURIComponent(data.dirName); }, 1500);
+                } else if (sessionId) {
+                    setStatus(T.theme_no_apply);
+                } else {
+                    setStatus(T.theme_installed + newDisplayName);
                 }
             } else {
                 // Just download
+                setStatus(T.exporting);
                 const res = await fetch(basePath + '/api/developer/style-lab/export-theme', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ theme, fileOverrides, themeMetadata }),
+                    body: JSON.stringify({ theme, fileOverrides, themeMetadata, screenshotBase64 }),
                 });
                 if (!res.ok) {
                     const data = await res.json().catch(() => ({}));
@@ -1366,7 +1681,7 @@
                 });
                 a.click(); URL.revokeObjectURL(a.href);
                 document.getElementById('sl-rename-modal').classList.remove('open');
-                setStatus('Descargado: ' + newDirName + '.zip');
+                setStatus(T.downloaded + newDirName + '.zip');
             }
         } catch(e) {
             errEl.textContent = 'Error: ' + e.message;
@@ -1404,17 +1719,44 @@
             btn.classList.add('active');
             selectedExport = btn.dataset.export;
             pushParams({ export: selectedExport });
+            updatePrintSimVisibility();
+            if (previewReady) runPreview();
         });
     });
-    document.getElementById('sl-fixture').addEventListener('change', e => {
+    document.getElementById('sl-fixture').addEventListener('change', async e => {
         pushParams({ fixture: e.target.value || null });
         updateActions();
+        // If the selected fixture is a session with a known theme, auto-select it
+        if (e.target.value && e.target.value.startsWith('session:')) {
+            const sessionId = e.target.value.replace('session:', '');
+            const session = loadedSessions.find(s => s.sessionId === sessionId);
+            if (session?.theme && !document.getElementById('sl-theme').value) {
+                await loadThemes(session.theme);
+            }
+        }
         if (e.target.value && document.getElementById('sl-theme').value) runPreview();
     });
     document.getElementById('sl-theme').addEventListener('change', e => {
         pushParams({ theme: e.target.value || null });
         updateActions();
+        updateDeleteThemeBtn();
         if (e.target.value && document.getElementById('sl-fixture').value) runPreview();
+    });
+
+    document.getElementById('btn-delete-theme').addEventListener('click', async () => {
+        const dirName = document.getElementById('sl-theme').value;
+        const theme = loadedThemes.find(t => t.dirName === dirName);
+        if (!theme) return;
+        if (!window.confirm(T.confirm_delete.replace('{name}', theme.displayName))) return;
+        try {
+            const res = await fetch(basePath + '/api/developer/themes/' + encodeURIComponent(dirName), { method: 'DELETE' });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) { setStatus(T.error_deleting + (data.error || res.statusText)); return; }
+            setStatus(T.theme_deleted + theme.displayName);
+            await loadThemes('');
+        } catch(e) {
+            setStatus(T.error_deleting_theme);
+        }
     });
     document.querySelectorAll('[data-meta]').forEach(cb => {
         cb.addEventListener('change', () => {
@@ -1423,8 +1765,23 @@
         });
     });
 
+    function getEditorUrl() {
+        const fixture = document.getElementById('sl-fixture').value;
+        if (fixture && fixture.startsWith('session:')) {
+            const sessionId = fixture.slice(8);
+            return basePath + '/workarea?project=' + sessionId;
+        }
+        return basePath + '/workarea';
+    }
+
     function updateActions() {
         document.getElementById('btn-open-window').disabled = !previewReady;
+        const fixture = document.getElementById('sl-fixture').value;
+        const hasSession = fixture && fixture.startsWith('session:');
+        const discardBtn = document.getElementById('btn-discard-back');
+        discardBtn.disabled = !hasSession;
+        const editorUrl = getEditorUrl();
+        document.getElementById('sl-back-link').href = editorUrl;
     }
 
     // ─── Preview ──────────────────────────────────────────────
@@ -1432,7 +1789,7 @@
         const fixtureVal = document.getElementById('sl-fixture').value;
         const theme      = document.getElementById('sl-theme').value;
         if (!fixtureVal || !theme) return;
-        setStatus('Generating preview…');
+        setStatus(T.generating);
         setLoading(true);
         try {
             await ensureServiceWorker();
@@ -1447,15 +1804,15 @@
             url.searchParams.set('exportType', selectedExport);
             document.querySelectorAll('[data-meta]').forEach(cb =>
                 url.searchParams.set(cb.dataset.meta, cb.checked ? '1' : '0'));
-            setStatus('Fetching export…');
+            setStatus(T.fetching);
             const res = await fetch(url.toString());
             if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.message || res.statusText); }
-            setStatus('Decompressing…');
+            setStatus(T.decompressing);
             const buf = await res.arrayBuffer();
             const zip = window.fflate.unzipSync(new Uint8Array(buf));
             const files = {};
             for (const [p, d] of Object.entries(zip)) files[p] = d.buffer.slice(d.byteOffset, d.byteOffset + d.byteLength);
-            setStatus('Sending to Service Worker…');
+            setStatus(T.sending_sw);
             const n = await sendToSW(files);
             previewReady = true;
             updateActions();
@@ -1463,7 +1820,7 @@
             loadThemeFiles(theme).catch(() => {});
             setStatus(n + ' files · ' + fixtureVal + ' · ' + theme);
         } catch(e) {
-            setStatus('Error: ' + e.message);
+            setStatus('Error: ' + e.message); // e.message is always technical/English
             console.error('[Style Lab]', e);
         } finally { setLoading(false); }
     }
@@ -1472,9 +1829,11 @@
         const iframe = document.getElementById('sl-iframe');
         iframe.onload = () => {
             injectInspector();
+            syncQuickFromTheme();   // read real theme colours BEFORE any injection
             const css = document.getElementById('sl-css-textarea').value;
             if (css) injectEditorCss(css);
-            if (Object.keys(quickState).length) injectQuickCss(buildQuickCss(quickState));
+            if (Object.keys(quickState).length) injectQuickCss(buildScopeWrapped(buildQuickCss(quickState)));
+            applyPrintSim();
         };
         if (iframe.src && iframe.src.includes('/viewer/')) {
             iframe.src = 'about:blank';
@@ -1494,7 +1853,28 @@
         themeReloadToken = Date.now();
         const f = document.getElementById('sl-fixture').value;
         const t = document.getElementById('sl-theme').value;
-        if (f && t) runPreview(); else setStatus('Select fixture and theme first.');
+        if (f && t) runPreview(); else setStatus(T.select_fixture_theme);
+    });
+
+    function hasUnsavedChanges() {
+        const cssModified = document.getElementById('sl-modified-dot').classList.contains('on');
+        const quickModified = Object.keys(quickState).length > 0;
+        return cssModified || quickModified;
+    }
+
+    document.getElementById('sl-back-link').addEventListener('click', e => {
+        if (!hasUnsavedChanges()) return;
+        e.preventDefault();
+        const confirmed = window.confirm(T.confirm_unsaved);
+        if (confirmed) window.location.href = e.currentTarget.href;
+    });
+
+    document.getElementById('btn-discard-back').addEventListener('click', () => {
+        if (hasUnsavedChanges()) {
+            const confirmed = window.confirm(T.confirm_discard);
+            if (!confirmed) return;
+        }
+        window.location.href = getEditorUrl();
     });
 
     // ─── Helpers ──────────────────────────────────────────────
@@ -1520,10 +1900,18 @@
 
     // ─── Init ─────────────────────────────────────────────────
     async function init() {
+        loadScope();
         const { fixture, theme } = applyUrlParams();
-        const [effectiveFixture] = await Promise.all([loadFixtures(fixture), loadThemes(theme)]);
+        const [fixtureResult] = await Promise.all([loadFixtures(fixture), loadThemes(theme)]);
+        // If no theme in URL params but the loaded session has a known theme, apply it
+        const effectiveFixture = fixtureResult.fixture;
+        if (!theme && fixtureResult.theme) {
+            await loadThemes(fixtureResult.theme);
+        }
         updateActions();
-        if (effectiveFixture && theme) runPreview();
+        updatePrintSimVisibility();
+        const effectiveTheme = document.getElementById('sl-theme').value;
+        if (effectiveFixture && effectiveTheme) runPreview();
         if (navigator.serviceWorker) ensureServiceWorker().catch(() => {});
     }
 

@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as Y from 'yjs';
 import { renderTemplate } from '../services/template';
+import { detectLocaleFromHeader, trans, DEFAULT_LOCALE } from '../services/translation';
 import { getBasePath } from '../utils/basepath.util';
 import {
     Html5Exporter,
@@ -18,9 +19,10 @@ import {
 import { ElpxImporter, FileSystemAssetHandler } from '../shared/import';
 import { getAllSessions } from '../services/session-manager';
 import { reconstructDocument, storeUpdate } from '../websocket/yjs-persistence';
+import { withDocument } from '../yjs';
 import { db } from '../db/client';
 import { findProjectByUuid } from '../db/queries';
-import { createTheme, themeDirNameExists, getNextSiteThemeSortOrder } from '../db/queries/themes';
+import { createTheme, themeDirNameExists, getNextSiteThemeSortOrder, findThemeByDirName, deleteTheme } from '../db/queries/themes';
 import { DatabaseAssetProvider } from '../shared/export/providers/DatabaseAssetProvider';
 import * as fflate from 'fflate';
 
@@ -86,6 +88,7 @@ function listFixtures(dir: string): string[] {
         .map(e => e.name)
         .sort();
 }
+
 
 async function buildPreview(
     fixturePath: string,
@@ -215,7 +218,11 @@ function defaultConfigXml(metadata: Record<string, string>): string {
 }
 
 /** Build an installable theme ZIP from the theme directory + file overrides (CSS, config.xml…) */
-async function buildThemeZip(themeDir: string, fileOverrides: Record<string, string>): Promise<Uint8Array> {
+async function buildThemeZip(
+    themeDir: string,
+    fileOverrides: Record<string, string>,
+    binaryOverrides: Record<string, Uint8Array> = {},
+): Promise<Uint8Array> {
     const zipFiles: Record<string, Uint8Array> = {};
 
     async function addDir(dir: string, prefix: string) {
@@ -226,7 +233,9 @@ async function buildThemeZip(themeDir: string, fileOverrides: Record<string, str
             if (entry.isDirectory()) {
                 await addDir(fullPath, zipPath);
             } else {
-                if (fileOverrides[zipPath] !== undefined) {
+                if (binaryOverrides[zipPath] !== undefined) {
+                    zipFiles[zipPath] = binaryOverrides[zipPath];
+                } else if (fileOverrides[zipPath] !== undefined) {
                     zipFiles[zipPath] = Buffer.from(fileOverrides[zipPath], 'utf-8');
                 } else {
                     zipFiles[zipPath] = await fs.promises.readFile(fullPath);
@@ -239,20 +248,143 @@ async function buildThemeZip(themeDir: string, fileOverrides: Record<string, str
     if (!zipFiles['config.xml'] && fileOverrides['config.xml'] !== undefined) {
         zipFiles['config.xml'] = Buffer.from(fileOverrides['config.xml'], 'utf-8');
     }
+    // Binary overrides at root level (e.g. screenshot.png) not present in themeDir
+    for (const [zipPath, data] of Object.entries(binaryOverrides)) {
+        if (zipFiles[zipPath] === undefined) zipFiles[zipPath] = data;
+    }
     return fflate.zipSync(zipFiles);
 }
 
 export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
-    .get('/developer/style-lab', ({ set }) => {
+    .get('/developer/style-lab', ({ set, request }) => {
         if (!isDev()) {
             set.status = 404;
             return 'Not Found';
         }
+        const acceptLanguage = request.headers.get('accept-language');
+        const locale = process.env.APP_LOCALE || detectLocaleFromHeader(acceptLanguage) || DEFAULT_LOCALE;
+
+        const t = {
+            sl_back: trans('Back to editor', {}, locale),
+            sl_tab_settings: trans('Settings', {}, locale),
+            sl_project: trans('Project', {}, locale),
+            sl_project_hint: trans('Open a project in eXeLearning to see it here.', {}, locale),
+            sl_delete_theme: trans('Delete theme', {}, locale),
+            sl_open_in_window: trans('Open in new window', {}, locale),
+            sl_apply_export: trans('Apply / export theme...', {}, locale),
+            sl_apply_hint: trans('Use this button to save changes and install them in the project. If you have modified a base theme you will need to give it a new name.', {}, locale),
+            sl_discard_back: trans('Back to editor (discard changes)', {}, locale),
+            sl_reload_theme: trans('Reload theme from disk', {}, locale),
+            sl_file_list_empty: trans('Load a project and theme first.', {}, locale),
+            sl_unsaved_changes: trans('Unsaved changes', {}, locale),
+            sl_css_placeholder: trans('Load a project and theme to edit CSS...', {}, locale),
+            sl_apply_css: trans('Apply', {}, locale),
+            sl_reset_css: trans('Reset', {}, locale),
+            sl_wrap_scope: trans('Wrap scope', {}, locale),
+            sl_general_appearance: trans('General appearance', {}, locale),
+            sl_typography: trans('Typography', {}, locale),
+            sl_headings: trans('Headings', {}, locale),
+            sl_nav_menu: trans('Navigation menu', {}, locale),
+            sl_idevices_buttons: trans('iDevices and buttons', {}, locale),
+            sl_link_color: trans('Link color', {}, locale),
+            sl_page_title_color: trans('Page title color', {}, locale),
+            sl_text_color: trans('Text color', {}, locale),
+            sl_content_bg: trans('Content background', {}, locale),
+            sl_page_bg: trans('Page background', {}, locale),
+            sl_outer_bg: trans('Outer background', {}, locale),
+            sl_body_font: trans('Body font', {}, locale),
+            sl_headings_font: trans('Headings font', {}, locale),
+            sl_base_size: trans('Base size (px)', {}, locale),
+            sl_line_height: trans('Line height', {}, locale),
+            sl_page_title_size: trans('Page title size (rem)', {}, locale),
+            sl_page_title_weight: trans('Page title weight', {}, locale),
+            sl_uppercase_title: trans('Uppercase title', {}, locale),
+            sl_project_title_color: trans('Project title color', {}, locale),
+            sl_menu_bg: trans('Menu background', {}, locale),
+            sl_menu_text: trans('Menu text', {}, locale),
+            sl_hover_bg: trans('Hover background', {}, locale),
+            sl_hover_text: trans('Hover text', {}, locale),
+            sl_active_bg: trans('Active background', {}, locale),
+            sl_active_text: trans('Active text', {}, locale),
+            sl_idevice_bg: trans('iDevice background', {}, locale),
+            sl_idevice_border: trans('iDevice border', {}, locale),
+            sl_idevice_title_color: trans('iDevice title color', {}, locale),
+            sl_button_bg: trans('Button background', {}, locale),
+            sl_button_text: trans('Button text', {}, locale),
+            sl_generating_preview: trans('Generating preview...', {}, locale),
+            sl_placeholder_hint: trans('Select a project and theme, then click Preview', {}, locale),
+            sl_edit_element: trans('Edit element', {}, locale),
+            sl_font_size_px: trans('Font size (px)', {}, locale),
+            sl_weight: trans('Weight', {}, locale),
+            sl_alignment: trans('Alignment', {}, locale),
+            sl_apply_to_css: trans('Apply to CSS', {}, locale),
+            sl_cancel: trans('Cancel', {}, locale),
+            sl_export_install_modal: trans('Export / install theme', {}, locale),
+            sl_base_theme_warning_title: trans('⚠ Predefined theme', {}, locale),
+            sl_base_theme_warning_body: trans('You cannot save changes to a base theme with the same name. Enter a new name and identifier.', {}, locale),
+            sl_theme_name: trans('Theme name', {}, locale),
+            sl_identifier: trans('Identifier (ID)', {}, locale),
+            sl_version: trans('Version', {}, locale),
+            sl_compatibility: trans('Compatibility', {}, locale),
+            sl_author: trans('Author', {}, locale),
+            sl_importable: trans('Importable', {}, locale),
+            sl_license: trans('License', {}, locale),
+            sl_license_url: trans('License URL', {}, locale),
+            sl_description: trans('Description', {}, locale),
+            sl_theme_name_ph: trans('My custom theme', {}, locale),
+            sl_dir_name_ph: trans('my-theme', {}, locale),
+            sl_dir_name_hint: trans('Lowercase, numbers, hyphens and underscores only.', {}, locale),
+            sl_yes: trans('Yes', {}, locale),
+            sl_no: trans('No', {}, locale),
+            sl_download_zip: trans('Download ZIP', {}, locale),
+            sl_install_apply: trans('Install and apply to project', {}, locale),
+            sl_install_apply_title: trans('Install the theme and apply it to the project open in the editor', {}, locale),
+            sl_no_session_title: trans('Open a project in the editor to apply the theme directly', {}, locale),
+            // JS strings injected into the T constant
+            sl_js_undone: trans('Undone.', {}, locale),
+            sl_js_redone: trans('Redone.', {}, locale),
+            sl_js_open_project: trans('Project open in editor', {}, locale),
+            sl_js_fixtures: trans('Test fixtures', {}, locale),
+            sl_js_error_loading: trans('Error loading', {}, locale),
+            sl_js_select_theme: trans('— select theme —', {}, locale),
+            sl_js_css_applied: trans('CSS applied.', {}, locale),
+            sl_js_css_reset: trans('CSS reset.', {}, locale),
+            sl_js_scope_all: trans('Scope is "all formats" — no wrapper needed.', {}, locale),
+            sl_js_select_css_first: trans('Select CSS text to wrap first.', {}, locale),
+            sl_js_wrapped: trans('Selection wrapped with scope.', {}, locale),
+            sl_js_rule_added: trans('Rule added to CSS editor.', {}, locale),
+            sl_js_inspect_hint: trans('⊕ Click an element in the preview...', {}, locale),
+            sl_js_ready: trans('Ready', {}, locale),
+            sl_js_load_preview_first: trans('Load a preview first.', {}, locale),
+            sl_js_select_theme_first: trans('Select a theme first.', {}, locale),
+            sl_js_fill_name_id: trans('Fill in the name and identifier.', {}, locale),
+            sl_js_id_invalid: trans('The identifier can only contain lowercase letters, numbers, - and _.', {}, locale),
+            sl_js_capturing: trans('Capturing thumbnail...', {}, locale),
+            sl_js_installing: trans('Installing theme...', {}, locale),
+            sl_js_theme_applied: trans('Theme applied to project. Returning to editor...', {}, locale),
+            sl_js_theme_installed_no_apply: trans('Theme installed but could not be applied to project. Check the server console.', {}, locale),
+            sl_js_theme_installed: trans('Theme installed: ', {}, locale),
+            sl_js_exporting: trans('Exporting theme...', {}, locale),
+            sl_js_downloaded: trans('Downloaded: ', {}, locale),
+            sl_js_error_deleting: trans('Error deleting: ', {}, locale),
+            sl_js_error_deleting_theme: trans('Error deleting theme.', {}, locale),
+            sl_js_theme_deleted: trans('Theme deleted: ', {}, locale),
+            sl_js_generating: trans('Generating preview...', {}, locale),
+            sl_js_fetching: trans('Fetching export...', {}, locale),
+            sl_js_decompressing: trans('Decompressing...', {}, locale),
+            sl_js_sending_sw: trans('Sending to Service Worker...', {}, locale),
+            sl_js_select_fixture_theme: trans('Select project and theme first.', {}, locale),
+            sl_js_confirm_unsaved: trans('You have unapplied style changes.\n\nIf you go back to the editor now the changes will be lost.\n\nTo keep them use the "✓ Apply / export theme..." button in the left panel.\n\nDiscard changes and go back to the editor?', {}, locale),
+            sl_js_confirm_discard: trans('Discard changes and go back to the editor?', {}, locale),
+            sl_js_confirm_delete: trans('Delete theme "{name}"?\nThis action cannot be undone.', {}, locale),
+        };
+
         const html = renderTemplate('workarea/developer/style-lab', {
             basePath: getBasePath(),
             appEnv: process.env.APP_ENV || 'dev',
-            locale: 'en',
+            locale,
+            t,
         });
         set.headers['Content-Type'] = 'text/html; charset=utf-8';
         return html;
@@ -279,14 +411,19 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
         }
         const allSessions = getAllSessions();
         const seen = new Set<string>();
-        const results: { sessionId: string; fileName: string }[] = [];
+        const results: { sessionId: string; fileName: string; theme?: string }[] = [];
         for (const s of allSessions) {
             if (seen.has(s.sessionId)) continue;
             seen.add(s.sessionId);
             try {
                 const project = await findProjectByUuid(db, s.sessionId);
-                if (!project?.title) continue; // skip unsaved / untitled projects
-                results.push({ sessionId: s.sessionId, fileName: project.title });
+                if (!project?.title || !project.saved_once) continue; // skip untitled or never-saved projects
+                let theme: string | undefined;
+                try {
+                    const ydoc = await reconstructDocument(project.id);
+                    theme = (ydoc?.getMap('metadata')?.get('theme') as string) || undefined;
+                } catch { /* theme stays undefined */ }
+                results.push({ sessionId: s.sessionId, fileName: project.title, theme });
             } catch { /* skip on error */ }
         }
         return { sessions: results };
@@ -469,11 +606,12 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return new Response('Not Found', { status: 404 });
         }
 
-        const { theme, cssOverrides, fileOverrides, themeMetadata } = body as {
+        const { theme, cssOverrides, fileOverrides, themeMetadata, screenshotBase64 } = body as {
             theme: string;
             cssOverrides?: Record<string, string>;
             fileOverrides?: Record<string, string>;
             themeMetadata?: StyleLabThemeMetadata;
+            screenshotBase64?: string;
         };
         if (!theme) {
             set.status = 400;
@@ -496,7 +634,9 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                     : defaultConfigXml(metadataUpdates);
                 overrides['config.xml'] = patchConfigXml(originalXml, metadataUpdates);
             }
-            const zipBuffer = await buildThemeZip(themeDir, overrides);
+            const binaryOverrides: Record<string, Uint8Array> = {};
+            if (screenshotBase64) binaryOverrides['screenshot.png'] = Buffer.from(screenshotBase64, 'base64');
+            const zipBuffer = await buildThemeZip(themeDir, overrides, binaryOverrides);
             return new Response(zipBuffer, {
                 headers: {
                     'Content-Type': 'application/zip',
@@ -520,13 +660,14 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return new Response('Not Found', { status: 404 });
         }
 
-        const { theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId } = body as {
+        const { theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId, screenshotBase64 } = body as {
             theme: string;
             fileOverrides?: Record<string, string>;
             themeMetadata?: StyleLabThemeMetadata;
             newDirName: string;
             newDisplayName: string;
             sessionId?: string;
+            screenshotBase64?: string;
         };
 
         if (!theme || !newDirName || !newDisplayName) {
@@ -567,7 +708,9 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 overrides['config.xml'] = defaultConfigXml(metadataUpdates);
             }
 
-            const zipBuffer = await buildThemeZip(themeDir, overrides);
+            const binaryOverrides: Record<string, Uint8Array> = {};
+            if (screenshotBase64) binaryOverrides['screenshot.png'] = Buffer.from(screenshotBase64, 'base64');
+            const zipBuffer = await buildThemeZip(themeDir, overrides, binaryOverrides);
 
             // Extract files to site themes directory
             const filesDir = process.env.FILES_DIR || './data';
@@ -596,25 +739,27 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 storage_path: `themes/site/${newDirName}`,
             });
 
-            // Optionally apply theme to an open project
-            // sessionId === project UUID (odeId is never set on session objects)
+            // Apply theme to the open project via the live doc (or DB if no live session).
+            // withDocument loads from cache or DB by itself — no live session required.
+            let themeApplied = false;
             if (sessionId) {
-                const liveSession = getAllSessions().find(s => s.sessionId === sessionId);
-                if (liveSession) {
-                    const project = await findProjectByUuid(db, liveSession.sessionId);
+                try {
+                    const project = await findProjectByUuid(db, sessionId);
                     if (project) {
-                        const ydoc = await reconstructDocument(project.id);
-                        if (ydoc) {
-                            ydoc.transact(() => {
-                                ydoc.getMap('metadata').set('theme', newDirName);
-                            });
-                            await storeUpdate(project.id, Y.encodeStateAsUpdate(ydoc));
-                        }
+                        await withDocument(sessionId, { type: 'rest' }, (ydoc) => {
+                            ydoc.getMap('metadata').set('theme', newDirName);
+                        });
+                        themeApplied = true;
+                        console.log(`[style-lab] Theme "${newDirName}" applied to project ${sessionId}`);
+                    } else {
+                        console.warn(`[style-lab] Project not found for sessionId ${sessionId}`);
                     }
+                } catch (applyErr) {
+                    console.error('[style-lab] Failed to apply theme to project:', applyErr);
                 }
             }
 
-            return { ok: true, dirName: newDirName, displayName: newDisplayName };
+            return { ok: true, dirName: newDirName, displayName: newDisplayName, themeApplied };
         } catch (err) {
             console.error('[style-lab] Install theme error:', err);
             set.status = 500;
@@ -623,6 +768,25 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 message: err instanceof Error ? err.message : String(err),
             };
         }
+    })
+
+    // Delete a site theme (non-builtin only) — removes from DB and disk
+    .delete('/api/developer/themes/:dirName', async ({ params, set }) => {
+        if (!isDev()) { set.status = 404; return { error: 'Not Found' }; }
+
+        const { dirName } = params;
+        const theme = await findThemeByDirName(db, dirName);
+        if (!theme) { set.status = 404; return { error: `Theme not found: ${dirName}` }; }
+        if (theme.is_builtin) { set.status = 403; return { error: 'Cannot delete built-in themes' }; }
+
+        await deleteTheme(db, theme.id);
+
+        // Remove files from disk
+        const filesDir = process.env.FILES_DIR || './data';
+        const themeDir = path.join(filesDir, 'themes', 'site', dirName);
+        await fs.promises.rm(themeDir, { recursive: true, force: true });
+
+        return { ok: true, deleted: dirName };
     })
 
     // Reload theme from disk: re-export is the reload — theme CSS is read fresh each time.
