@@ -217,6 +217,14 @@ function defaultConfigXml(metadata: Record<string, string>): string {
 </theme>`;
 }
 
+function commonRoot(names: string[]): string {
+    if (!names.length) return '';
+    const candidate = names[0].split('/')[0];
+    if (names.length === 1 && !names[0].includes('/')) return '';
+    if (names.every(n => n.startsWith(candidate + '/'))) return candidate;
+    return '';
+}
+
 /** Build an installable theme ZIP from the theme directory + file overrides (CSS, config.xml…) */
 async function buildThemeZip(
     themeDir: string,
@@ -378,6 +386,19 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             sl_js_confirm_unsaved: trans('You have unapplied style changes.\n\nIf you go back to the editor now the changes will be lost.\n\nTo keep them use the "✓ Apply / export theme..." button in the left panel.\n\nDiscard changes and go back to the editor?', {}, locale),
             sl_js_confirm_discard: trans('Discard changes and go back to the editor?', {}, locale),
             sl_js_confirm_delete: trans('Delete theme "{name}"?\nThis action cannot be undone.', {}, locale),
+            // Files tab
+            sl_tab_files: trans('Files', {}, locale),
+            sl_import_zip: trans('Import theme ZIP', {}, locale),
+            sl_select_zip: trans('Select ZIP...', {}, locale),
+            sl_no_file_selected: trans('No file selected', {}, locale),
+            sl_install_uploaded: trans('Install uploaded theme', {}, locale),
+            sl_export_install_section: trans('Export / install', {}, locale),
+            sl_manage: trans('Manage', {}, locale),
+            sl_open_preview_window: trans('Open preview in new window', {}, locale),
+            sl_goto_files: trans('Export / install theme...', {}, locale),
+            sl_js_reading_zip: trans('Reading ZIP...', {}, locale),
+            sl_js_uploading_theme: trans('Uploading theme...', {}, locale),
+            sl_js_theme_uploaded: trans('Theme installed: ', {}, locale),
         };
 
         const html = renderTemplate('workarea/developer/style-lab', {
@@ -796,4 +817,91 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return { error: 'Not Found' };
         }
         return { ok: true, reload: true };
+    })
+
+    // Upload a theme ZIP from the client and install it as a new site theme
+    .post('/api/developer/style-lab/upload-theme', async ({ body, set }) => {
+        if (!isDev()) {
+            set.status = 404;
+            return new Response('Not Found', { status: 404 });
+        }
+
+        const { zipBase64, newDirName, newDisplayName, themeMetadata } = body as {
+            zipBase64: string;
+            newDirName: string;
+            newDisplayName: string;
+            themeMetadata?: StyleLabThemeMetadata;
+        };
+
+        if (!zipBase64 || !newDirName || !newDisplayName) {
+            set.status = 400;
+            return { error: 'Missing required params: zipBase64, newDirName, newDisplayName' };
+        }
+        if (!/^[a-z0-9_-]+$/.test(newDirName)) {
+            set.status = 400;
+            return { error: 'newDirName must contain only lowercase letters, numbers, hyphens and underscores' };
+        }
+
+        const exists = await themeDirNameExists(db, newDirName);
+        if (exists) {
+            set.status = 409;
+            return { error: `Theme directory "${newDirName}" already exists. Choose a different identifier.` };
+        }
+
+        try {
+            const zipBytes = Buffer.from(zipBase64, 'base64');
+            const files = fflate.unzipSync(new Uint8Array(zipBytes));
+            const names = Object.keys(files);
+            const root = commonRoot(names);
+
+            const filesDir = process.env.FILES_DIR || './data';
+            const targetDir = path.join(filesDir, 'themes', 'site', newDirName);
+            await fs.promises.mkdir(targetDir, { recursive: true });
+
+            for (const [rawName, data] of Object.entries(files)) {
+                const shortName = root ? rawName.slice(root.length + 1) : rawName;
+                if (!shortName) continue;
+                const fullPath = path.join(targetDir, shortName);
+                await fs.promises.mkdir(path.dirname(fullPath), { recursive: true });
+                await fs.promises.writeFile(fullPath, data);
+            }
+
+            // Patch config.xml with the new identifier and display name
+            const configPath = path.join(targetDir, 'config.xml');
+            const metadataUpdates = normalizeThemeMetadata({
+                ...themeMetadata,
+                name: newDirName,
+                title: themeMetadata?.title || newDisplayName,
+            });
+            if (fs.existsSync(configPath)) {
+                const originalXml = await fs.promises.readFile(configPath, 'utf-8');
+                await fs.promises.writeFile(configPath, patchConfigXml(originalXml, metadataUpdates));
+            } else {
+                await fs.promises.writeFile(configPath, defaultConfigXml(metadataUpdates));
+            }
+
+            const sortOrder = await getNextSiteThemeSortOrder(db);
+            await createTheme(db, {
+                dir_name: newDirName,
+                display_name: newDisplayName,
+                description: themeMetadata?.description || null,
+                version: themeMetadata?.version || null,
+                author: themeMetadata?.author || null,
+                license: themeMetadata?.license || null,
+                is_builtin: 0,
+                is_enabled: 1,
+                is_default: 0,
+                sort_order: sortOrder,
+                storage_path: `themes/site/${newDirName}`,
+            });
+
+            return { ok: true, dirName: newDirName, displayName: newDisplayName };
+        } catch (err) {
+            console.error('[style-lab] Upload theme error:', err);
+            set.status = 500;
+            return {
+                error: 'Theme upload failed',
+                message: err instanceof Error ? err.message : String(err),
+            };
+        }
     });

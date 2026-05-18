@@ -391,30 +391,7 @@
 
         .sl-loading { opacity: .6; pointer-events: none; }
 
-        /* ── Theme rename/install modal ─────────────────────── */
-        #sl-rename-modal {
-            position: fixed; inset: 0; margin: auto;
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 520px; max-width: 96vw;
-            background: #fff; border: 1px solid var(--line);
-            border-radius: 10px; box-shadow: 0 12px 40px rgba(0,0,0,.22);
-            display: none; flex-direction: column; z-index: 200;
-        }
-        #sl-rename-modal.open { display: flex; }
-        #sl-rename-modal-header {
-            display: flex; align-items: center;
-            padding: 10px 14px; background: #212529; color: #fff;
-            border-radius: 9px 9px 0 0; gap: 8px;
-        }
-        #sl-rename-modal-header span { font-size: 12px; font-weight: 600; flex: 1; }
-        #sl-rename-modal-close {
-            background: none; border: none; color: #adb5bd;
-            font-size: 18px; cursor: pointer; line-height: 1; padding: 0 2px;
-        }
-        #sl-rename-modal-body {
-            padding: 14px 16px; display: flex; flex-direction: column; gap: 12px;
-            max-height: min(72vh, 680px); overflow: auto;
-        }
+        /* ── Files tab ───────────────────────────────────────── */
         .sl-rename-warning {
             background: #fff8e1; border: 1px solid #f9c23c;
             border-radius: 6px; padding: 8px 10px;
@@ -447,20 +424,20 @@
             border-radius: 5px; padding: 6px 10px;
             font-size: 11px; color: #b91c1c;
         }
-        #sl-rename-modal-footer {
-            padding: 10px 14px; display: flex; gap: 8px;
-            border-top: 1px solid var(--line-soft);
+        .sl-upload-row {
+            display: flex; align-items: center; gap: 8px;
         }
-        #sl-rename-modal-footer button {
-            flex: 1; padding: 8px; border-radius: 6px;
-            font-size: 11px; font-weight: 500; cursor: pointer;
-            border: 1px solid var(--line); background: #fff; color: var(--ink);
-            transition: all .12s;
+        .sl-upload-name {
+            font-size: 11px; color: var(--muted); flex: 1;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        #sl-rename-modal-footer button:hover { border-color: var(--action); color: var(--action); }
-        #btn-rename-install.primary { background: var(--action); color: #fff; border-color: var(--action); }
-        #btn-rename-install.primary:hover { background: var(--action-dark); }
-        #btn-rename-install:disabled, #btn-rename-download:disabled { opacity: .4; cursor: not-allowed; }
+        .sl-section-divider {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .6px; color: var(--muted);
+            padding-bottom: 4px; border-bottom: 1px solid var(--line-soft);
+        }
+        #btn-files-install:disabled, #btn-files-download:disabled,
+        #btn-files-upload-install:disabled { opacity: .4; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -482,6 +459,7 @@
             <button class="sl-tab active" data-tab="controls" data-testid="sl-tab-controls">{{ t.sl_tab_settings or 'Settings' }}</button>
             <button class="sl-tab" data-tab="css" data-testid="sl-tab-css">CSS</button>
             <button class="sl-tab" data-tab="quick" data-testid="sl-tab-quick">Quick</button>
+            <button class="sl-tab" data-tab="files" data-testid="sl-tab-files">{{ t.sl_tab_files or 'Files' }}</button>
         </div>
 
         <!-- ── Controls tab ── -->
@@ -501,9 +479,6 @@
                     <select id="sl-theme" data-testid="style-lab-theme">
                         <option value="">— loading —</option>
                     </select>
-                    <button id="btn-delete-theme" class="btn button-tertiary" style="display:none;color:#dc3545;border-color:#dc3545;" title="{{ t.sl_delete_theme or 'Delete theme' }}">
-                        <span class="auto-icon" aria-hidden="true">delete</span> {{ t.sl_delete_theme or 'Delete theme' }}
-                    </button>
                 </div>
                 <div class="sl-section">
                     <span class="sl-label">Export type</span>
@@ -524,14 +499,8 @@
                     </div>
                 </div>
             </div>
-            <div id="sl-actions">
-                <button id="btn-open-window" class="btn button-tertiary" data-testid="style-lab-open-window" disabled>{{ t.sl_open_in_window or 'Open in new window' }}</button>
-                <button id="btn-export-all-css" class="btn button-display" data-testid="style-lab-export-theme">✓ {{ t.sl_apply_export or 'Apply / export theme...' }}</button>
-                <p id="sl-apply-hint" style="font-size:10px;color:var(--muted);margin:0;line-height:1.4;">
-                    {{ t.sl_apply_hint or 'Use this button to save changes and install them in the project. If you have modified a base theme you will need to give it a new name.' }}
-                </p>
-                <button id="btn-discard-back" class="btn button-tertiary" data-testid="style-lab-discard-back" disabled>← {{ t.sl_discard_back or 'Back to editor (discard changes)' }}</button>
-                <button id="btn-reload-theme" class="btn button-tertiary" data-testid="style-lab-reload-theme">↺ {{ t.sl_reload_theme or 'Reload theme from disk' }}</button>
+            <div style="padding:12px 14px;border-top:1px solid var(--line-soft);flex-shrink:0;">
+                <button id="btn-goto-files" class="btn button-display" data-testid="style-lab-export-theme" style="width:100%;">✓ {{ t.sl_goto_files or 'Export / install theme...' }}</button>
             </div>
         </div>
 
@@ -638,6 +607,101 @@
                 </details>
             </div>
         </div>
+
+        <!-- ── Files tab ── -->
+        <div class="sl-tab-panel" data-panel="files">
+            <div class="sl-panel-scroll">
+
+                <!-- Import -->
+                <div class="sl-section">
+                    <span class="sl-label">{{ t.sl_import_zip or 'Import theme ZIP' }}</span>
+                    <div class="sl-upload-row">
+                        <button id="btn-files-upload-pick" class="btn button-tertiary" data-testid="sl-upload-pick">
+                            <span class="auto-icon" aria-hidden="true">upload_file</span> {{ t.sl_select_zip or 'Select ZIP...' }}
+                        </button>
+                        <span id="sl-files-upload-name" class="sl-upload-name">{{ t.sl_no_file_selected or 'No file selected' }}</span>
+                    </div>
+                    <input type="file" id="sl-files-zip-input" accept=".zip" style="display:none" data-testid="sl-zip-input">
+                    <button id="btn-files-upload-install" class="btn button-display" disabled data-testid="sl-upload-install">
+                        ↑ {{ t.sl_install_uploaded or 'Install uploaded theme' }}
+                    </button>
+                </div>
+
+                <!-- Metadata -->
+                <div class="sl-section">
+                    <span class="sl-section-divider">{{ t.sl_export_install_section or 'Export / install' }}</span>
+                    <div class="sl-rename-warning" id="sl-files-warning" style="display:none">
+                        <strong>{{ t.sl_base_theme_warning_title or '⚠ Predefined theme' }}</strong><br>
+                        {{ t.sl_base_theme_warning_body or 'You cannot save changes to a base theme with the same name. Enter a new name and identifier.' }}
+                    </div>
+                    <div class="sl-rename-row">
+                        <label for="sl-files-display-name">{{ t.sl_theme_name or 'Theme name' }}</label>
+                        <input type="text" id="sl-files-display-name" placeholder="{{ t.sl_theme_name_ph or 'My custom theme' }}" maxlength="64" data-testid="sl-files-display-name">
+                    </div>
+                    <div class="sl-rename-row">
+                        <label for="sl-files-dir-name">{{ t.sl_identifier or 'Identifier (ID)' }}</label>
+                        <input type="text" id="sl-files-dir-name" placeholder="{{ t.sl_dir_name_ph or 'my-theme' }}" maxlength="48" pattern="[a-z0-9_-]+" data-testid="sl-files-dir-name">
+                        <span class="sl-rename-hint">{{ t.sl_dir_name_hint or 'Lowercase, numbers, hyphens and underscores only.' }}</span>
+                    </div>
+                    <div class="sl-rename-grid">
+                        <div class="sl-rename-row">
+                            <label for="sl-files-meta-version">{{ t.sl_version or 'Version' }}</label>
+                            <input type="text" id="sl-files-meta-version" placeholder="1.0" maxlength="32">
+                        </div>
+                        <div class="sl-rename-row">
+                            <label for="sl-files-meta-compatibility">{{ t.sl_compatibility or 'Compatibility' }}</label>
+                            <input type="text" id="sl-files-meta-compatibility" placeholder="3.0" maxlength="32">
+                        </div>
+                    </div>
+                    <div class="sl-rename-grid">
+                        <div class="sl-rename-row">
+                            <label for="sl-files-meta-author">{{ t.sl_author or 'Author' }}</label>
+                            <input type="text" id="sl-files-meta-author" maxlength="128">
+                        </div>
+                        <div class="sl-rename-row">
+                            <label for="sl-files-meta-downloadable">{{ t.sl_importable or 'Importable' }}</label>
+                            <select id="sl-files-meta-downloadable">
+                                <option value="1">{{ t.sl_yes or 'Yes' }}</option>
+                                <option value="0">{{ t.sl_no or 'No' }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="sl-rename-row">
+                        <label for="sl-files-meta-license">{{ t.sl_license or 'License' }}</label>
+                        <input type="text" id="sl-files-meta-license" maxlength="128">
+                    </div>
+                    <div class="sl-rename-row">
+                        <label for="sl-files-meta-license-url">{{ t.sl_license_url or 'License URL' }}</label>
+                        <input type="url" id="sl-files-meta-license-url" maxlength="256">
+                    </div>
+                    <div class="sl-rename-row">
+                        <label for="sl-files-meta-description">{{ t.sl_description or 'Description' }}</label>
+                        <textarea id="sl-files-meta-description" maxlength="1000"></textarea>
+                    </div>
+                    <div class="sl-rename-error" id="sl-files-error" style="display:none"></div>
+                    <button id="btn-files-download" class="btn button-tertiary" data-testid="sl-files-download">⬇ {{ t.sl_download_zip or 'Download ZIP' }}</button>
+                    <button id="btn-files-install" class="btn button-display" data-testid="sl-files-install"
+                        title="{{ t.sl_install_apply_title or 'Install the theme and apply it to the project open in the editor' }}">
+                        ✓ {{ t.sl_install_apply or 'Install and apply to project' }}
+                    </button>
+                    <p style="font-size:10px;color:var(--muted);margin:0;line-height:1.4;">
+                        {{ t.sl_apply_hint or 'Use this button to save changes and install them in the project. If you have modified a base theme you will need to give it a new name.' }}
+                    </p>
+                </div>
+
+                <!-- Manage -->
+                <div class="sl-section">
+                    <span class="sl-section-divider">{{ t.sl_manage or 'Manage' }}</span>
+                    <button id="btn-files-open-window" class="btn button-tertiary" data-testid="style-lab-open-window" disabled>{{ t.sl_open_preview_window or 'Open preview in new window' }}</button>
+                    <button id="btn-files-delete-theme" class="btn button-tertiary" style="display:none;color:#dc3545;border-color:#dc3545;" data-testid="sl-files-delete">
+                        <span class="auto-icon" aria-hidden="true">delete</span> {{ t.sl_delete_theme or 'Delete theme' }}
+                    </button>
+                    <button id="btn-files-reload-theme" class="btn button-tertiary" data-testid="style-lab-reload-theme">↺ {{ t.sl_reload_theme or 'Reload theme from disk' }}</button>
+                    <button id="btn-files-discard-back" class="btn button-tertiary" data-testid="style-lab-discard-back" disabled>← {{ t.sl_discard_back or 'Back to editor (discard changes)' }}</button>
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <!-- ── Preview area ── -->
@@ -715,71 +779,6 @@
     </div>
 </div>
 
-<!-- ── Theme rename/install modal ── -->
-<div id="sl-rename-modal" role="dialog" aria-label="Export or install theme">
-    <div id="sl-rename-modal-header">
-        <span>{{ t.sl_export_install_modal or 'Export / install theme' }}</span>
-        <button id="sl-rename-modal-close">×</button>
-    </div>
-    <div id="sl-rename-modal-body">
-        <div class="sl-rename-warning" id="sl-rename-warning">
-            <strong>{{ t.sl_base_theme_warning_title or '⚠ Predefined theme' }}</strong><br>
-            {{ t.sl_base_theme_warning_body or 'You cannot save changes to a base theme with the same name. Enter a new name and identifier.' }}
-        </div>
-        <div class="sl-rename-row">
-            <label for="sl-new-display-name">{{ t.sl_theme_name or 'Theme name' }}</label>
-            <input type="text" id="sl-new-display-name" placeholder="{{ t.sl_theme_name_ph or 'My custom theme' }}" maxlength="64">
-        </div>
-        <div class="sl-rename-row">
-            <label for="sl-new-dir-name">{{ t.sl_identifier or 'Identifier (ID)' }}</label>
-            <input type="text" id="sl-new-dir-name" placeholder="{{ t.sl_dir_name_ph or 'my-theme' }}" maxlength="48" pattern="[a-z0-9_-]+">
-            <span class="sl-rename-hint">{{ t.sl_dir_name_hint or 'Lowercase, numbers, hyphens and underscores only.' }}</span>
-        </div>
-        <div class="sl-rename-grid">
-            <div class="sl-rename-row">
-                <label for="sl-meta-version">{{ t.sl_version or 'Version' }}</label>
-                <input type="text" id="sl-meta-version" placeholder="1.0" maxlength="32">
-            </div>
-            <div class="sl-rename-row">
-                <label for="sl-meta-compatibility">{{ t.sl_compatibility or 'Compatibility' }}</label>
-                <input type="text" id="sl-meta-compatibility" placeholder="3.0" maxlength="32">
-            </div>
-        </div>
-        <div class="sl-rename-grid">
-            <div class="sl-rename-row">
-                <label for="sl-meta-author">{{ t.sl_author or 'Author' }}</label>
-                <input type="text" id="sl-meta-author" maxlength="128">
-            </div>
-            <div class="sl-rename-row">
-                <label for="sl-meta-downloadable">{{ t.sl_importable or 'Importable' }}</label>
-                <select id="sl-meta-downloadable">
-                    <option value="1">{{ t.sl_yes or 'Yes' }}</option>
-                    <option value="0">{{ t.sl_no or 'No' }}</option>
-                </select>
-            </div>
-        </div>
-        <div class="sl-rename-row">
-            <label for="sl-meta-license">{{ t.sl_license or 'License' }}</label>
-            <input type="text" id="sl-meta-license" maxlength="128">
-        </div>
-        <div class="sl-rename-row">
-            <label for="sl-meta-license-url">{{ t.sl_license_url or 'License URL' }}</label>
-            <input type="url" id="sl-meta-license-url" maxlength="256">
-        </div>
-        <div class="sl-rename-row">
-            <label for="sl-meta-description">{{ t.sl_description or 'Description' }}</label>
-            <textarea id="sl-meta-description" maxlength="1000"></textarea>
-        </div>
-        <div class="sl-rename-error" id="sl-rename-error" style="display:none"></div>
-    </div>
-    <div id="sl-rename-modal-footer">
-        <button id="btn-rename-download">⬇ {{ t.sl_download_zip or 'Download ZIP' }}</button>
-        <button id="btn-rename-install" class="primary" title="{{ t.sl_install_apply_title or 'Install the theme and apply it to the project open in the editor' }}">
-            ✓ {{ t.sl_install_apply or 'Install and apply to project' }}
-        </button>
-    </div>
-</div>
-
 <script src="{{ '/libs/fflate/fflate.umd.js' | asset }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <script>
@@ -825,6 +824,10 @@
         confirm_delete:       {{ t.sl_js_confirm_delete | json | safe }},
         install_apply_title:  {{ t.sl_install_apply_title | json | safe }},
         no_session_title:     {{ t.sl_no_session_title | json | safe }},
+        reading_zip:          {{ t.sl_js_reading_zip | json | safe }},
+        uploading_theme:      {{ t.sl_js_uploading_theme | json | safe }},
+        theme_uploaded:       {{ t.sl_js_theme_uploaded | json | safe }},
+        no_file_selected:     {{ t.sl_no_file_selected | json | safe }},
     };
     const QUICK_BLOCK_START = '/* style-lab-quick:start */';
     const QUICK_BLOCK_END = '/* style-lab-quick:end */';
@@ -1115,7 +1118,7 @@
     function updateDeleteThemeBtn() {
         const dirName = document.getElementById('sl-theme').value;
         const theme = loadedThemes.find(t => t.dirName === dirName);
-        const btn = document.getElementById('btn-delete-theme');
+        const btn = document.getElementById('btn-files-delete-theme');
         btn.style.display = (theme && theme.type === 'site') ? '' : 'none';
     }
 
@@ -1506,27 +1509,27 @@
 
     function collectThemeMetadata() {
         return {
-            name: document.getElementById('sl-new-dir-name').value.trim(),
-            title: document.getElementById('sl-new-display-name').value.trim(),
-            version: document.getElementById('sl-meta-version').value.trim(),
-            compatibility: document.getElementById('sl-meta-compatibility').value.trim(),
-            author: document.getElementById('sl-meta-author').value.trim(),
-            license: document.getElementById('sl-meta-license').value.trim(),
-            licenseUrl: document.getElementById('sl-meta-license-url').value.trim(),
-            description: document.getElementById('sl-meta-description').value.trim(),
-            downloadable: document.getElementById('sl-meta-downloadable').value,
+            name: document.getElementById('sl-files-dir-name').value.trim(),
+            title: document.getElementById('sl-files-display-name').value.trim(),
+            version: document.getElementById('sl-files-meta-version').value.trim(),
+            compatibility: document.getElementById('sl-files-meta-compatibility').value.trim(),
+            author: document.getElementById('sl-files-meta-author').value.trim(),
+            license: document.getElementById('sl-files-meta-license').value.trim(),
+            licenseUrl: document.getElementById('sl-files-meta-license-url').value.trim(),
+            description: document.getElementById('sl-files-meta-description').value.trim(),
+            downloadable: document.getElementById('sl-files-meta-downloadable').value,
         };
     }
 
     function setThemeMetadataControls(theme) {
         const metadata = loadedThemes.find(t => t.dirName === theme) || {};
-        document.getElementById('sl-meta-version').value = metadata.version || '1.0';
-        document.getElementById('sl-meta-compatibility').value = metadata.compatibility || '3.0';
-        document.getElementById('sl-meta-author').value = metadata.author || '';
-        document.getElementById('sl-meta-license').value = metadata.license || '';
-        document.getElementById('sl-meta-license-url').value = metadata.licenseUrl || metadata.licenseURL || '';
-        document.getElementById('sl-meta-description').value = metadata.description || '';
-        document.getElementById('sl-meta-downloadable').value = String(metadata.downloadable ?? '1') === '0' ? '0' : '1';
+        document.getElementById('sl-files-meta-version').value = metadata.version || '1.0';
+        document.getElementById('sl-files-meta-compatibility').value = metadata.compatibility || '3.0';
+        document.getElementById('sl-files-meta-author').value = metadata.author || '';
+        document.getElementById('sl-files-meta-license').value = metadata.license || '';
+        document.getElementById('sl-files-meta-license-url').value = metadata.licenseUrl || metadata.licenseURL || '';
+        document.getElementById('sl-files-meta-description').value = metadata.description || '';
+        document.getElementById('sl-files-meta-downloadable').value = String(metadata.downloadable ?? '1') === '0' ? '0' : '1';
     }
 
     function isBaseTheme(dirName) {
@@ -1542,47 +1545,43 @@
             .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     }
 
-    // Rename/install modal
-    function openRenameModal(theme) {
-        const modal = document.getElementById('sl-rename-modal');
-        const warning = document.getElementById('sl-rename-warning');
-        const installBtn = document.getElementById('btn-rename-install');
-        const errEl = document.getElementById('sl-rename-error');
+    function openFilesTab(theme) {
+        const warning = document.getElementById('sl-files-warning');
+        const errEl = document.getElementById('sl-files-error');
+        const displayEl = document.getElementById('sl-files-display-name');
+        const dirEl = document.getElementById('sl-files-dir-name');
+        const installBtn = document.getElementById('btn-files-install');
 
         warning.style.display = isBaseTheme(theme) ? '' : 'none';
         errEl.style.display = 'none';
 
-        // Prefill with modified theme name
-        const displayEl = document.getElementById('sl-new-display-name');
-        const dirEl = document.getElementById('sl-new-dir-name');
-        displayEl.value = theme + '-custom';
-        dirEl.value = slugify(theme + '-custom');
+        // Only prefill if empty or switching to a different source theme
+        if (!displayEl.value || displayEl.dataset.srcTheme !== theme) {
+            displayEl.value = theme + '-custom';
+            dirEl.value = slugify(theme + '-custom');
+            displayEl.dataset.srcTheme = theme;
+        }
         setThemeMetadataControls(theme);
 
-        // "Install & apply" only works if a session is selected
         const fixtureVal = document.getElementById('sl-fixture').value;
         const hasSession = fixtureVal.startsWith('session:');
         installBtn.disabled = !hasSession;
         installBtn.title = hasSession ? T.install_apply_title : T.no_session_title;
 
-        modal.classList.add('open');
+        switchTab('files');
         displayEl.focus();
         displayEl.select();
     }
 
-    document.getElementById('sl-rename-modal-close').addEventListener('click', () => {
-        document.getElementById('sl-rename-modal').classList.remove('open');
-    });
-
     // Auto-generate dirName from displayName
-    document.getElementById('sl-new-display-name').addEventListener('input', e => {
-        document.getElementById('sl-new-dir-name').value = slugify(e.target.value);
+    document.getElementById('sl-files-display-name').addEventListener('input', e => {
+        document.getElementById('sl-files-dir-name').value = slugify(e.target.value);
     });
 
-    document.getElementById('btn-export-all-css').addEventListener('click', () => {
+    document.getElementById('btn-goto-files').addEventListener('click', () => {
         const theme = document.getElementById('sl-theme').value;
         if (!theme) { setStatus(T.select_theme_first); return; }
-        openRenameModal(theme);
+        openFilesTab(theme);
     });
 
     async function captureScreenshot() {
@@ -1609,9 +1608,9 @@
 
     async function doExportOrInstall(install) {
         const theme = document.getElementById('sl-theme').value;
-        const newDisplayName = document.getElementById('sl-new-display-name').value.trim();
-        const newDirName = document.getElementById('sl-new-dir-name').value.trim();
-        const errEl = document.getElementById('sl-rename-error');
+        const newDisplayName = document.getElementById('sl-files-display-name').value.trim();
+        const newDirName = document.getElementById('sl-files-dir-name').value.trim();
+        const errEl = document.getElementById('sl-files-error');
         errEl.style.display = 'none';
 
         if (!newDisplayName || !newDirName) {
@@ -1625,8 +1624,8 @@
             return;
         }
 
-        const dlBtn = document.getElementById('btn-rename-download');
-        const instBtn = document.getElementById('btn-rename-install');
+        const dlBtn = document.getElementById('btn-files-download');
+        const instBtn = document.getElementById('btn-files-install');
         dlBtn.disabled = true; instBtn.disabled = true;
 
         try {
@@ -1651,7 +1650,6 @@
                     errEl.style.display = '';
                     return;
                 }
-                document.getElementById('sl-rename-modal').classList.remove('open');
                 if (sessionId && data.themeApplied) {
                     setStatus(T.theme_applied);
                     setTimeout(() => { window.location.href = basePath + '/workarea?project=' + sessionId + '&apply_theme=' + encodeURIComponent(data.dirName); }, 1500);
@@ -1659,9 +1657,9 @@
                     setStatus(T.theme_no_apply);
                 } else {
                     setStatus(T.theme_installed + newDisplayName);
+                    await loadThemes(newDirName);
                 }
             } else {
-                // Just download
                 setStatus(T.exporting);
                 const res = await fetch(basePath + '/api/developer/style-lab/export-theme', {
                     method: 'POST',
@@ -1680,7 +1678,6 @@
                     download: newDirName + '.zip',
                 });
                 a.click(); URL.revokeObjectURL(a.href);
-                document.getElementById('sl-rename-modal').classList.remove('open');
                 setStatus(T.downloaded + newDirName + '.zip');
             }
         } catch(e) {
@@ -1688,21 +1685,125 @@
             errEl.style.display = '';
         } finally {
             dlBtn.disabled = false;
-            // re-enable install only if session is active
             const fixtureVal = document.getElementById('sl-fixture').value;
             instBtn.disabled = !fixtureVal.startsWith('session:');
         }
     }
 
-    document.getElementById('btn-rename-download').addEventListener('click', () => doExportOrInstall(false));
-    document.getElementById('btn-rename-install').addEventListener('click', () => doExportOrInstall(true));
+    document.getElementById('btn-files-download').addEventListener('click', () => doExportOrInstall(false));
+    document.getElementById('btn-files-install').addEventListener('click', () => doExportOrInstall(true));
 
     // ─── Tabs ─────────────────────────────────────────────────
     function switchTab(name) {
         document.querySelectorAll('.sl-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
         document.querySelectorAll('.sl-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === name));
+        if (name === 'files') {
+            const theme = document.getElementById('sl-theme').value;
+            if (theme) openFilesTab(theme);
+        }
     }
     document.querySelectorAll('.sl-tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+    // ─── Upload theme ZIP ─────────────────────────────────────
+    let uploadedZipBytes = null;
+
+    function parseXmlField(xml, tag) {
+        const m = xml.match(new RegExp('<' + tag + '>([^<]*)</' + tag + '>'));
+        return m ? m[1].trim() : '';
+    }
+
+    function populateFromZipConfig(configXml) {
+        const get = tag => parseXmlField(configXml, tag);
+        const displayName = get('title') || get('name') || '';
+        const dirName = get('name') ? slugify(get('name')) : '';
+        if (displayName) document.getElementById('sl-files-display-name').value = displayName;
+        if (dirName) document.getElementById('sl-files-dir-name').value = dirName + (dirName ? '-upload' : '');
+        document.getElementById('sl-files-meta-version').value = get('version') || '1.0';
+        document.getElementById('sl-files-meta-compatibility').value = get('compatibility') || '3.0';
+        document.getElementById('sl-files-meta-author').value = get('author') || '';
+        document.getElementById('sl-files-meta-license').value = get('license') || '';
+        document.getElementById('sl-files-meta-license-url').value = get('license-url') || '';
+        document.getElementById('sl-files-meta-description').value = get('description') || '';
+        const dl = get('downloadable');
+        document.getElementById('sl-files-meta-downloadable').value = dl === '0' ? '0' : '1';
+    }
+
+    document.getElementById('btn-files-upload-pick').addEventListener('click', () => {
+        document.getElementById('sl-files-zip-input').click();
+    });
+
+    document.getElementById('sl-files-zip-input').addEventListener('change', async e => {
+        const file = e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
+        document.getElementById('sl-files-upload-name').textContent = T.reading_zip;
+        document.getElementById('btn-files-upload-install').disabled = true;
+        try {
+            const buf = await file.arrayBuffer();
+            uploadedZipBytes = new Uint8Array(buf);
+            const zip = window.fflate.unzipSync(uploadedZipBytes);
+            // Find config.xml (possibly under a root folder)
+            const configEntry = Object.entries(zip).find(([n]) => /(?:^|\/)config\.xml$/.test(n));
+            if (configEntry) {
+                const xmlText = new TextDecoder().decode(configEntry[1]);
+                populateFromZipConfig(xmlText);
+                // Warn: uploaded theme, no base-theme restriction
+                document.getElementById('sl-files-warning').style.display = 'none';
+            }
+            document.getElementById('sl-files-upload-name').textContent = file.name;
+            document.getElementById('btn-files-upload-install').disabled = false;
+            document.getElementById('sl-files-error').style.display = 'none';
+        } catch(err) {
+            uploadedZipBytes = null;
+            document.getElementById('sl-files-upload-name').textContent = T.no_file_selected;
+            document.getElementById('sl-files-error').textContent = 'Error reading ZIP: ' + err.message;
+            document.getElementById('sl-files-error').style.display = '';
+        }
+    });
+
+    document.getElementById('btn-files-upload-install').addEventListener('click', async () => {
+        if (!uploadedZipBytes) return;
+        const newDisplayName = document.getElementById('sl-files-display-name').value.trim();
+        const newDirName = document.getElementById('sl-files-dir-name').value.trim();
+        const errEl = document.getElementById('sl-files-error');
+        errEl.style.display = 'none';
+
+        if (!newDisplayName || !newDirName) { errEl.textContent = T.fill_name_id; errEl.style.display = ''; return; }
+        if (!/^[a-z0-9_-]+$/.test(newDirName)) { errEl.textContent = T.id_invalid; errEl.style.display = ''; return; }
+
+        const btn = document.getElementById('btn-files-upload-install');
+        btn.disabled = true;
+        setStatus(T.uploading_theme);
+        try {
+            // Convert to base64
+            let binary = '';
+            for (let i = 0; i < uploadedZipBytes.length; i++) binary += String.fromCharCode(uploadedZipBytes[i]);
+            const zipBase64 = btoa(binary);
+            const themeMetadata = collectThemeMetadata();
+            const res = await fetch(basePath + '/api/developer/style-lab/upload-theme', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ zipBase64, newDirName, newDisplayName, themeMetadata }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                errEl.textContent = data.error || res.statusText;
+                errEl.style.display = '';
+                return;
+            }
+            setStatus(T.theme_uploaded + newDisplayName);
+            uploadedZipBytes = null;
+            document.getElementById('sl-files-upload-name').textContent = T.no_file_selected;
+            await loadThemes(newDirName);
+            // Switch to the newly installed theme for preview
+            if (document.getElementById('sl-fixture').value) runPreview();
+        } catch(err) {
+            errEl.textContent = 'Error: ' + err.message;
+            errEl.style.display = '';
+        } finally {
+            btn.disabled = !uploadedZipBytes;
+        }
+    });
 
     // ─── Viewport + export type ───────────────────────────────
     document.querySelectorAll('[data-viewport]').forEach(btn => {
@@ -1743,7 +1844,7 @@
         if (e.target.value && document.getElementById('sl-fixture').value) runPreview();
     });
 
-    document.getElementById('btn-delete-theme').addEventListener('click', async () => {
+    document.getElementById('btn-files-delete-theme').addEventListener('click', async () => {
         const dirName = document.getElementById('sl-theme').value;
         const theme = loadedThemes.find(t => t.dirName === dirName);
         if (!theme) return;
@@ -1775,13 +1876,12 @@
     }
 
     function updateActions() {
-        document.getElementById('btn-open-window').disabled = !previewReady;
+        document.getElementById('btn-files-open-window').disabled = !previewReady;
         const fixture = document.getElementById('sl-fixture').value;
         const hasSession = fixture && fixture.startsWith('session:');
-        const discardBtn = document.getElementById('btn-discard-back');
-        discardBtn.disabled = !hasSession;
-        const editorUrl = getEditorUrl();
-        document.getElementById('sl-back-link').href = editorUrl;
+        document.getElementById('btn-files-discard-back').disabled = !hasSession;
+        document.getElementById('btn-files-install').disabled = !hasSession;
+        document.getElementById('sl-back-link').href = getEditorUrl();
     }
 
     // ─── Preview ──────────────────────────────────────────────
@@ -1845,10 +1945,10 @@
         document.getElementById('sl-placeholder').style.display = 'none';
     }
 
-    document.getElementById('btn-open-window').addEventListener('click', () => {
+    document.getElementById('btn-files-open-window').addEventListener('click', () => {
         if (previewReady) window.open(viewerUrl, '_blank');
     });
-    document.getElementById('btn-reload-theme').addEventListener('click', async () => {
+    document.getElementById('btn-files-reload-theme').addEventListener('click', async () => {
         try { await fetch(basePath + '/api/developer/reload-theme', { method: 'POST' }); } catch {}
         themeReloadToken = Date.now();
         const f = document.getElementById('sl-fixture').value;
@@ -1869,7 +1969,7 @@
         if (confirmed) window.location.href = e.currentTarget.href;
     });
 
-    document.getElementById('btn-discard-back').addEventListener('click', () => {
+    document.getElementById('btn-files-discard-back').addEventListener('click', () => {
         if (hasUnsavedChanges()) {
             const confirmed = window.confirm(T.confirm_discard);
             if (!confirmed) return;
