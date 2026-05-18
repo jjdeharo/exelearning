@@ -1126,22 +1126,23 @@
 </div>
 
 <!-- ── Fullscreen editor modal ── -->
-<div id="sl-editor-modal" style="display:none;position:fixed;inset:0;z-index:8000;flex-direction:column;background:#1e1e2e;" role="dialog" aria-label="Editor">
-    <div id="sl-em-header" style="display:flex;align-items:center;gap:10px;padding:8px 14px;background:#2d2d3f;border-bottom:1px solid #444;flex-shrink:0;">
-        <span id="sl-em-filename" style="font-family:monospace;font-size:13px;color:#cdd6f4;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        <div id="sl-em-modified" style="width:7px;height:7px;border-radius:50%;background:#f38ba8;display:none;" title="Unsaved changes"></div>
+<div id="sl-editor-modal" style="display:none;position:fixed;inset:0;z-index:8000;flex-direction:column;background:#fafafa;box-shadow:0 0 0 100vmax rgba(0,0,0,.45);" role="dialog" aria-label="Editor">
+    <div id="sl-em-header" style="display:flex;align-items:center;gap:10px;padding:8px 14px;background:#f0f2f5;border-bottom:1px solid #ddd;flex-shrink:0;">
+        <span id="sl-em-filename" style="font-family:monospace;font-size:13px;color:#333;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <div id="sl-em-modified" style="width:7px;height:7px;border-radius:50%;background:#e03;display:none;" title="Unsaved changes"></div>
+        <span id="sl-em-status" style="font-size:11px;color:var(--muted);"></span>
         <button id="btn-em-action" class="btn button-display" style="font-size:12px;padding:4px 14px;"></button>
-        <button id="btn-em-close" class="btn button-tertiary" style="font-size:18px;padding:2px 10px;color:#cdd6f4;border-color:#555;">×</button>
+        <button id="btn-em-close" class="btn button-tertiary" style="font-size:20px;padding:2px 10px;">×</button>
     </div>
-    <div style="flex:1;position:relative;overflow:hidden;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.6;">
-        <pre id="sl-em-highlight" style="position:absolute;inset:0;margin:0;padding:14px 16px;overflow:auto;pointer-events:none;white-space:pre;word-wrap:normal;background:#1e1e2e;"><code id="sl-em-code" class="language-css"></code></pre>
+    <div id="sl-em-container" style="flex:1;position:relative;overflow:hidden;background:#fafafa;">
+        <pre id="sl-em-highlight" aria-hidden="true" style="position:absolute;inset:0;margin:0;padding:16px 20px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.65;white-space:pre;tab-size:4;overflow:auto;pointer-events:none;background:transparent;border:none;"><code style="display:block;font-family:inherit;font-size:inherit;background:transparent;"></code></pre>
         <textarea id="sl-em-textarea" spellcheck="false" wrap="off"
-            style="position:absolute;inset:0;padding:14px 16px;width:100%;height:100%;font:inherit;background:transparent;color:transparent;caret-color:#cdd6f4;border:none;resize:none;outline:none;overflow:auto;white-space:pre;word-wrap:normal;z-index:1;"></textarea>
+            style="position:absolute;inset:0;padding:16px 20px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.65;color:transparent;background:transparent;caret-color:#1a1a1a;border:none;resize:none;outline:none;overflow:auto;white-space:pre;tab-size:4;z-index:1;"></textarea>
     </div>
-    <div id="sl-em-footer" style="padding:6px 14px;background:#2d2d3f;border-top:1px solid #444;font-size:11px;color:#888;display:flex;gap:16px;flex-shrink:0;">
-        <span id="sl-em-status"></span>
-        <span>Ctrl+S — {{ t.sl_save or 'save' }}</span>
+    <div style="padding:5px 14px;background:#f0f2f5;border-top:1px solid #ddd;font-size:11px;color:#aaa;display:flex;gap:16px;flex-shrink:0;">
+        <span>Ctrl+S — {{ t.sl_save or 'save / apply' }}</span>
         <span>Esc — {{ t.sl_close or 'close' }}</span>
+        <span>Tab — 4 {{ t.sl_spaces or 'spaces' }}</span>
     </div>
 </div>
 
@@ -1155,18 +1156,21 @@
 <script src="{{ '/libs/fflate/fflate.umd.js' | asset }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <style>
-/* Dark theme tokens for the modal editor */
-#sl-em-highlight .hljs-keyword   { color:#cba6f7; }
-#sl-em-highlight .hljs-string    { color:#a6e3a1; }
-#sl-em-highlight .hljs-number    { color:#fab387; }
-#sl-em-highlight .hljs-comment   { color:#6c7086; font-style:italic; }
-#sl-em-highlight .hljs-attribute { color:#89dceb; }
+/* Light theme tokens for the modal editor (GitHub-style) */
+#sl-em-highlight                    { color:#24292e; }
+#sl-em-highlight code               { color:#24292e; background:transparent; }
+#sl-em-highlight .hljs-keyword      { color:#d73a49; }
+#sl-em-highlight .hljs-string       { color:#032f62; }
+#sl-em-highlight .hljs-number       { color:#005cc5; }
+#sl-em-highlight .hljs-comment      { color:#6a737d; font-style:italic; }
+#sl-em-highlight .hljs-attribute    { color:#6f42c1; }
 #sl-em-highlight .hljs-selector-class,
 #sl-em-highlight .hljs-selector-id,
-#sl-em-highlight .hljs-selector-tag { color:#89b4fa; }
-#sl-em-highlight .hljs-built_in  { color:#f38ba8; }
-#sl-em-highlight .hljs-variable  { color:#cdd6f4; }
-#sl-em-highlight code            { color:#cdd6f4; }
+#sl-em-highlight .hljs-selector-tag { color:#22863a; }
+#sl-em-highlight .hljs-built_in     { color:#e36209; }
+#sl-em-highlight .hljs-variable     { color:#24292e; }
+#sl-em-highlight .hljs-property     { color:#005cc5; }
+#sl-em-highlight .hljs-punctuation  { color:#24292e; }
 </style>
 <script>
 (function () {
@@ -1906,43 +1910,38 @@
     }
 
     // ─── Fullscreen editor modal ──────────────────────────────
-    function updateModalHighlight() {
-        const code = document.getElementById('sl-em-code');
-        code.textContent = document.getElementById('sl-em-textarea').value;
-        if (window.hljs) hljs.highlightElement(code);
-        // Sync scroll
-        const pre = document.getElementById('sl-em-highlight');
-        const ta  = document.getElementById('sl-em-textarea');
+    function updateEmHighlight() {
+        const ta   = document.getElementById('sl-em-textarea');
+        const pre  = document.getElementById('sl-em-highlight');
+        const code = pre.querySelector('code');
+        const path = document.getElementById('sl-em-filename').textContent;
+        code.className = path.endsWith('.js') ? 'language-javascript' : 'language-css';
+        code.removeAttribute('data-highlighted');
+        code.textContent = ta.value;
+        hljs.highlightElement(code);
         pre.scrollTop  = ta.scrollTop;
         pre.scrollLeft = ta.scrollLeft;
     }
 
     function openEditorModal(path) {
         if (!path || themeFiles[path] === undefined) return;
-        const modal   = document.getElementById('sl-editor-modal');
-        const ta      = document.getElementById('sl-em-textarea');
-        const code    = document.getElementById('sl-em-code');
-        const isJs    = path.endsWith('.js');
+        const ta = document.getElementById('sl-em-textarea');
+        const isJs = path.endsWith('.js');
         document.getElementById('sl-em-filename').textContent = path;
-        code.className = isJs ? 'language-javascript' : 'language-css';
-        ta.value = themeFiles[path];
-        document.getElementById('btn-em-action').textContent = isJs
-            ? (T.save_js || 'Save JS')
-            : (T.apply_css || 'Apply CSS');
+        document.getElementById('btn-em-action').textContent = isJs ? (T.save_js || 'Save JS') : (T.apply_css || 'Apply CSS');
         document.getElementById('sl-em-modified').style.display = 'none';
         document.getElementById('sl-em-status').textContent = '';
-        modal.style.display = 'flex';
-        updateModalHighlight();
+        ta.value = themeFiles[path];
+        document.getElementById('sl-editor-modal').style.display = 'flex';
+        updateEmHighlight();
         ta.focus();
     }
 
-    function closeEditorModal(apply) {
+    function closeEditorModal() {
         const modal = document.getElementById('sl-editor-modal');
         if (modal.style.display === 'none') return;
         const path  = document.getElementById('sl-em-filename').textContent;
         const ta    = document.getElementById('sl-em-textarea');
-        const isJs  = path.endsWith('.js');
-        // Save back to themeFiles and sync panel textarea
         themeFiles[path] = ta.value;
         const panelTa = document.getElementById('sl-css-textarea');
         if (activeCssFile === path) {
@@ -1950,26 +1949,25 @@
             markModified(ta.value !== originalCss);
             updateHighlight();
         }
-        if (apply && !isJs && previewReady) {
-            injectEditorCss(ta.value);
-            setStatus(T.css_applied);
-        }
         modal.style.display = 'none';
     }
 
     function wireEditorModal() {
-        const ta = document.getElementById('sl-em-textarea');
+        const ta  = document.getElementById('sl-em-textarea');
+        const pre = document.getElementById('sl-em-highlight');
+
         ta.addEventListener('input', () => {
-            updateModalHighlight();
             const path = document.getElementById('sl-em-filename').textContent;
-            const modified = ta.value !== (themeFiles[path] ?? '');
-            document.getElementById('sl-em-modified').style.display = modified ? '' : 'none';
+            document.getElementById('sl-em-modified').style.display =
+                ta.value !== (themeFiles[path] ?? '') ? '' : 'none';
+            updateEmHighlight();
         });
+
         ta.addEventListener('scroll', () => {
-            const pre = document.getElementById('sl-em-highlight');
             pre.scrollTop  = ta.scrollTop;
             pre.scrollLeft = ta.scrollLeft;
         });
+
         document.getElementById('btn-em-action').addEventListener('click', () => {
             const path = document.getElementById('sl-em-filename').textContent;
             const isJs = path.endsWith('.js');
@@ -1982,26 +1980,24 @@
                 document.getElementById('sl-em-status').textContent = T.css_applied || 'Applied';
             }
         });
-        document.getElementById('btn-em-close').addEventListener('click', () => closeEditorModal(false));
-        document.getElementById('sl-editor-modal').addEventListener('click', e => {
-            if (e.target === document.getElementById('sl-editor-modal')) closeEditorModal(false);
-        });
+
+        document.getElementById('btn-em-close').addEventListener('click', closeEditorModal);
+
         ta.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeEditorModal(false); return; }
+            if (e.key === 'Escape') { closeEditorModal(); return; }
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                 e.preventDefault();
                 document.getElementById('btn-em-action').click();
             }
-            // Tab key → insert spaces
             if (e.key === 'Tab') {
                 e.preventDefault();
-                const start = ta.selectionStart;
-                const end   = ta.selectionEnd;
-                ta.value = ta.value.slice(0, start) + '    ' + ta.value.slice(end);
-                ta.selectionStart = ta.selectionEnd = start + 4;
-                updateModalHighlight();
+                const s = ta.selectionStart, end = ta.selectionEnd;
+                ta.value = ta.value.slice(0, s) + '    ' + ta.value.slice(end);
+                ta.selectionStart = ta.selectionEnd = s + 4;
+                updateEmHighlight();
             }
         });
+
         document.getElementById('btn-open-editor-modal').addEventListener('click', () => {
             openEditorModal(activeCssFile);
         });
