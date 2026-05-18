@@ -535,6 +535,13 @@
                 <div class="sl-section">
                     <span class="sl-label">{{ t.sl_editor_options or 'Editor options' }}</span>
                     <label class="sl-option" style="align-items:flex-start;gap:8px;">
+                        <input type="checkbox" data-quick="applyInWorkarea" style="margin-top:2px;flex-shrink:0;">
+                        <span>
+                            {{ t.sl_workarea_compat or 'Apply theme styles in workarea (saved iDevice view)' }}<br>
+                            <span style="font-size:11px;color:var(--muted);">{{ t.sl_workarea_hint or 'Text, fonts and colours will be visible in the saved (non-editing) iDevice view. Off by default.' }}</span>
+                        </span>
+                    </label>
+                    <label class="sl-option" style="align-items:flex-start;gap:8px;margin-top:6px;">
                         <input type="checkbox" data-quick="applyInTinymce" style="margin-top:2px;flex-shrink:0;">
                         <span>
                             {{ t.sl_tinymce_compat or 'Apply theme styles inside eXeLearning editor (TinyMCE)' }}<br>
@@ -563,6 +570,8 @@
                             <button class="sl-ftype-btn" data-ftype="img">{{ t.sl_images or 'Images' }}</button>
                             <button class="sl-ftype-btn" data-ftype="font">{{ t.sl_fonts or 'Fonts' }}</button>
                         </div>
+                        <button id="btn-fb-add-file" class="btn button-tertiary" style="padding:3px 9px;font-size:11px;flex-shrink:0;" title="{{ t.sl_add_file or 'Add file to theme' }}">+ {{ t.sl_add or 'Add...' }}</button>
+                        <input type="file" id="sl-fb-add-input" multiple style="display:none">
                     </div>
                     <div id="sl-file-browser" class="sl-fb-list"></div>
                 </div>
@@ -2356,10 +2365,16 @@
             if (ff) updates.fontTitles = ff.split(',')[0].trim().replace(/['"]/g, '');
         }
 
-        // Detect TinyMCE compatibility from saved CSS (body#tinymce selectors present)
+        // Detect workarea/TinyMCE compat from saved CSS selectors
+        const mainCssText = themeFiles['style.css'] || Object.values(themeFiles).find(c => c?.includes('body#tinymce') || c?.includes('#node-content-container')) || '';
+        if (!('applyInWorkarea' in quickState)) {
+            const hasWorkarea = mainCssText.includes('#node-content-container');
+            const cb = document.querySelector('[data-quick="applyInWorkarea"]');
+            if (cb) cb.checked = hasWorkarea;
+            if (hasWorkarea) updates.applyInWorkarea = true;
+        }
         if (!('applyInTinymce' in quickState)) {
-            const mainCss = themeFiles['style.css'] || Object.values(themeFiles).find(c => c?.includes('body#tinymce')) || '';
-            const hasTinyMce = mainCss.includes('body#tinymce');
+            const hasTinyMce = mainCssText.includes('body#tinymce');
             const cb = document.querySelector('[data-quick="applyInTinymce"]');
             if (cb) cb.checked = hasTinyMce;
             if (hasTinyMce) updates.applyInTinymce = true;
@@ -2447,6 +2462,25 @@
         // Buttons
         if (q.buttonBgColor) css += `.exe-content .feedbackbutton, .exe-content .exe-quiz-btn, .exe-content button.btn { background-color: ${q.buttonBgColor}${bang}; border-color: ${q.buttonBgColor}${bang}; }\n`;
         if (q.buttonTextColor) css += `.exe-content .feedbackbutton, .exe-content .exe-quiz-btn, .exe-content button.btn { color: ${q.buttonTextColor}${bang}; }\n`;
+
+        // Workarea saved iDevice view — targets #node-content-container
+        if (q.applyInWorkarea) {
+            const wc = '#node-content-container';
+            if (q.textColor)     css += `${wc} { color: ${q.textColor}${bang}; }\n`;
+            if (q.contentBgColor) css += `${wc} { background-color: ${q.contentBgColor}${bang}; }\n`;
+            if (q.fontBody)      css += `${wc} { font-family: ${q.fontBody}${bang}; }\n`;
+            if (q.fontTitles)    css += `${wc} h1, ${wc} h2, ${wc} h3 { font-family: ${q.fontTitles}${bang}; }\n`;
+            if (q.baseFontSize)  css += `${wc} { font-size: ${q.baseFontSize}px${bang}; }\n`;
+            if (q.lineHeight)    css += `${wc} { line-height: ${q.lineHeight}${bang}; }\n`;
+            if (q.linkColor)     css += `${wc} a { color: ${q.linkColor}${bang}; }\n`;
+            if (q.titleColor)    css += `${wc} h1, ${wc} .page-title { color: ${q.titleColor}${bang}; }\n`;
+            if (q.pageTitleSize) css += `${wc} h1, ${wc} .page-title { font-size: ${q.pageTitleSize}rem${bang}; }\n`;
+            if (q.pageTitleWeight) css += `${wc} h1, ${wc} .page-title { font-weight: ${q.pageTitleWeight}${bang}; }\n`;
+            if (q.pageTitleUppercase) css += `${wc} h1, ${wc} .page-title { text-transform: uppercase${bang}; }\n`;
+            if (q.boxBgColor)    css += `${wc} .iDevice_content, ${wc} .iDevice_inner { background-color: ${q.boxBgColor}${bang}; }\n`;
+            if (q.boxBorderColor) css += `${wc} .iDevice { border-color: ${q.boxBorderColor}${bang}; }\n`;
+            if (q.boxTitleColor) css += `${wc} .iDeviceTitle { color: ${q.boxTitleColor}${bang}; }\n`;
+        }
 
         // TinyMCE editor compatibility — only when explicitly enabled
         if (q.applyInTinymce) {
@@ -3023,6 +3057,46 @@
             document.querySelectorAll('.sl-ftype-btn').forEach(b => b.classList.toggle('active', b === btn));
             renderFileBrowser();
         });
+    });
+
+    // ─── Add file to theme ────────────────────────────────────
+    document.getElementById('btn-fb-add-file').addEventListener('click', () => {
+        document.getElementById('sl-fb-add-input').click();
+    });
+    document.getElementById('sl-fb-add-input').addEventListener('change', async e => {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
+        pushUndo();
+        const IMG_EXT  = new Set(['png','jpg','jpeg','gif','svg','webp','ico']);
+        const FONT_EXT = new Set(['woff','woff2','ttf','otf']);
+        const TEXT_EXT = new Set(['css','js','xml','txt','html','json','svg']);
+        for (const file of files) {
+            const ext  = (file.name.split('.').pop() || '').toLowerCase();
+            const safe = file.name.replace(/[^\w.\-]/g, '_');
+            if (FONT_EXT.has(ext)) {
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                fontBinaryFiles[`fonts/${safe}`] = bytes;
+                rebuildFontFacesInCss();
+                updateFontFamilyOptions();
+                renderFontList();
+                injectFontFaces();
+            } else if (IMG_EXT.has(ext) && ext !== 'svg') {
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                assetBinaryFiles[`img/${safe}`] = bytes;
+                assetStateTouched = true;
+                injectAssetsCss();
+            } else if (TEXT_EXT.has(ext)) {
+                themeFiles[safe] = await file.text();
+            } else {
+                // Unknown binary — store as asset at root
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                assetBinaryFiles[safe] = bytes;
+                assetStateTouched = true;
+            }
+        }
+        e.target.value = '';
+        markModified(true);
+        renderFileBrowser();
     });
 
     // ─── Upload theme ZIP ─────────────────────────────────────
