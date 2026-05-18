@@ -576,6 +576,15 @@
         <!-- ── Quick settings tab ── -->
         <div class="sl-tab-panel" data-panel="quick">
             <div class="sl-panel-scroll">
+                <div class="sl-section" style="padding:8px 14px;">
+                    <label class="sl-option" style="align-items:flex-start;gap:8px;">
+                        <input type="checkbox" data-quick="applyInTinymce" style="margin-top:2px;flex-shrink:0;">
+                        <span>
+                            <strong style="font-size:12px;">{{ t.sl_tinymce_compat or 'Apply styles in eXeLearning editor (TinyMCE)' }}</strong><br>
+                            <span style="font-size:11px;color:var(--muted);">{{ t.sl_tinymce_hint or 'Fonts and colours will also be visible while editing iDevices. Off by default to keep the editing interface clean.' }}</span>
+                        </span>
+                    </label>
+                </div>
                 <details>
                     <summary>{{ t.sl_layout or 'Layout' }}</summary>
                     <div class="sl-quick-body">
@@ -2255,12 +2264,23 @@
             if (ff) updates.fontTitles = ff.split(',')[0].trim().replace(/['"]/g, '');
         }
 
+        // Detect TinyMCE compatibility from saved CSS (body#tinymce selectors present)
+        if (!('applyInTinymce' in quickState)) {
+            const mainCss = themeFiles['style.css'] || Object.values(themeFiles).find(c => c?.includes('body#tinymce')) || '';
+            const hasTinyMce = mainCss.includes('body#tinymce');
+            const cb = document.querySelector('[data-quick="applyInTinymce"]');
+            if (cb) cb.checked = hasTinyMce;
+            if (hasTinyMce) updates.applyInTinymce = true;
+        }
+
         // Apply to inputs (skip keys already explicitly set by user)
         for (const [key, value] of Object.entries(updates)) {
             if (value === null || value === undefined) continue;
             if (key in quickState) continue; // user already changed this, don't overwrite
             const input = document.querySelector(`[data-quick="${key}"]`);
-            if (input) input.value = value;
+            if (!input) continue;
+            if (input.type === 'checkbox') input.checked = !!value;
+            else input.value = value;
         }
     }
 
@@ -2335,6 +2355,24 @@
         // Buttons
         if (q.buttonBgColor) css += `.exe-content .feedbackbutton, .exe-content .exe-quiz-btn, .exe-content button.btn { background-color: ${q.buttonBgColor}${bang}; border-color: ${q.buttonBgColor}${bang}; }\n`;
         if (q.buttonTextColor) css += `.exe-content .feedbackbutton, .exe-content .exe-quiz-btn, .exe-content button.btn { color: ${q.buttonTextColor}${bang}; }\n`;
+
+        // TinyMCE editor compatibility — only when explicitly enabled
+        if (q.applyInTinymce) {
+            const tm = 'body#tinymce';
+            if (q.textColor)     css += `${tm} { color: ${q.textColor}${bang}; }\n`;
+            if (q.contentBgColor) css += `${tm} { background-color: ${q.contentBgColor}${bang}; }\n`;
+            if (q.fontBody)      css += `${tm} { font-family: ${q.fontBody}${bang}; }\n`;
+            if (q.fontTitles)    css += `${tm} h1, ${tm} h2, ${tm} h3 { font-family: ${q.fontTitles}${bang}; }\n`;
+            if (q.baseFontSize)  css += `${tm} { font-size: ${q.baseFontSize}px${bang}; }\n`;
+            if (q.lineHeight)    css += `${tm} { line-height: ${q.lineHeight}${bang}; }\n`;
+            if (q.linkColor)     css += `${tm} a { color: ${q.linkColor}${bang}; }\n`;
+            if (q.titleColor)    css += `${tm} h1 { color: ${q.titleColor}${bang}; }\n`;
+            if (q.pageTitleSize) css += `${tm} h1 { font-size: ${q.pageTitleSize}rem${bang}; }\n`;
+            if (q.pageTitleWeight) css += `${tm} h1 { font-weight: ${q.pageTitleWeight}${bang}; }\n`;
+            if (q.pageTitleUppercase) css += `${tm} h1 { text-transform: uppercase${bang}; }\n`;
+            if (q.pageTitleLetterSpacing) css += `${tm} h1 { letter-spacing: ${q.pageTitleLetterSpacing}px${bang}; }\n`;
+        }
+
         return css;
     }
 
