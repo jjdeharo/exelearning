@@ -1139,10 +1139,15 @@
         <textarea id="sl-em-textarea" spellcheck="false" wrap="off"
             style="position:absolute;inset:0;padding:16px 20px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:13px;line-height:1.65;color:transparent;background:transparent;caret-color:#1a1a1a;border:none;resize:none;outline:none;overflow:auto;white-space:pre;tab-size:4;z-index:1;"></textarea>
     </div>
-    <div style="padding:5px 14px;background:#f0f2f5;border-top:1px solid #ddd;font-size:11px;color:#aaa;display:flex;gap:16px;flex-shrink:0;">
-        <span>Ctrl+S — {{ t.sl_save or 'save / apply' }}</span>
-        <span>Esc — {{ t.sl_close or 'close' }}</span>
-        <span>Tab — 4 {{ t.sl_spaces or 'spaces' }}</span>
+    <div style="padding:5px 14px;background:#f0f2f5;border-top:1px solid #ddd;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <div id="sl-em-css-btns" style="display:flex;gap:6px;">
+            <button id="btn-em-reset-css" class="btn button-tertiary" style="font-size:12px;">{{ t.sl_reset_css or 'Reset' }}</button>
+            <button id="btn-em-wrap-scope" class="btn button-tertiary" style="font-size:12px;">{{ t.sl_wrap_scope or 'Wrap scope' }}</button>
+        </div>
+        <div style="flex:1;"></div>
+        <span style="font-size:11px;color:#aaa;">Ctrl+S — {{ t.sl_save or 'save / apply' }}</span>
+        <span style="font-size:11px;color:#aaa;">Esc — {{ t.sl_close or 'close' }}</span>
+        <span style="font-size:11px;color:#aaa;">Tab — 4 {{ t.sl_spaces or 'spaces' }}</span>
     </div>
 </div>
 
@@ -1156,20 +1161,34 @@
 <script src="{{ '/libs/fflate/fflate.umd.js' | asset }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <style>
-/* Light theme tokens for the modal editor (GitHub-style) */
+/* Light theme tokens — panel + modal editors (GitHub-style) */
+#sl-css-highlight,
 #sl-em-highlight                    { color:#24292e; }
+#sl-css-highlight code,
 #sl-em-highlight code               { color:#24292e; background:transparent; }
+#sl-css-highlight .hljs-keyword,
 #sl-em-highlight .hljs-keyword      { color:#d73a49; }
+#sl-css-highlight .hljs-string,
 #sl-em-highlight .hljs-string       { color:#032f62; }
+#sl-css-highlight .hljs-number,
 #sl-em-highlight .hljs-number       { color:#005cc5; }
+#sl-css-highlight .hljs-comment,
 #sl-em-highlight .hljs-comment      { color:#6a737d; font-style:italic; }
+#sl-css-highlight .hljs-attribute,
 #sl-em-highlight .hljs-attribute    { color:#6f42c1; }
+#sl-css-highlight .hljs-selector-class,
+#sl-css-highlight .hljs-selector-id,
+#sl-css-highlight .hljs-selector-tag,
 #sl-em-highlight .hljs-selector-class,
 #sl-em-highlight .hljs-selector-id,
 #sl-em-highlight .hljs-selector-tag { color:#22863a; }
+#sl-css-highlight .hljs-built_in,
 #sl-em-highlight .hljs-built_in     { color:#e36209; }
+#sl-css-highlight .hljs-variable,
 #sl-em-highlight .hljs-variable     { color:#24292e; }
+#sl-css-highlight .hljs-property,
 #sl-em-highlight .hljs-property     { color:#005cc5; }
+#sl-css-highlight .hljs-punctuation,
 #sl-em-highlight .hljs-punctuation  { color:#24292e; }
 </style>
 <script>
@@ -1933,6 +1952,7 @@
         document.getElementById('sl-em-modified').style.display = 'none';
         document.getElementById('sl-em-status').textContent = '';
         ta.value = themeFiles[path];
+        document.getElementById('sl-em-css-btns').style.display = isJs ? 'none' : '';
         document.getElementById('sl-editor-modal').style.display = 'flex';
         updateEmHighlight();
         ta.focus();
@@ -1997,6 +2017,36 @@
                 ta.selectionStart = ta.selectionEnd = s + 4;
                 updateEmHighlight();
             }
+        });
+
+        document.getElementById('btn-em-reset-css').addEventListener('click', () => {
+            ta.value = originalCss;
+            document.getElementById('sl-em-modified').style.display = 'none';
+            updateEmHighlight();
+            const path = document.getElementById('sl-em-filename').textContent;
+            if (activeCssFile === path) {
+                document.getElementById('sl-css-textarea').value = originalCss;
+                markModified(false);
+                updateHighlight();
+            }
+            if (previewReady) injectEditorCss(originalCss);
+            setStatus(T.css_reset);
+        });
+
+        document.getElementById('btn-em-wrap-scope').addEventListener('click', () => {
+            const classes = getScopeClasses();
+            if (classes.length === 0 || classes.length === SCOPE_ALL.length) {
+                setStatus(T.scope_all);
+                return;
+            }
+            const start = ta.selectionStart, end = ta.selectionEnd;
+            const selected = ta.value.substring(start, end).trim();
+            if (!selected) { setStatus(T.select_css_first); return; }
+            const wrapped = buildScopeWrapped(selected);
+            ta.setRangeText(wrapped, start, end, 'select');
+            document.getElementById('sl-em-modified').style.display = '';
+            updateEmHighlight();
+            setStatus(T.wrapped);
         });
 
         document.getElementById('btn-open-editor-modal').addEventListener('click', () => {
