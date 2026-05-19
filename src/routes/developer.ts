@@ -311,7 +311,10 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
         const t = {
             sl_back: trans('Back to editor', {}, locale),
-            sl_tab_settings: trans('Settings', {}, locale),
+            sl_tab_preview: trans('Preview', {}, locale),
+            sl_tab_code: trans('Code', {}, locale),
+            sl_tab_design: trans('Design', {}, locale),
+            sl_tab_package: trans('Package', {}, locale),
             sl_project: trans('Project', {}, locale),
             sl_project_hint: trans('Open a project in eXeLearning to see it here.', {}, locale),
             sl_delete_theme: trans('Delete theme', {}, locale),
@@ -431,8 +434,7 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             ),
             sl_js_confirm_discard: trans('Discard changes and go back to the editor?', {}, locale),
             sl_js_confirm_delete: trans('Delete theme "{name}"?\nThis action cannot be undone.', {}, locale),
-            // Files tab
-            sl_tab_files: trans('Files', {}, locale),
+            // Package tab
             sl_import_zip: trans('Import theme ZIP', {}, locale),
             sl_select_zip: trans('Select ZIP...', {}, locale),
             sl_install_uploaded: trans('Install uploaded theme', {}, locale),

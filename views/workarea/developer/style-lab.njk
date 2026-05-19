@@ -278,6 +278,8 @@
         .sl-tb-sep { width: 1px; height: 18px; background: var(--line); margin: 0 2px; flex-shrink: 0; }
         .sl-tb-spacer { flex: 1; min-width: 8px; }
         .sl-scope-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+        .sl-quick-section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 10px 12px 2px; border-top: 1px solid var(--border); margin-top: 4px; }
+        #sl-apply-in-section.disabled { opacity: .4; pointer-events: none; }
         .sl-apply-chip {
             display: flex; align-items: center; gap: 4px;
             padding: 3px 9px; border-radius: 20px; font-size: 11px;
@@ -500,10 +502,10 @@
     <!-- ── Left panel ── -->
     <div id="sl-panel">
         <div class="sl-tabs">
-            <button class="sl-tab active" data-tab="controls" data-testid="sl-tab-controls">{{ t.sl_tab_settings or 'Settings' }}</button>
-            <button class="sl-tab" data-tab="css" data-testid="sl-tab-css">{{ t.sl_tab_files or 'Files' }}</button>
-            <button class="sl-tab" data-tab="quick" data-testid="sl-tab-quick">Quick</button>
-            <button class="sl-tab" data-tab="files" data-testid="sl-tab-files">{{ t.sl_tab_export or 'Export' }}</button>
+            <button class="sl-tab active" data-tab="controls" data-testid="sl-tab-controls">{{ t.sl_tab_preview or 'Preview' }}</button>
+            <button class="sl-tab" data-tab="quick" data-testid="sl-tab-quick">{{ t.sl_tab_design or 'Design' }}</button>
+            <button class="sl-tab" data-tab="css" data-testid="sl-tab-css">{{ t.sl_tab_code or 'Code' }}</button>
+            <button class="sl-tab" data-tab="files" data-testid="sl-tab-files">{{ t.sl_tab_package or 'Package' }}</button>
         </div>
 
         <div id="sl-preview-info" style="display:none;padding:4px 14px;font-size:10px;color:var(--muted);background:#f8fafc;border-bottom:1px solid var(--line-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;" title=""></div>
@@ -951,6 +953,17 @@
                         </div>
                     </div>
                 </details>
+                <div id="sl-apply-in-section">
+                    <div class="sl-quick-section-label">{{ t.sl_apply_in or 'Apply in' }}</div>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;padding:6px 12px 10px;">
+                        <label class="sl-apply-chip" data-testid="chip-workarea" title="{{ t.sl_workarea_hint or 'Apply theme styles in the saved iDevice view in the workarea' }}">
+                            <input type="checkbox" data-quick="applyInWorkarea"> {{ t.sl_workarea_short or 'Workarea' }}
+                        </label>
+                        <label class="sl-apply-chip" data-testid="chip-tinymce" title="{{ t.sl_tinymce_hint or 'Apply theme styles inside the TinyMCE editor (while editing iDevices)' }}">
+                            <input type="checkbox" data-quick="applyInTinymce"> TinyMCE
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1079,17 +1092,8 @@
             <label class="sl-scope-chip checked" data-scope="exe-scorm">
                 <input type="checkbox" value="exe-scorm" checked> SCORM
             </label>
-            <label class="sl-scope-chip" data-scope="exe-single-page">
-                <input type="checkbox" value="exe-single-page"> Single
-            </label>
-            <span class="sl-tb-sep"></span>
-            <!-- Apply in (extra CSS blocks in exported theme) -->
-            <span class="sl-scope-label">{{ t.sl_apply_in or 'Apply in' }}:</span>
-            <label class="sl-apply-chip" data-testid="chip-workarea" title="{{ t.sl_workarea_hint or 'Apply theme styles in the saved iDevice view in the workarea' }}">
-                <input type="checkbox" data-quick="applyInWorkarea"> {{ t.sl_workarea_short or 'Workarea' }}
-            </label>
-            <label class="sl-apply-chip" data-testid="chip-tinymce" title="{{ t.sl_tinymce_hint or 'Apply theme styles inside the TinyMCE editor (while editing iDevices)' }}">
-                <input type="checkbox" data-quick="applyInTinymce"> TinyMCE
+            <label class="sl-scope-chip checked" data-scope="exe-single-page">
+                <input type="checkbox" value="exe-single-page" checked> Single
             </label>
         </div>
         <div id="sl-iframe-wrap" class="vp-desktop" style="position:relative">
@@ -1514,7 +1518,7 @@
     });
 
     // Apply-in chips: visual sync + quickState update
-    document.querySelectorAll('#sl-preview-toolbar .sl-apply-chip').forEach(chip => {
+    document.querySelectorAll('#sl-apply-in-section .sl-apply-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             const cb = chip.querySelector('input[data-quick]');
             cb.checked = !cb.checked;
@@ -2756,18 +2760,22 @@
         // TinyMCE editor compatibility — only when explicitly enabled
         if (q.applyInTinymce) {
             const tm = 'body#tinymce';
-            if (q.textColor)     css += `${tm} { color: ${q.textColor}${bang}; }\n`;
-            if (q.contentBgColor) css += `${tm} { background-color: ${q.contentBgColor}${bang}; }\n`;
-            if (q.fontBody)      css += `${tm} { font-family: ${q.fontBody}${bang}; }\n`;
-            if (q.fontTitles)    css += `${tm} h1, ${tm} h2, ${tm} h3 { font-family: ${q.fontTitles}${bang}; }\n`;
-            if (q.baseFontSize)  css += `${tm} { font-size: ${q.baseFontSize}px${bang}; }\n`;
-            if (q.lineHeight)    css += `${tm} { line-height: ${q.lineHeight}${bang}; }\n`;
-            if (q.linkColor)     css += `${tm} a { color: ${q.linkColor}${bang}; }\n`;
-            if (q.titleColor)    css += `${tm} h1 { color: ${q.titleColor}${bang}; }\n`;
-            if (q.pageTitleSize) css += `${tm} h1 { font-size: ${q.pageTitleSize}rem${bang}; }\n`;
+            if (q.textColor)       css += `${tm} { color: ${q.textColor}${bang}; }\n`;
+            if (q.contentBgColor)  css += `${tm} { background-color: ${q.contentBgColor}${bang}; }\n`;
+            if (q.boxBgColor)      css += `${tm} { background-color: ${q.boxBgColor}${bang}; }\n`;
+            if (q.fontBody)        css += `${tm} { font-family: ${q.fontBody}${bang}; }\n`;
+            if (q.fontTitles)      css += `${tm} h1, ${tm} h2, ${tm} h3 { font-family: ${q.fontTitles}${bang}; }\n`;
+            if (q.baseFontSize)    css += `${tm} { font-size: ${q.baseFontSize}px${bang}; }\n`;
+            if (q.lineHeight)      css += `${tm} { line-height: ${q.lineHeight}${bang}; }\n`;
+            if (q.linkColor)       css += `${tm} a { color: ${q.linkColor}${bang}; }\n`;
+            if (q.titleColor)      css += `${tm} h1 { color: ${q.titleColor}${bang}; }\n`;
+            if (q.pageTitleSize)   css += `${tm} h1 { font-size: ${q.pageTitleSize}rem${bang}; }\n`;
             if (q.pageTitleWeight) css += `${tm} h1 { font-weight: ${q.pageTitleWeight}${bang}; }\n`;
             if (q.pageTitleUppercase) css += `${tm} h1 { text-transform: uppercase${bang}; }\n`;
             if (q.pageTitleLetterSpacing) css += `${tm} h1 { letter-spacing: ${q.pageTitleLetterSpacing}px${bang}; }\n`;
+            if (q.pageTitleMarginBottom) css += `${tm} h1 { margin-bottom: ${q.pageTitleMarginBottom}rem${bang}; }\n`;
+            if (q.boxFontSize && q.boxFontSize !== 'inherit') css += `${tm} { font-size: ${q.boxFontSize}${bang}; }\n`;
+            if (q.boxTextAlign && q.boxTextAlign !== 'inherit') css += `${tm} { text-align: ${q.boxTextAlign}${bang}; }\n`;
         }
 
         return css;
@@ -2917,36 +2925,48 @@
     }
 
     // ─── Click-edit live preview helpers ─────────────────────
-    function buildClickRule() {
-        const s = expandedClickSelector(clickEditSelector);
-        if (!s) return '';
-        const textColor  = document.getElementById('ce-textColor').value;
-        const bgInput    = document.getElementById('ce-bgColor');
-        const bgColor    = bgInput.dataset.skip ? null : bgInput.value;
-        const fontSize   = document.getElementById('ce-fontSize').value;
-        const fontWeight = document.getElementById('ce-fontWeight').value;
-        const textAlign  = document.getElementById('ce-textAlign').value;
-        const textAlpha  = document.getElementById('ce-textAlpha').value;
-        const bgAlpha    = document.getElementById('ce-bgAlpha').value;
-        let rule = `${s} {\n`;
-        if (textColor)  rule += `  color: ${colorWithAlpha(textColor, textAlpha)} !important;\n`;
-        if (bgColor)    rule += `  background-color: ${colorWithAlpha(bgColor, bgAlpha)} !important;\n`;
-        if (fontSize)   rule += `  font-size: ${fontSize}px !important;\n`;
-        if (fontWeight) rule += `  font-weight: ${fontWeight} !important;\n`;
-        if (textAlign)  rule += `  text-align: ${textAlign} !important;\n`;
-        const extra = {
-            'margin-left': optionalCssValue('ce-marginLeft'),
-            'margin-right': optionalCssValue('ce-marginRight'),
-            width: optionalCssValue('ce-width'),
-            'max-width': optionalCssValue('ce-maxWidth'),
-            'margin-bottom': optionalCssValue('ce-marginBottom'),
-            padding: optionalCssValue('ce-padding'),
+    function buildClickProps() {
+        const bgInput = document.getElementById('ce-bgColor');
+        const textAlpha = document.getElementById('ce-textAlpha').value;
+        const bgAlpha   = document.getElementById('ce-bgAlpha').value;
+        return {
+            textColor:  document.getElementById('ce-textColor').value,
+            bgColor:    bgInput.dataset.skip ? null : bgInput.value,
+            fontSize:   document.getElementById('ce-fontSize').value,
+            fontWeight: document.getElementById('ce-fontWeight').value,
+            textAlign:  document.getElementById('ce-textAlign').value,
+            textAlpha,
+            bgAlpha,
+            extra: {
+                'margin-left':   optionalCssValue('ce-marginLeft'),
+                'margin-right':  optionalCssValue('ce-marginRight'),
+                width:           optionalCssValue('ce-width'),
+                'max-width':     optionalCssValue('ce-maxWidth'),
+                'margin-bottom': optionalCssValue('ce-marginBottom'),
+                padding:         optionalCssValue('ce-padding'),
+            },
         };
-        for (const [prop, value] of Object.entries(extra)) {
+    }
+
+    function buildClickRuleForSelector(s, props) {
+        if (!s) return '';
+        let rule = `${s} {\n`;
+        if (props.textColor)  rule += `  color: ${colorWithAlpha(props.textColor, props.textAlpha)} !important;\n`;
+        if (props.bgColor)    rule += `  background-color: ${colorWithAlpha(props.bgColor, props.bgAlpha)} !important;\n`;
+        if (props.fontSize)   rule += `  font-size: ${props.fontSize}px !important;\n`;
+        if (props.fontWeight) rule += `  font-weight: ${props.fontWeight} !important;\n`;
+        if (props.textAlign)  rule += `  text-align: ${props.textAlign} !important;\n`;
+        for (const [prop, value] of Object.entries(props.extra)) {
             if (value) rule += `  ${prop}: ${value} !important;\n`;
         }
         rule += `}`;
         return rule;
+    }
+
+    function buildClickRule() {
+        const s = expandedClickSelector(clickEditSelector);
+        if (!s) return '';
+        return buildClickRuleForSelector(s, buildClickProps());
     }
 
     function injectClickPreview() {
@@ -3047,6 +3067,7 @@
         inspectMode = on;
         document.getElementById('btn-inspect').classList.toggle('active', on);
         document.body.classList.toggle('sl-inspect', on);
+        document.getElementById('sl-apply-in-section').classList.toggle('disabled', on);
         const iw = document.getElementById('sl-iframe');
         try { iw.contentWindow.__slInspect = on; } catch {}
         setStatus(on ? T.inspect_hint : T.ready);
