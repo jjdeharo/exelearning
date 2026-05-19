@@ -828,6 +828,13 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return { error: 'newDirName must contain only lowercase letters, numbers, hyphens and underscores' };
         }
 
+        for (const filePath of [...Object.keys(fontFiles || {}), ...Object.keys(assetFiles || {})]) {
+            if (!normalizeZipEntryPath(filePath)) {
+                set.status = 400;
+                return { error: `Invalid theme file path: ${filePath}` };
+            }
+        }
+
         const themeDir = resolveThemeDir(theme);
         if (!themeDir) {
             set.status = 404;
@@ -1018,6 +1025,14 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             const files = fflate.unzipSync(new Uint8Array(zipBytes));
             const names = Object.keys(files);
             const root = commonRoot(names);
+            for (const rawName of names) {
+                const shortName = root ? rawName.slice(root.length + 1) : rawName;
+                if (!shortName) continue;
+                if (!normalizeZipEntryPath(shortName)) {
+                    set.status = 400;
+                    return { error: `Invalid theme ZIP entry path: ${rawName}` };
+                }
+            }
 
             const filesDir = process.env.FILES_DIR || './data';
             const targetDir = path.join(filesDir, 'themes', 'site', newDirName);
@@ -1030,10 +1045,7 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 const shortName = root ? rawName.slice(root.length + 1) : rawName;
                 if (!shortName) continue;
                 const fullPath = safeTargetPath(targetDir, shortName);
-                if (!fullPath) {
-                    set.status = 400;
-                    return { error: `Invalid theme ZIP entry path: ${rawName}` };
-                }
+                if (!fullPath) throw new Error(`Invalid theme ZIP entry path: ${rawName}`);
                 await fs.promises.mkdir(path.dirname(fullPath), { recursive: true });
                 await fs.promises.writeFile(fullPath, data);
             }
