@@ -573,19 +573,29 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
     // List all files in a theme directory
     .get('/api/developer/style-lab/theme-files', async ({ query, set }) => {
-        if (!isDev()) { set.status = 404; return new Response('Not Found', { status: 404 }); }
+        if (!isDev()) {
+            set.status = 404;
+            return new Response('Not Found', { status: 404 });
+        }
         const { theme } = query as Record<string, string>;
-        if (!theme) { set.status = 400; return { error: 'theme required' }; }
+        if (!theme) {
+            set.status = 400;
+            return { error: 'theme required' };
+        }
         const themeDir = resolveThemeDir(theme);
-        if (!themeDir) { set.status = 404; return { error: 'Theme not found' }; }
+        if (!themeDir) {
+            set.status = 404;
+            return { error: 'Theme not found' };
+        }
         const TEXT_EXT = new Set(['css', 'js', 'xml', 'txt', 'svg', 'html', 'json']);
         const results: { path: string; size: number; editable: boolean }[] = [];
         async function walk(dir: string, prefix: string) {
             const entries = await fs.promises.readdir(dir, { withFileTypes: true });
             for (const e of entries) {
                 const rel = prefix ? `${prefix}/${e.name}` : e.name;
-                if (e.isDirectory()) { await walk(path.join(dir, e.name), rel); }
-                else {
+                if (e.isDirectory()) {
+                    await walk(path.join(dir, e.name), rel);
+                } else {
                     const ext = e.name.split('.').pop()?.toLowerCase() ?? '';
                     const stat = await fs.promises.stat(path.join(dir, e.name));
                     results.push({ path: rel, size: stat.size, editable: TEXT_EXT.has(ext) });
@@ -787,18 +797,27 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return new Response('Not Found', { status: 404 });
         }
 
-        const { theme, fileOverrides, themeMetadata, newDirName, newDisplayName, sessionId, screenshotBase64, fontFiles, assetFiles } =
-            body as {
-                theme: string;
-                fileOverrides?: Record<string, string>;
-                themeMetadata?: StyleLabThemeMetadata;
-                newDirName: string;
-                newDisplayName: string;
-                sessionId?: string;
-                screenshotBase64?: string;
-                fontFiles?: Record<string, string>;
-                assetFiles?: Record<string, string>;
-            };
+        const {
+            theme,
+            fileOverrides,
+            themeMetadata,
+            newDirName,
+            newDisplayName,
+            sessionId,
+            screenshotBase64,
+            fontFiles,
+            assetFiles,
+        } = body as {
+            theme: string;
+            fileOverrides?: Record<string, string>;
+            themeMetadata?: StyleLabThemeMetadata;
+            newDirName: string;
+            newDisplayName: string;
+            sessionId?: string;
+            screenshotBase64?: string;
+            fontFiles?: Record<string, string>;
+            assetFiles?: Record<string, string>;
+        };
 
         if (!theme || !newDirName || !newDisplayName) {
             set.status = 400;
