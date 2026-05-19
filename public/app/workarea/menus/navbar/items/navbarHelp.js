@@ -12,9 +12,6 @@ export default class NavbarFile {
         this.styleLabButton = this.menu.navbar.querySelector(
             '#navbar-button-style-lab'
         );
-        this.apiDocsButton = this.menu.navbar.querySelector(
-            '#navbar-button-api-docs'
-        );
         this.releaseNotesButton = this.menu.navbar.querySelector(
             '#navbar-button-release-notes'
         );
@@ -40,7 +37,6 @@ export default class NavbarFile {
         this.setAssistantEvent();
         this.setTutorialEvent();
         this.setStyleLabEvent();
-        this.setApiDocsEvent();
         this.setReleaseNotesEvent();
         this.setLegalNotesEvent();
         this.setExeWebEvent();
@@ -74,10 +70,6 @@ export default class NavbarFile {
         });
     }
 
-    /**
-     * API Docs
-     * Help -> API Docs (Swagger)
-     */
     setStyleLabEvent() {
         if (!this.styleLabButton) return;
         this.styleLabButton.addEventListener('click', (e) => {
@@ -88,12 +80,6 @@ export default class NavbarFile {
                 window.location.href = base + '?fixture=session:' + encodeURIComponent(sessionId);
             }
             // No sessionId → default href navigates normally
-        });
-    }
-
-    setApiDocsEvent() {
-        this.apiDocsButton.addEventListener('click', () => {
-            this.apiDocsEvent();
         });
     }
 
@@ -170,14 +156,6 @@ export default class NavbarFile {
      */
     tutorialEvent() {
         let url = 'https://exelearning.net/ayuda/';
-        window.open(url, '_blank').focus();
-    }
-
-    /**
-     * Open API Swagger docs in new tab
-     */
-    apiDocsEvent() {
-        let url = '/api/docs'; // ruta de API docs
         window.open(url, '_blank').focus();
     }
 
