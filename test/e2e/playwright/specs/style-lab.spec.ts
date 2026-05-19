@@ -14,8 +14,8 @@ test.describe('Style Lab developer tool', () => {
         await expect(page.getByTestId('style-lab-theme')).toHaveValue('base');
         await expect(page.getByTestId('vp-mobile')).toHaveClass(/active/);
         await expect(page.getByTestId('style-lab-iframe')).toBeVisible({ timeout: 30000 });
-        await expect(page.getByTestId('style-lab-status')).toContainText('example.elpx', { timeout: 30000 });
-        await expect(page.getByTestId('style-lab-status')).toContainText('base');
+        await expect(page.locator('#sl-preview-info')).toContainText('example.elpx', { timeout: 30000 });
+        await expect(page.locator('#sl-preview-info')).toContainText('base');
 
         const previewFrame = page.frameLocator('[data-testid="style-lab-iframe"]');
         await expect(previewFrame.locator('body')).toContainText(/eXe|Lorem|Duis/i, { timeout: 15000 });
@@ -27,7 +27,7 @@ test.describe('Style Lab developer tool', () => {
         });
 
         await expect(page.getByTestId('style-lab-iframe')).toBeVisible({ timeout: 30000 });
-        await expect(page.getByTestId('style-lab-status')).toContainText('example.elpx', { timeout: 30000 });
+        await expect(page.locator('#sl-preview-info')).toContainText('example.elpx', { timeout: 30000 });
 
         await page.locator('#btn-inspect').click();
         const previewFrame = page.frameLocator('[data-testid="style-lab-iframe"]');

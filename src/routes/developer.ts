@@ -230,6 +230,30 @@ function commonRoot(names: string[]): string {
     return '';
 }
 
+function normalizeZipEntryPath(rawPath: string): string | null {
+    if (!rawPath || rawPath.includes('\\') || rawPath.includes('\0')) return null;
+    const normalized = path.posix.normalize(rawPath);
+    if (
+        !normalized ||
+        normalized === '.' ||
+        normalized.startsWith('../') ||
+        normalized === '..' ||
+        path.posix.isAbsolute(normalized)
+    ) {
+        return null;
+    }
+    return normalized;
+}
+
+function safeTargetPath(baseDir: string, relativePath: string): string | null {
+    const normalized = normalizeZipEntryPath(relativePath);
+    if (!normalized) return null;
+    const resolvedBase = path.resolve(baseDir);
+    const resolvedTarget = path.resolve(baseDir, normalized);
+    if (resolvedTarget !== resolvedBase && !resolvedTarget.startsWith(resolvedBase + path.sep)) return null;
+    return resolvedTarget;
+}
+
 /** Build an installable theme ZIP from the theme directory + file overrides (CSS, config.xml…) */
 async function buildThemeZip(
     themeDir: string,
@@ -268,7 +292,9 @@ async function buildThemeZip(
     }
     // Binary overrides at root level (e.g. screenshot.png) not present in themeDir
     for (const [zipPath, data] of Object.entries(binaryOverrides)) {
-        if (zipFiles[zipPath] === undefined) zipFiles[zipPath] = data;
+        const safeZipPath = normalizeZipEntryPath(zipPath);
+        if (!safeZipPath) throw new Error(`Invalid theme file path: ${zipPath}`);
+        if (zipFiles[safeZipPath] === undefined) zipFiles[safeZipPath] = data;
     }
     return fflate.zipSync(zipFiles);
 }
@@ -739,6 +765,10 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 },
             });
         } catch (err) {
+            if (err instanceof Error && err.message.startsWith('Invalid theme file path:')) {
+                set.status = 400;
+                return { error: err.message };
+            }
             console.error('[style-lab] Theme export error:', err);
             set.status = 500;
             return {
@@ -828,7 +858,8 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             await fs.promises.mkdir(targetDir, { recursive: true });
             const files = fflate.unzipSync(zipBuffer);
             for (const [filePath, data] of Object.entries(files)) {
-                const fullPath = path.join(targetDir, filePath);
+                const fullPath = safeTargetPath(targetDir, filePath);
+                if (!fullPath) throw new Error(`Invalid theme file path: ${filePath}`);
                 await fs.promises.mkdir(path.dirname(fullPath), { recursive: true });
                 await fs.promises.writeFile(fullPath, data);
             }
@@ -881,6 +912,10 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
             return { ok: true, dirName: newDirName, displayName: newDisplayName, themeApplied };
         } catch (err) {
+            if (err instanceof Error && err.message.startsWith('Invalid theme file path:')) {
+                set.status = 400;
+                return { error: err.message };
+            }
             console.error('[style-lab] Install theme error:', err);
             set.status = 500;
             return {
@@ -965,12 +1000,19 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
 
             const filesDir = process.env.FILES_DIR || './data';
             const targetDir = path.join(filesDir, 'themes', 'site', newDirName);
+            if (isUploadOverwrite) {
+                await fs.promises.rm(targetDir, { recursive: true, force: true });
+            }
             await fs.promises.mkdir(targetDir, { recursive: true });
 
             for (const [rawName, data] of Object.entries(files)) {
                 const shortName = root ? rawName.slice(root.length + 1) : rawName;
                 if (!shortName) continue;
-                const fullPath = path.join(targetDir, shortName);
+                const fullPath = safeTargetPath(targetDir, shortName);
+                if (!fullPath) {
+                    set.status = 400;
+                    return { error: `Invalid theme ZIP entry path: ${rawName}` };
+                }
                 await fs.promises.mkdir(path.dirname(fullPath), { recursive: true });
                 await fs.promises.writeFile(fullPath, data);
             }

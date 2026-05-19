@@ -160,6 +160,52 @@ describe('developerRoutes', () => {
         expect(body.error).toContain('newDirName');
     });
 
+    it('rejects unsafe binary override paths during theme installation', async () => {
+        const response = await app.handle(
+            new Request('http://localhost/api/developer/style-lab/install-theme', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({
+                    theme: 'base',
+                    newDirName: 'unsafe-binary-path',
+                    newDisplayName: 'Unsafe Binary Path',
+                    assetFiles: {
+                        '../escape.txt': Buffer.from('escape').toString('base64'),
+                    },
+                }),
+            }),
+        );
+        const body = await response.json();
+
+        expect(response.status).toBe(400);
+        expect(body.error).toContain('Invalid theme file path');
+    });
+
+    it('rejects unsafe paths inside uploaded theme ZIPs', async () => {
+        const zipBase64 = Buffer.from(
+            fflate.zipSync({
+                '../escape.txt': Buffer.from('escape'),
+                'config.xml': Buffer.from('<theme><name>unsafe-upload</name></theme>'),
+            }),
+        ).toString('base64');
+
+        const response = await app.handle(
+            new Request('http://localhost/api/developer/style-lab/upload-theme', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({
+                    zipBase64,
+                    newDirName: 'unsafe-upload',
+                    newDisplayName: 'Unsafe Upload',
+                }),
+            }),
+        );
+        const body = await response.json();
+
+        expect(response.status).toBe(400);
+        expect(body.error).toContain('Invalid theme ZIP entry path');
+    });
+
     it('acknowledges reload requests in dev mode', async () => {
         const response = await app.handle(
             new Request('http://localhost/api/developer/reload-theme', {
