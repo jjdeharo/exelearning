@@ -737,6 +737,11 @@
                         </div>
                         <div class="sl-quick-row"><label>{{ t.sl_button_bg or 'Button background' }}</label><input type="color" data-quick="buttonBgColor" value="#005f73"></div>
                         <div class="sl-quick-row"><label>{{ t.sl_button_text or 'Button text' }}</label><input type="color" data-quick="buttonTextColor" value="#ffffff"></div>
+                        <div class="sl-quick-row">
+                            <label class="sl-apply-chip" title="{{ t.sl_compact_no_header_hint or 'Reduce top padding in iDevices that have no title' }}">
+                                <input type="checkbox" data-quick="compactNoHeaderIdevices"> {{ t.sl_compact_no_header or 'Compact untitled iDevices' }}
+                            </label>
+                        </div>
                     </div>
                 </details>
                 <details>
@@ -754,7 +759,23 @@
                             <input type="file" id="sl-logo-input" accept="image/*" style="display:none">
                         </div>
                         <div id="sl-logo-options" style="display:none" class="sl-quick-body" style="padding-left:1rem">
+                            <div class="sl-quick-row">
+                                <label class="sl-apply-chip"><input type="checkbox" id="sl-logo-enabled" checked> {{ t.sl_logo_enabled or 'Show logo' }}</label>
+                            </div>
                             <div class="sl-quick-row"><label>{{ t.sl_logo_size or 'Size (px)' }}</label><input type="number" id="sl-logo-size" value="130" min="40" max="500"></div>
+                            <div class="sl-quick-row">
+                                <label>{{ t.sl_logo_position or 'Position' }}</label>
+                                <select id="sl-logo-position">
+                                    <option value="top-right" selected>↗ {{ t.sl_pos_top_right or 'Top right' }}</option>
+                                    <option value="top-left">↖ {{ t.sl_pos_top_left or 'Top left' }}</option>
+                                    <option value="top-center">↑ {{ t.sl_pos_top_center or 'Top center' }}</option>
+                                    <option value="bottom-right">↘ {{ t.sl_pos_bottom_right or 'Bottom right' }}</option>
+                                    <option value="bottom-left">↙ {{ t.sl_pos_bottom_left or 'Bottom left' }}</option>
+                                    <option value="bottom-center">↓ {{ t.sl_pos_bottom_center or 'Bottom center' }}</option>
+                                </select>
+                            </div>
+                            <div class="sl-quick-row"><label>{{ t.sl_logo_margin_x or 'Margin X (px)' }}</label><input type="number" id="sl-logo-margin-x" value="20" min="0" max="300"></div>
+                            <div class="sl-quick-row"><label>{{ t.sl_logo_margin_y or 'Margin Y (px)' }}</label><input type="number" id="sl-logo-margin-y" value="14" min="0" max="300"></div>
                         </div>
 
                         <div class="sl-asset-row">
@@ -801,6 +822,12 @@
                             <input type="file" id="sl-header-image-input" accept="image/*" style="display:none">
                         </div>
                         <div id="sl-header-image-options" style="display:none" class="sl-quick-body">
+                            <div class="sl-quick-row">
+                                <label class="sl-apply-chip"><input type="checkbox" id="sl-header-enabled" checked> {{ t.sl_header_enabled or 'Show header image' }}</label>
+                            </div>
+                            <div class="sl-quick-row">
+                                <label class="sl-apply-chip"><input type="checkbox" id="sl-header-hide-title"> {{ t.sl_header_hide_title or 'Hide title in header' }}</label>
+                            </div>
                             <div class="sl-quick-row"><label>{{ t.sl_header_height or 'Height (px)' }}</label><input type="number" id="sl-header-image-height" value="120" min="40" max="600"></div>
                             <div class="sl-quick-row">
                                 <label>{{ t.sl_img_fit or 'Fit' }}</label>
@@ -845,6 +872,9 @@
                             <input type="file" id="sl-footer-image-input" accept="image/*" style="display:none">
                         </div>
                         <div id="sl-footer-image-options" style="display:none" class="sl-quick-body">
+                            <div class="sl-quick-row">
+                                <label class="sl-apply-chip"><input type="checkbox" id="sl-footer-enabled" checked> {{ t.sl_footer_enabled or 'Show footer image' }}</label>
+                            </div>
                             <div class="sl-quick-row"><label>{{ t.sl_footer_height or 'Height (px)' }}</label><input type="number" id="sl-footer-image-height" value="90" min="20" max="400"></div>
                             <div class="sl-quick-row">
                                 <label>{{ t.sl_img_fit or 'Fit' }}</label>
@@ -2265,12 +2295,27 @@
         delete assetBlobUrls[path];
         delete assetBinaryFiles[path];
     }
+    function logoCssPosition(position, mx, my) {
+        const x = Math.max(0, mx || 0), y = Math.max(0, my || 0);
+        switch (position) {
+            case 'top-left':      return `left:${x}px !important;top:${y}px !important;transform:none !important;`;
+            case 'top-center':    return `left:50% !important;top:${y}px !important;transform:translateX(-50%) !important;`;
+            case 'bottom-left':   return `left:${x}px !important;bottom:${y}px !important;transform:none !important;`;
+            case 'bottom-center': return `left:50% !important;bottom:${y}px !important;transform:translateX(-50%) !important;`;
+            case 'bottom-right':  return `right:${x}px !important;bottom:${y}px !important;transform:none !important;`;
+            default:              return `right:${x}px !important;top:${y}px !important;transform:none !important;`;
+        }
+    }
     function buildAssetsCss(useBlobUrls = false) {
         let css = '';
         const logo = assetByPrefix('img/custom-logo.');
-        if (logo) {
-            const size = parseInt(document.getElementById('sl-logo-size').value) || 130;
-            css += `body::after { content: "" !important; position: fixed !important; top: 14px !important; right: 20px !important; width: ${size}px !important; height: ${size}px !important; background: url("${cssUrlForAsset(logo, useBlobUrls)}") no-repeat center / contain !important; z-index: 450 !important; pointer-events: none !important; }\n`;
+        const logoEnabled = document.getElementById('sl-logo-enabled');
+        if (logo && (!logoEnabled || logoEnabled.checked)) {
+            const size     = parseInt(document.getElementById('sl-logo-size').value) || 130;
+            const position = document.getElementById('sl-logo-position')?.value || 'top-right';
+            const mx       = Math.max(0, parseInt(document.getElementById('sl-logo-margin-x')?.value) || 20);
+            const my       = Math.max(0, parseInt(document.getElementById('sl-logo-margin-y')?.value) || 14);
+            css += `body::after { content: "" !important; position: fixed !important; width: ${size}px !important; height: ${size}px !important; background: url("${cssUrlForAsset(logo, useBlobUrls)}") no-repeat center / contain !important; ${logoCssPosition(position, mx, my)} z-index: 450 !important; pointer-events: none !important; }\n`;
         }
         const bg = assetByPrefix('img/custom-background.');
         if (bg) {
@@ -2283,15 +2328,21 @@
             css += `body { background-image: ${bgImg} !important; background-repeat: ${bgRepeat} !important; background-position: ${bgPos} !important; background-attachment: fixed !important; }\n`;
         }
         const header = assetByPrefix('img/custom-header.');
-        if (header) {
+        const headerEnabled = document.getElementById('sl-header-enabled');
+        if (header && (!headerEnabled || headerEnabled.checked)) {
             const h          = parseInt(document.getElementById('sl-header-image-height').value) || 120;
             const hFit       = document.getElementById('sl-header-image-fit').value || 'cover';
             const hPos       = document.getElementById('sl-header-image-position').value || 'center center';
             const hRepeat    = document.getElementById('sl-header-image-repeat').value || 'no-repeat';
-            css += `.exe-content .package-header, #header { background-image: url("${cssUrlForAsset(header, useBlobUrls)}") !important; background-size: ${hFit} !important; background-position: ${hPos} !important; background-repeat: ${hRepeat} !important; height: ${h}px !important; min-height: ${h}px !important; }\n`;
+            css += `.exe-content .package-header, #header { background-image: url("${cssUrlForAsset(header, useBlobUrls)}") !important; background-size: ${hFit} !important; background-position: ${hPos} !important; background-repeat: ${hRepeat} !important; height: ${h}px !important; min-height: ${h}px !important; box-sizing: border-box !important; overflow: hidden !important; padding-top: 0 !important; padding-bottom: 0 !important; }\n`;
+        }
+        const headerHideTitle = document.getElementById('sl-header-hide-title');
+        if (headerHideTitle?.checked) {
+            css += `.exe-content .package-title, .package-header .package-title, #headerContent { display: none !important; }\n`;
         }
         const footer = assetByPrefix('img/custom-footer.');
-        if (footer) {
+        const footerEnabled = document.getElementById('sl-footer-enabled');
+        if (footer && (!footerEnabled || footerEnabled.checked)) {
             const h          = parseInt(document.getElementById('sl-footer-image-height').value) || 90;
             const fFit       = document.getElementById('sl-footer-image-fit').value || 'contain';
             const fPos       = document.getElementById('sl-footer-image-position').value || 'center center';
@@ -2411,10 +2462,13 @@
     setupAsset({ prefix: 'img/custom-nav-next.',     btnId: 'btn-add-nav-next',       removeId: 'btn-remove-nav-next',       inputId: 'sl-nav-next-input',       nameId: 'sl-nav-next-name' });
     setupAsset({ prefix: 'img/custom-nav-toggle.',   btnId: 'btn-add-nav-toggle',     removeId: 'btn-remove-nav-toggle',     inputId: 'sl-nav-toggle-input',     nameId: 'sl-nav-toggle-name' });
     setupIdeviceIcons();
-    // Height option inputs trigger CSS update
+    // Asset option controls trigger CSS update
     for (const id of [
         'sl-bg-repeat', 'sl-bg-softness',
+        'sl-logo-enabled', 'sl-logo-position', 'sl-logo-margin-x', 'sl-logo-margin-y',
+        'sl-header-enabled', 'sl-header-hide-title',
         'sl-header-image-height', 'sl-header-image-fit', 'sl-header-image-position', 'sl-header-image-repeat',
+        'sl-footer-enabled',
         'sl-footer-image-height', 'sl-footer-image-fit', 'sl-footer-image-position', 'sl-footer-image-repeat',
     ]) document.getElementById(id).addEventListener('input', () => {
         assetStateTouched = true;
@@ -2675,7 +2729,11 @@
         // Buttons
         if (q.buttonBgColor) css += `.exe-content .feedbackbutton, .exe-content .exe-quiz-btn, .exe-content button.btn { background-color: ${q.buttonBgColor}${bang}; border-color: ${q.buttonBgColor}${bang}; }\n`;
         if (q.buttonTextColor) css += `.exe-content .feedbackbutton, .exe-content .exe-quiz-btn, .exe-content button.btn { color: ${q.buttonTextColor}${bang}; }\n`;
-
+        // Compact iDevices without title
+        if (q.compactNoHeaderIdevices) {
+            css += `.exe-content .box.no-header header, .exe-content .box.no-header .box-head, .exe-export .box.no-header header, .exe-export .box.no-header .box-head { min-height: 0${bang}; margin-top: 0${bang}; margin-bottom: 0${bang}; padding-top: 0${bang}; padding-bottom: 0${bang}; }\n`;
+            css += `.exe-content .box.no-header .box-head + .box-content, .exe-content .box.no-header .box-content, .exe-content .box.no-header .iDevice_content, .exe-content .box.no-header .iDevice_inner, .exe-export .box.no-header .box-content, .exe-export .box.no-header .iDevice_content, .exe-export .box.no-header .iDevice_inner { padding-top: 0${bang}; }\n`;
+        }
         // Workarea saved iDevice view — targets #node-content-container
         if (q.applyInWorkarea) {
             const wc = '#node-content-container';
