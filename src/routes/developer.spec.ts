@@ -184,7 +184,7 @@ describe('developerRoutes', () => {
     it('rejects unsafe paths inside uploaded theme ZIPs', async () => {
         const zipBase64 = Buffer.from(
             fflate.zipSync({
-                '../escape.txt': Buffer.from('escape'),
+                'theme\\escape.txt': Buffer.from('escape'),
                 'config.xml': Buffer.from('<theme><name>unsafe-upload</name></theme>'),
             }),
         ).toString('base64');
