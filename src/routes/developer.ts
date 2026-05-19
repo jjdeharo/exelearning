@@ -1020,6 +1020,23 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             return { error: 'newDirName must contain only lowercase letters, numbers, hyphens and underscores' };
         }
 
+        let uploadedFiles: Record<string, Uint8Array>;
+        try {
+            uploadedFiles = fflate.unzipSync(new Uint8Array(Buffer.from(zipBase64, 'base64')));
+        } catch {
+            set.status = 400;
+            return { error: 'Invalid ZIP file' };
+        }
+        const uploadRoot = commonRoot(Object.keys(uploadedFiles));
+        for (const rawName of Object.keys(uploadedFiles)) {
+            const shortName = uploadRoot ? rawName.slice(uploadRoot.length + 1) : rawName;
+            if (!shortName) continue;
+            if (!normalizeZipEntryPath(shortName)) {
+                set.status = 400;
+                return { error: `Invalid theme ZIP entry path: ${rawName}` };
+            }
+        }
+
         const existingUploadTheme = await findThemeByDirName(db, newDirName);
         if (existingUploadTheme?.is_builtin) {
             set.status = 409;
@@ -1028,18 +1045,6 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
         const isUploadOverwrite = !!existingUploadTheme;
 
         try {
-            const zipBytes = Buffer.from(zipBase64, 'base64');
-            const files = fflate.unzipSync(new Uint8Array(zipBytes));
-            const names = Object.keys(files);
-            const root = commonRoot(names);
-            for (const rawName of names) {
-                const shortName = root ? rawName.slice(root.length + 1) : rawName;
-                if (!shortName) continue;
-                if (!normalizeZipEntryPath(shortName)) {
-                    return jsonError(`Invalid theme ZIP entry path: ${rawName}`, 400);
-                }
-            }
-
             const filesDir = process.env.FILES_DIR || './data';
             const targetDir = path.join(filesDir, 'themes', 'site', newDirName);
             if (isUploadOverwrite) {
@@ -1047,8 +1052,8 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
             }
             await fs.promises.mkdir(targetDir, { recursive: true });
 
-            for (const [rawName, data] of Object.entries(files)) {
-                const shortName = root ? rawName.slice(root.length + 1) : rawName;
+            for (const [rawName, data] of Object.entries(uploadedFiles)) {
+                const shortName = uploadRoot ? rawName.slice(uploadRoot.length + 1) : rawName;
                 if (!shortName) continue;
                 const fullPath = safeTargetPath(targetDir, shortName);
                 if (!fullPath) throw new Error(`Invalid theme ZIP entry path: ${rawName}`);
