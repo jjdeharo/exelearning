@@ -74,6 +74,13 @@ const THEME_METADATA_TAGS: Record<keyof StyleLabThemeMetadata, string> = {
     downloadable: 'downloadable',
 };
 
+function jsonError(error: string, status: number): Response {
+    return new Response(JSON.stringify({ error }), {
+        status,
+        headers: { 'content-type': 'application/json' },
+    });
+}
+
 function safeFixturePath(filename: string): string | null {
     const basename = path.basename(filename);
     for (const base of [FIXTURES_PATH, DEV_FIXTURES_PATH]) {
@@ -1029,8 +1036,7 @@ export const developerRoutes = new Elysia({ name: 'developer-routes' })
                 const shortName = root ? rawName.slice(root.length + 1) : rawName;
                 if (!shortName) continue;
                 if (!normalizeZipEntryPath(shortName)) {
-                    set.status = 400;
-                    return { error: `Invalid theme ZIP entry path: ${rawName}` };
+                    return jsonError(`Invalid theme ZIP entry path: ${rawName}`, 400);
                 }
             }
 
