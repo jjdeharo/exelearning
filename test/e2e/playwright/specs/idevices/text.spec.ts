@@ -539,6 +539,9 @@ test.describe('Text iDevice', () => {
             const insertedHtml = await page.evaluate(() => (window as any).tinymce.activeEditor.getContent());
             expect(insertedHtml).toContain('<pre class="mermaid" style="max-width: 600px;">');
             expect(insertedHtml).toContain('A[Start] --&gt; B{Is it working?}');
+            // Sirena writes the layout engine of eXe's Mermaid in the header, so the
+            // diagram keeps its look when eXe moves to another Mermaid version
+            expect(insertedHtml).toMatch(/%%\{init: \{[^}]*"layout":"[a-z.]+"/);
 
             // Save the iDevice to exit edit mode - wait for button to be visible first
             const saveBtn = block.locator('.btn-save-idevice');
