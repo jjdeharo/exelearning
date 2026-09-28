@@ -16853,6 +16853,10 @@
         <source>The theme's</source>
         <target>Gaiarena</target>
       </trans-unit>
+      <trans-unit id="rhs32vh" resname="Black and white">
+        <source>Black and white</source>
+        <target>Zuri-beltza</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

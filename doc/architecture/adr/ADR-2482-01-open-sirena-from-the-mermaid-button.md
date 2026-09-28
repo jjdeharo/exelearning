@@ -77,7 +77,7 @@ bypasses eXe's rendering and export pipeline.
 - EdiCuaTeX integration: `scripts/vendor-edicuatex.ts`,
   `public/libs/tinymce_5/js/tinymce/plugins/edicuatex/plugin.min.js`, #2359.
 - Sirena's eXe mode and its decisions: `sirenaapp/sirenaapp.github.io`,
-  `docs/adr/0029-…`, published as `sirenaapp` 1.0.5 on npm with provenance.
+  `docs/adr/0029-…`, published as `sirenaapp` 1.0.8 on npm with provenance.
 - While the TinyMCE URL dialog loads, `editor.selection.getNode()` returns `P`
   instead of the `PRE` under the cursor (measured in Chromium 149 and
   Firefox 151): the button has to record the context when it is pressed.
@@ -86,6 +86,12 @@ bypasses eXe's rendering and export pipeline.
   same viewBox and the same node boxes in Sirena and in the iDevice, in
   Chromium and Firefox. With Sirena's own Mermaid 12 only the class diagram
   matched (node sizes and layout engine differ between Mermaid 11 and 12).
+- With eXe's Mermaid 11, four of Sirena's 27 examples are diagram types that
+  only exist in Mermaid 12 (swimlane, Ishikawa, tree view, Venn), and the
+  treemap does not accept `accTitle`/`accDescr`. Sirena 1.0.8 leaves the four
+  out and loads the treemap with those lines as comments: 23 examples and 20 diagram
+  types are offered, and all 23 render without error in Chromium and Firefox.
+  All 135 example codes (27 × 5 languages) render with Mermaid 12.
 - The catalogue keeps keys as written in the source (`Don\'t show again`,
   literal `\n`), so `_()` with the real string misses them; checked through
   `/api/translations/fr`.
@@ -105,6 +111,11 @@ We will use option 3:
   retouches, writes back `<pre class="mermaid">` with the same max-size rules
   (`eXeLearning.mermaidMaxSize`), and writes the default layout engine of eXe's
   Mermaid in the diagram header on insert.
+- Inside eXe, Sirena only offers the examples and diagram types that eXe's
+  Mermaid can parse (`mermaid.parse` with `suppressErrors`), retrying with
+  the accessibility lines (`accTitle`, `accDescr`) as comments, as Sirena
+  already writes them for the types that do not support them, before leaving
+  one out.
 - Its strings go into every locale through the usual extraction.
 
 ## Consequences
@@ -119,7 +130,7 @@ We will use option 3:
 
 - The build carries a second Mermaid (Sirena's, about 5.5 MB unpacked, loaded
   only by diagram type) that is not used inside eXe except as a fallback.
-- 290 new strings per locale; DE, EO, FR, IT, PT, RO and VA are `~` placeholders
+- 291 new strings per locale; DE, EO, FR, IT, PT, RO and VA are `~` placeholders
   pending review.
 
 ### Neutral

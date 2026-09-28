@@ -16853,6 +16853,10 @@
         <source>The theme's</source>
         <target>~Tiu de la etoso</target>
       </trans-unit>
+      <trans-unit id="2u298yx" resname="Black and white">
+        <source>Black and white</source>
+        <target>~Nigra-blanka</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -16853,6 +16853,10 @@
         <source>The theme's</source>
         <target>~A do tema</target>
       </trans-unit>
+      <trans-unit id="9mmyu8a" resname="Black and white">
+        <source>Black and white</source>
+        <target>~Preto e branco</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -34,7 +34,7 @@
         "mysql2": "^3.23.4",
         "nunjucks": "^3.2.4",
         "pdfjs-dist": "6.3.289",
-        "sirenaapp": "1.0.5",
+        "sirenaapp": "1.0.8",
         "uuid": "^14.0.2",
         "ws": "^8.21.3",
         "y-websocket": "^3.1.0",
@@ -1345,7 +1345,7 @@
 
     "simple-update-notifier": ["simple-update-notifier@2.0.0", "", { "dependencies": { "semver": "^7.5.3" } }, "sha512-a2B9Y0KlNXl9u/vsW6sTIu9vGEpfKu2wRV6l1H3XEas/0gUIzGzBoP/IouTcUQbm9JWZLH3COxyn03TYlFax6w=="],
 
-    "sirenaapp": ["sirenaapp@1.0.5", "", {}, "sha512-fAXdcdGlvj3XgMiMBR3IO1+lpH9TQQqVyLgCgc8cNDgFX6XtOGwTUMQjsrySiT6eak7DU9WbbyxljSaA1HYAZw=="],
+    "sirenaapp": ["sirenaapp@1.0.8", "", {}, "sha512-GgfDAogaNBALG8Myv0K1ellK8dzmdO8YeJ8ufBBn3+IasuoqRWp+O1Bfx1KcCdMEowQ27e+F9QtAfJv7A40q0A=="],
 
     "sirv": ["sirv@3.0.2", "", { "dependencies": { "@polka/url": "^1.0.0-next.24", "mrmime": "^2.0.0", "totalist": "^3.0.0" } }, "sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g=="],
 
