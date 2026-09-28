@@ -15693,6 +15693,1166 @@
         <source>To save the score, the activity needs at least one question.</source>
         <target>~Pentru a salva scorul, activitatea are nevoie de cel puțin o întrebare.</target>
       </trans-unit>
+      <trans-unit id="nlqot9t" resname="Free Mermaid diagram editor">
+        <source>Free Mermaid diagram editor</source>
+        <target>~Editor liber de diagrame Mermaid</target>
+      </trans-unit>
+      <trans-unit id="r3oq0i2" resname="Diagram">
+        <source>Diagram</source>
+        <target>~Diagramă</target>
+      </trans-unit>
+      <trans-unit id="hypjhtz" resname="Choose an example">
+        <source>Choose an example</source>
+        <target>~Alege un exemplu</target>
+      </trans-unit>
+      <trans-unit id="m98cnme" resname="The current diagram will be erased. Continue?">
+        <source>The current diagram will be erased. Continue?</source>
+        <target>~Diagrama actuală va fi ștearsă. Continui?</target>
+      </trans-unit>
+      <trans-unit id="7pxpuj6" resname="Open a file (.mmd, .md, .txt)">
+        <source>Open a file (.mmd, .md, .txt)</source>
+        <target>~Deschide un fișier (.mmd, .md, .txt)</target>
+      </trans-unit>
+      <trans-unit id="xpl22h6" resname="Save as a .mmd file">
+        <source>Save as a .mmd file</source>
+        <target>~Salvează ca fișier .mmd</target>
+      </trans-unit>
+      <trans-unit id="oxa69o8" resname="Copy the code">
+        <source>Copy the code</source>
+        <target>~Copiază codul</target>
+      </trans-unit>
+      <trans-unit id="fvg2f1v" resname="Download the diagram as SVG">
+        <source>Download the diagram as SVG</source>
+        <target>~Descarcă diagrama ca SVG</target>
+      </trans-unit>
+      <trans-unit id="2ovqqm0" resname="Download the diagram as PNG">
+        <source>Download the diagram as PNG</source>
+        <target>~Descarcă diagrama ca PNG</target>
+      </trans-unit>
+      <trans-unit id="cwqj16p" resname="Copy the diagram as an image">
+        <source>Copy the diagram as an image</source>
+        <target>~Copiază diagrama ca imagine</target>
+      </trans-unit>
+      <trans-unit id="f3yb218" resname="Share the diagram">
+        <source>Share the diagram</source>
+        <target>~Partajează diagrama</target>
+      </trans-unit>
+      <trans-unit id="hjtiz8w" resname="Link to the editor">
+        <source>Link to the editor</source>
+        <target>~Link către editor</target>
+      </trans-unit>
+      <trans-unit id="jp1fhaw" resname="Opens in Sirena with the code in view, ready to keep editing">
+        <source>Opens in Sirena with the code in view, ready to keep editing</source>
+        <target>~Se deschide în Sirena cu codul la vedere, gata de editat în continuare</target>
+      </trans-unit>
+      <trans-unit id="yy3u0d2" resname="Full-screen link">
+        <source>Full-screen link</source>
+        <target>~Link pe tot ecranul</target>
+      </trans-unit>
+      <trans-unit id="9600np1" resname="Opens the diagram alone, filling the whole window">
+        <source>Opens the diagram alone, filling the whole window</source>
+        <target>~Deschide doar diagrama, pe toată fereastra</target>
+      </trans-unit>
+      <trans-unit id="ak0ukp5" resname="Embed code">
+        <source>Embed code</source>
+        <target>~Cod de încorporare</target>
+      </trans-unit>
+      <trans-unit id="gz5ieul" resname="A frame ready to paste into any web page: a blog, a personal site or a teaching resource">
+        <source>A frame ready to paste into any web page: a blog, a personal site or a teaching resource</source>
+        <target>~Un cadru gata de lipit în orice pagină web: un blog, un site personal sau o resursă didactică</target>
+      </trans-unit>
+      <trans-unit id="rfh4hr4" resname="Embed code copied to the clipboard">
+        <source>Embed code copied to the clipboard</source>
+        <target>~Codul de încorporare a fost copiat în clipboard</target>
+      </trans-unit>
+      <trans-unit id="wtpt319" resname="Edit in Sirena">
+        <source>Edit in Sirena</source>
+        <target>~Editează în Sirena</target>
+      </trans-unit>
+      <trans-unit id="jcb6sro" resname="Title and description for accessibility">
+        <source>Title and description for accessibility</source>
+        <target>~Titlu și descriere pentru accesibilitate</target>
+      </trans-unit>
+      <trans-unit id="y1d0zmw" resname="Diagram title and description">
+        <source>Diagram title and description</source>
+        <target>~Titlul și descrierea diagramei</target>
+      </trans-unit>
+      <trans-unit id="mt80niq" resname="They are stored inside the diagram and read out by screen readers. Worth adding to any material that gets published.">
+        <source>They are stored inside the diagram and read out by screen readers. Worth adding to any material that gets published.</source>
+        <target>~Se salvează în diagramă și sunt citite de cititoarele de ecran. Merită adăugate în orice material care se publică.</target>
+      </trans-unit>
+      <trans-unit id="gt1u5eg" resname="Syntax for this diagram">
+        <source>Syntax for this diagram</source>
+        <target>~Sintaxa acestei diagrame</target>
+      </trans-unit>
+      <trans-unit id="2ss9cjz" resname="Clicking a snippet inserts it into the editor.">
+        <source>Clicking a snippet inserts it into the editor.</source>
+        <target>~Un clic pe un fragment îl inserează în editor.</target>
+      </trans-unit>
+      <trans-unit id="0e6x4x1" resname="For this diagram type, the syntax is in the Mermaid reference.">
+        <source>For this diagram type, the syntax is in the Mermaid reference.</source>
+        <target>~Pentru acest tip de diagramă, sintaxa se află în referința Mermaid.</target>
+      </trans-unit>
+      <trans-unit id="tlanbqq" resname="Download the diagram">
+        <source>Download the diagram</source>
+        <target>~Descarcă diagrama</target>
+      </trans-unit>
+      <trans-unit id="rqso3n6" resname="Print or save as PDF">
+        <source>Print or save as PDF</source>
+        <target>~Imprimă sau salvează ca PDF</target>
+      </trans-unit>
+      <trans-unit id="peofteo" resname="There is no diagram to print.">
+        <source>There is no diagram to print.</source>
+        <target>~Nu există nicio diagramă de imprimat.</target>
+      </trans-unit>
+      <trans-unit id="l70g8d1" resname="PNG image">
+        <source>PNG image</source>
+        <target>~Imagine PNG</target>
+      </trans-unit>
+      <trans-unit id="vfd11t3" resname="To insert into a document or a presentation">
+        <source>To insert into a document or a presentation</source>
+        <target>~Pentru a o insera într-un document sau într-o prezentare</target>
+      </trans-unit>
+      <trans-unit id="yj1y8re" resname="SVG image">
+        <source>SVG image</source>
+        <target>~Imagine SVG</target>
+      </trans-unit>
+      <trans-unit id="mc7w4ok" resname="Vector: scales without losing quality and can be edited">
+        <source>Vector: scales without losing quality and can be edited</source>
+        <target>~Vectorială: se mărește fără pierderi de calitate și se poate edita</target>
+      </trans-unit>
+      <trans-unit id="pmr4z25" resname="HTML page">
+        <source>HTML page</source>
+        <target>~Pagină HTML</target>
+      </trans-unit>
+      <trans-unit id="qtmz2m0" resname="The diagram on its own, ready to open in a browser">
+        <source>The diagram on its own, ready to open in a browser</source>
+        <target>~Doar diagrama, gata de deschis într-un browser</target>
+      </trans-unit>
+      <trans-unit id="r96hywn" resname=".mmd source">
+        <source>.mmd source</source>
+        <target>~Sursă .mmd</target>
+      </trans-unit>
+      <trans-unit id="5h0e8tt" resname="The diagram text, to keep editing it here">
+        <source>The diagram text, to keep editing it here</source>
+        <target>~Textul diagramei, pentru a continua editarea aici</target>
+      </trans-unit>
+      <trans-unit id="n8sk4hu" resname="PNG resolution">
+        <source>PNG resolution</source>
+        <target>~Rezoluția PNG</target>
+      </trans-unit>
+      <trans-unit id="7ppz2q0" resname="1× (screen size)">
+        <source>1× (screen size)</source>
+        <target>~1× (dimensiunea ecranului)</target>
+      </trans-unit>
+      <trans-unit id="dcrg0kv" resname="2× (sharp)">
+        <source>2× (sharp)</source>
+        <target>~2× (clar)</target>
+      </trans-unit>
+      <trans-unit id="spdyumc" resname="4× (for large prints)">
+        <source>4× (for large prints)</source>
+        <target>~4× (pentru imprimări mari)</target>
+      </trans-unit>
+      <trans-unit id="jfdsd9h" resname="PNG background">
+        <source>PNG background</source>
+        <target>~Fundalul PNG</target>
+      </trans-unit>
+      <trans-unit id="33muxud" resname="The editor one">
+        <source>The editor one</source>
+        <target>~Cel al editorului</target>
+      </trans-unit>
+      <trans-unit id="z5jrqmu" resname="Transparent">
+        <source>Transparent</source>
+        <target>~Transparent</target>
+      </trans-unit>
+      <trans-unit id="1e4s2ed" resname="It also applies to the copy as image button.">
+        <source>It also applies to the copy as image button.</source>
+        <target>~Se aplică și butonului de copiere ca imagine.</target>
+      </trans-unit>
+      <trans-unit id="tlnv3j1" resname="Stroke style">
+        <source>Stroke style</source>
+        <target>~Stilul liniei</target>
+      </trans-unit>
+      <trans-unit id="zim3ygf" resname="Classic">
+        <source>Classic</source>
+        <target>~Clasic</target>
+      </trans-unit>
+      <trans-unit id="40i8f6e" resname="Hand drawn">
+        <source>Hand drawn</source>
+        <target>~Desenat de mână</target>
+      </trans-unit>
+      <trans-unit id="hqsf974" resname="Modern">
+        <source>Modern</source>
+        <target>~Modern</target>
+      </trans-unit>
+      <trans-unit id="ugimo9n" resname="Text size">
+        <source>Text size</source>
+        <target>~Mărimea textului</target>
+      </trans-unit>
+      <trans-unit id="yct0s5v" resname="Typography">
+        <source>Typography</source>
+        <target>~Tipografie</target>
+      </trans-unit>
+      <trans-unit id="fgndghk" resname="Small">
+        <source>Small</source>
+        <target>~Mică</target>
+      </trans-unit>
+      <trans-unit id="2m8qpil" resname="Normal">
+        <source>Normal</source>
+        <target>~Normală</target>
+      </trans-unit>
+      <trans-unit id="twsebo6" resname="Large">
+        <source>Large</source>
+        <target>~Mare</target>
+      </trans-unit>
+      <trans-unit id="gutnl8v" resname="Very large">
+        <source>Very large</source>
+        <target>~Foarte mare</target>
+      </trans-unit>
+      <trans-unit id="xq0zl8i" resname="Main colour">
+        <source>Main colour</source>
+        <target>~Culoarea principală</target>
+      </trans-unit>
+      <trans-unit id="kehndbm" resname="Grey">
+        <source>Grey</source>
+        <target>~Gri</target>
+      </trans-unit>
+      <trans-unit id="6nxn6yw" resname="Custom colour…">
+        <source>Custom colour…</source>
+        <target>~Culoare personalizată…</target>
+      </trans-unit>
+      <trans-unit id="eeieiqr" resname="Lines">
+        <source>Lines</source>
+        <target>~Linii</target>
+      </trans-unit>
+      <trans-unit id="2vndbdb" resname="The theme\&apos;s">
+        <source>The theme\'s</source>
+        <target>~Cea a temei</target>
+      </trans-unit>
+      <trans-unit id="o4040dn" resname="Arrow label background">
+        <source>Arrow label background</source>
+        <target>~Fundalul etichetelor săgeților</target>
+      </trans-unit>
+      <trans-unit id="omln5ao" resname="Changing the fill adjusts border, lines, text and label background on its own until they are set by hand.">
+        <source>Changing the fill adjusts border, lines, text and label background on its own until they are set by hand.</source>
+        <target>~Schimbarea umplerii ajustează singură marginea, liniile, textul și fundalul etichetelor, cât timp nu sunt setate manual.</target>
+      </trans-unit>
+      <trans-unit id="4tmap4k" resname="%% Concept map: every link carries a verb, for example A[Water] -- is found as --&gt; B[Three states]">
+        <source>%% Concept map: every link carries a verb, for example A[Water] -- is found as --&gt; B[Three states]</source>
+        <target>~%% Hartă conceptuală: fiecare legătură poartă un verb, de exemplu A[Apa] -- se găsește în --&gt; B[Trei stări]</target>
+      </trans-unit>
+      <trans-unit id="rzezdpi" resname="Colours of the element and of the label background">
+        <source>Colours of the element and of the label background</source>
+        <target>~Culorile elementului și ale fundalului etichetelor</target>
+      </trans-unit>
+      <trans-unit id="947mogg" resname="Theme">
+        <source>Theme</source>
+        <target>~Temă</target>
+      </trans-unit>
+      <trans-unit id="emfwww7" resname="Theme: the colours of the whole diagram">
+        <source>Theme: the colours of the whole diagram</source>
+        <target>~Temă: culorile întregii diagrame</target>
+      </trans-unit>
+      <trans-unit id="qicwzc9" resname="Whole diagram">
+        <source>Whole diagram</source>
+        <target>~Toată diagrama</target>
+      </trans-unit>
+      <trans-unit id="dl0sher" resname="Whole box">
+        <source>Whole box</source>
+        <target>~Toată caseta</target>
+      </trans-unit>
+      <trans-unit id="b482urw" resname="Text only">
+        <source>Text only</source>
+        <target>~Doar textul</target>
+      </trans-unit>
+      <trans-unit id="8cvcw63" resname="Border only">
+        <source>Border only</source>
+        <target>~Doar marginea</target>
+      </trans-unit>
+      <trans-unit id="833cwar" resname="Other size">
+        <source>Other size</source>
+        <target>~Altă mărime</target>
+      </trans-unit>
+      <trans-unit id="ft7fry8" resname="Font">
+        <source>Font</source>
+        <target>~Font</target>
+      </trans-unit>
+      <trans-unit id="6wrzclz" resname="Serif">
+        <source>Serif</source>
+        <target>~Cu serife</target>
+      </trans-unit>
+      <trans-unit id="htsl7am" resname="Handwritten">
+        <source>Handwritten</source>
+        <target>~De mână</target>
+      </trans-unit>
+      <trans-unit id="rtkog7u" resname="Box width">
+        <source>Box width</source>
+        <target>~Lățimea casetelor</target>
+      </trans-unit>
+      <trans-unit id="w60hepe" resname="Narrow">
+        <source>Narrow</source>
+        <target>~Îngustă</target>
+      </trans-unit>
+      <trans-unit id="aotwp7s" resname="Wide">
+        <source>Wide</source>
+        <target>~Lată</target>
+      </trans-unit>
+      <trans-unit id="u8cqots" resname="Very wide">
+        <source>Very wide</source>
+        <target>~Foarte lată</target>
+      </trans-unit>
+      <trans-unit id="0wlclpd" resname="Other width">
+        <source>Other width</source>
+        <target>~Altă lățime</target>
+      </trans-unit>
+      <trans-unit id="4kawi8t" resname="Layout engine">
+        <source>Layout engine</source>
+        <target>~Motor de aranjare</target>
+      </trans-unit>
+      <trans-unit id="bh5g6h9" resname="Merge arrows going to the same place">
+        <source>Merge arrows going to the same place</source>
+        <target>~Unește săgețile care merg în același loc</target>
+      </trans-unit>
+      <trans-unit id="zvv5qc9" resname="This diagram type does not accept an accessible title or description: they are kept as a comment in the code and do not reach screen readers.">
+        <source>This diagram type does not accept an accessible title or description: they are kept as a comment in the code and do not reach screen readers.</source>
+        <target>~Acest tip de diagramă nu acceptă titlu sau descriere accesibile: rămân ca un comentariu în cod și nu ajung la cititoarele de ecran.</target>
+      </trans-unit>
+      <trans-unit id="98um2nf" resname="ELK layered">
+        <source>ELK layered</source>
+        <target>~ELK pe straturi</target>
+      </trans-unit>
+      <trans-unit id="e4qlckt" resname="The default: right-angled arrows and elements in levels">
+        <source>The default: right-angled arrows and elements in levels</source>
+        <target>~Implicit: săgeți în unghi drept și elemente pe niveluri</target>
+      </trans-unit>
+      <trans-unit id="tn2chhv" resname="Dagre">
+        <source>Dagre</source>
+        <target>~Dagre</target>
+      </trans-unit>
+      <trans-unit id="4cp11x7" resname="The classic one: supports line shape and spacing">
+        <source>The classic one: supports line shape and spacing</source>
+        <target>~Cel clasic: ține cont de forma liniilor și de spațiere</target>
+      </trans-unit>
+      <trans-unit id="wxb2s66" resname="ELK tree">
+        <source>ELK tree</source>
+        <target>~ELK arbore</target>
+      </trans-unit>
+      <trans-unit id="ohrpn5v" resname="For hierarchies, like an organisation chart">
+        <source>For hierarchies, like an organisation chart</source>
+        <target>~Pentru ierarhii, ca o organigramă</target>
+      </trans-unit>
+      <trans-unit id="031ie2h" resname="ELK radial">
+        <source>ELK radial</source>
+        <target>~ELK radial</target>
+      </trans-unit>
+      <trans-unit id="noh08ob" resname="In rings around the first element">
+        <source>In rings around the first element</source>
+        <target>~În inele în jurul primului element</target>
+      </trans-unit>
+      <trans-unit id="vqsoew6" resname="ELK stress">
+        <source>ELK stress</source>
+        <target>~ELK stres</target>
+      </trans-unit>
+      <trans-unit id="6upnz36" resname="Spreads by distances, with no direction">
+        <source>Spreads by distances, with no direction</source>
+        <target>~Distribuie după distanțe, fără direcție</target>
+      </trans-unit>
+      <trans-unit id="jb183qn" resname="ELK force">
+        <source>ELK force</source>
+        <target>~ELK forță</target>
+      </trans-unit>
+      <trans-unit id="rmdipj2" resname="Like magnets pushing apart, with no direction">
+        <source>Like magnets pushing apart, with no direction</source>
+        <target>~Ca niște magneți care se resping, fără direcție</target>
+      </trans-unit>
+      <trans-unit id="yroievt" resname="ELK no overlaps">
+        <source>ELK no overlaps</source>
+        <target>~ELK fără suprapuneri</target>
+      </trans-unit>
+      <trans-unit id="6fis43x" resname="Separates what overlaps, changing as little as possible">
+        <source>Separates what overlaps, changing as little as possible</source>
+        <target>~Separă ce se suprapune, schimbând cât mai puțin</target>
+      </trans-unit>
+      <trans-unit id="dhcrso5" resname="ELK boxes">
+        <source>ELK boxes</source>
+        <target>~ELK casete</target>
+      </trans-unit>
+      <trans-unit id="ht1s1fb" resname="In rows, ignoring the arrows">
+        <source>In rows, ignoring the arrows</source>
+        <target>~Pe rânduri, fără a ține cont de săgeți</target>
+      </trans-unit>
+      <trans-unit id="fvlwvzt" resname="ELK packed">
+        <source>ELK packed</source>
+        <target>~ELK compact</target>
+      </trans-unit>
+      <trans-unit id="xvudm26" resname="In a compact rectangle, ignoring the arrows">
+        <source>In a compact rectangle, ignoring the arrows</source>
+        <target>~Într-un dreptunghi compact, fără a ține cont de săgeți</target>
+      </trans-unit>
+      <trans-unit id="qj1xbq6" resname="ELK by parts">
+        <source>ELK by parts</source>
+        <target>~ELK pe părți</target>
+      </trans-unit>
+      <trans-unit id="nfh9szz" resname="Places unconnected parts separately">
+        <source>Places unconnected parts separately</source>
+        <target>~Așază separat părțile neconectate</target>
+      </trans-unit>
+      <trans-unit id="e4xk4t2" resname="Undo (Ctrl+Z)">
+        <source>Undo (Ctrl+Z)</source>
+        <target>~Anulează (Ctrl+Z)</target>
+      </trans-unit>
+      <trans-unit id="3ap08uw" resname="Redo (Ctrl+Y)">
+        <source>Redo (Ctrl+Y)</source>
+        <target>~Reface (Ctrl+Y)</target>
+      </trans-unit>
+      <trans-unit id="w1psrad" resname="The arrow">
+        <source>The arrow</source>
+        <target>~Săgeata</target>
+      </trans-unit>
+      <trans-unit id="itzs7ky" resname="Colour the arrow on this line:">
+        <source>Colour the arrow on this line:</source>
+        <target>~Colorează săgeata de pe acest rând:</target>
+      </trans-unit>
+      <trans-unit id="y8zscc2" resname="All lines">
+        <source>All lines</source>
+        <target>~Toate liniile</target>
+      </trans-unit>
+      <trans-unit id="rdj44k6" resname="Arrow thickness">
+        <source>Arrow thickness</source>
+        <target>~Grosimea săgeților</target>
+      </trans-unit>
+      <trans-unit id="lubvrs5" resname="Line type">
+        <source>Line type</source>
+        <target>~Tipul liniei</target>
+      </trans-unit>
+      <trans-unit id="lhjdng0" resname="Arrow heads">
+        <source>Arrow heads</source>
+        <target>~Vârfurile săgeților</target>
+      </trans-unit>
+      <trans-unit id="w71hdmd" resname="Dash-dot">
+        <source>Dash-dot</source>
+        <target>~Linie-punct</target>
+      </trans-unit>
+      <trans-unit id="k3gtgjq" resname="Thick">
+        <source>Thick</source>
+        <target>~Groasă</target>
+      </trans-unit>
+      <trans-unit id="s1izltr" resname="Invisible">
+        <source>Invisible</source>
+        <target>~Invizibilă</target>
+      </trans-unit>
+      <trans-unit id="zkfbc7l" resname="Arrow at both ends">
+        <source>Arrow at both ends</source>
+        <target>~Săgeată la ambele capete</target>
+      </trans-unit>
+      <trans-unit id="fwl8iu7" resname="Circle at both ends">
+        <source>Circle at both ends</source>
+        <target>~Cerc la ambele capete</target>
+      </trans-unit>
+      <trans-unit id="1nqo3m0" resname="Cross at both ends">
+        <source>Cross at both ends</source>
+        <target>~Cruce la ambele capete</target>
+      </trans-unit>
+      <trans-unit id="v1q9d1q" resname="Border thickness">
+        <source>Border thickness</source>
+        <target>~Grosimea marginii</target>
+      </trans-unit>
+      <trans-unit id="6t54s1l" resname="Other thickness">
+        <source>Other thickness</source>
+        <target>~Altă grosime</target>
+      </trans-unit>
+      <trans-unit id="47sakjp" resname="Thin">
+        <source>Thin</source>
+        <target>~Subțire</target>
+      </trans-unit>
+      <trans-unit id="q0x42tg" resname="Very thick">
+        <source>Very thick</source>
+        <target>~Foarte groasă</target>
+      </trans-unit>
+      <trans-unit id="3530a4f" resname="At the cursor">
+        <source>At the cursor</source>
+        <target>~La cursor</target>
+      </trans-unit>
+      <trans-unit id="n6fob6h" resname="Thickness of the arrow on this line:">
+        <source>Thickness of the arrow on this line:</source>
+        <target>~Grosimea săgeții de pe acest rând:</target>
+      </trans-unit>
+      <trans-unit id="gp1gtk5" resname="Border thickness of the element">
+        <source>Border thickness of the element</source>
+        <target>~Grosimea marginii elementului</target>
+      </trans-unit>
+      <trans-unit id="zkkyos6" resname="The border">
+        <source>The border</source>
+        <target>~Marginea</target>
+      </trans-unit>
+      <trans-unit id="7l90r4u" resname="Place the cursor on the line of an arrow or an element.">
+        <source>Place the cursor on the line of an arrow or an element.</source>
+        <target>~Pune cursorul pe rândul unei săgeți sau al unui element.</target>
+      </trans-unit>
+      <trans-unit id="lp8lmfx" resname="This box">
+        <source>This box</source>
+        <target>~Această casetă</target>
+      </trans-unit>
+      <trans-unit id="nlck7bg" resname="All boxes">
+        <source>All boxes</source>
+        <target>~Toate casetele</target>
+      </trans-unit>
+      <trans-unit id="v7mqj2a" resname="Changes the boxes that carry the general shape ({n} of {m}); those changed one by one are kept.">
+        <source>Changes the boxes that carry the general shape ({n} of {m}); those changed one by one are kept.</source>
+        <target>~Schimbă casetele care au forma generală ({n} din {m}); cele schimbate una câte una se păstrează.</target>
+      </trans-unit>
+      <trans-unit id="si771y0" resname="No box carries the general shape; those changed one by one are kept.">
+        <source>No box carries the general shape; those changed one by one are kept.</source>
+        <target>~Nicio casetă nu are forma generală; cele schimbate una câte una se păstrează.</target>
+      </trans-unit>
+      <trans-unit id="go7rhab" resname="Boxes: shape and width">
+        <source>Boxes: shape and width</source>
+        <target>~Casete: formă și lățime</target>
+      </trans-unit>
+      <trans-unit id="ugzh2z3" resname="Box shape">
+        <source>Box shape</source>
+        <target>~Forma casetei</target>
+      </trans-unit>
+      <trans-unit id="sy1xj93" resname="Of the box at the cursor, or of all of them">
+        <source>Of the box at the cursor, or of all of them</source>
+        <target>~A casetei de la cursor sau a tuturor</target>
+      </trans-unit>
+      <trans-unit id="0kpks32" resname="Where a long text is broken into several lines">
+        <source>Where a long text is broken into several lines</source>
+        <target>~Unde un text lung se împarte pe mai multe rânduri</target>
+      </trans-unit>
+      <trans-unit id="kv3bayq" resname="Shape of the element">
+        <source>Shape of the element</source>
+        <target>~Forma elementului</target>
+      </trans-unit>
+      <trans-unit id="wfg96o4" resname="Place the cursor on the line of an element and press the button again.">
+        <source>Place the cursor on the line of an element and press the button again.</source>
+        <target>~Pune cursorul pe rândul unui element și apasă din nou butonul.</target>
+      </trans-unit>
+      <trans-unit id="i3actu0" resname="Arrow text">
+        <source>Arrow text</source>
+        <target>~Textul săgeții</target>
+      </trans-unit>
+      <trans-unit id="6ov6pap" resname="Remove the text colour">
+        <source>Remove the text colour</source>
+        <target>~Elimină culoarea textului</target>
+      </trans-unit>
+      <trans-unit id="awekrz4" resname="Arrow properties">
+        <source>Arrow properties</source>
+        <target>~Proprietățile săgeții</target>
+      </trans-unit>
+      <trans-unit id="gobkybd" resname="In flowcharts and concept maps:\nRight-click a box, an arrow or the background: change its format.\nDouble-click: edit the text.">
+        <source>In flowcharts and concept maps:\nRight-click a box, an arrow or the background: change its format.\nDouble-click: edit the text.</source>
+        <target>~În diagramele de flux și hărțile conceptuale:\nClic dreapta pe o casetă, o săgeată sau pe fundal: schimbă formatul.\nDublu clic: editează textul.</target>
+      </trans-unit>
+      <trans-unit id="7z6d6ml" resname="In flowcharts and concept maps:\nLong press a box, an arrow or the background: change its format.\nDouble tap: edit the text.">
+        <source>In flowcharts and concept maps:\nLong press a box, an arrow or the background: change its format.\nDouble tap: edit the text.</source>
+        <target>~În diagramele de flux și hărțile conceptuale:\nApăsare lungă pe o casetă, o săgeată sau pe fundal: schimbă formatul.\nAtingere dublă: editează textul.</target>
+      </trans-unit>
+      <trans-unit id="1sn9hzi" resname="Close the notice">
+        <source>Close the notice</source>
+        <target>~Închide avizul</target>
+      </trans-unit>
+      <trans-unit id="rttyvjc" resname="Don\&apos;t show again">
+        <source>Don\'t show again</source>
+        <target>~Nu mai afișa</target>
+      </trans-unit>
+      <trans-unit id="pen9f60" resname="Width of the code panel">
+        <source>Width of the code panel</source>
+        <target>~Lățimea panoului de cod</target>
+      </trans-unit>
+      <trans-unit id="iv9gpgk" resname="Bold and italic cannot be used in a text that contains a formula.">
+        <source>Bold and italic cannot be used in a text that contains a formula.</source>
+        <target>~Aldinele și cursivele nu se pot folosi într-un text care conține o formulă.</target>
+      </trans-unit>
+      <trans-unit id="lnek728" resname="Line break inside the text">
+        <source>Line break inside the text</source>
+        <target>~Rând nou în text</target>
+      </trans-unit>
+      <trans-unit id="yrfol6j" resname="Write the text">
+        <source>Write the text</source>
+        <target>~Scrie textul</target>
+      </trans-unit>
+      <trans-unit id="pt9e6ks" resname="Delete the box">
+        <source>Delete the box</source>
+        <target>~Șterge caseta</target>
+      </trans-unit>
+      <trans-unit id="jsx2m3h" resname="Add a box inside">
+        <source>Add a box inside</source>
+        <target>~Adaugă o casetă în interior</target>
+      </trans-unit>
+      <trans-unit id="cxb6lvv" resname="Tree item">
+        <source>Tree item</source>
+        <target>~Element al arborelui</target>
+      </trans-unit>
+      <trans-unit id="fb7zfti" resname="Remove the highlight">
+        <source>Remove the highlight</source>
+        <target>~Elimină evidențierea</target>
+      </trans-unit>
+      <trans-unit id="t6ouhxo" resname="Whole block">
+        <source>Whole block</source>
+        <target>~Tot blocul</target>
+      </trans-unit>
+      <trans-unit id="v9h8uag" resname="Title only">
+        <source>Title only</source>
+        <target>~Doar titlul</target>
+      </trans-unit>
+      <trans-unit id="fk046bs" resname="Border type">
+        <source>Border type</source>
+        <target>~Tipul marginii</target>
+      </trans-unit>
+      <trans-unit id="2tgyxtl" resname="All blocks">
+        <source>All blocks</source>
+        <target>~Toate blocurile</target>
+      </trans-unit>
+      <trans-unit id="nij626h" resname="New block, with the boxes on the selected lines">
+        <source>New block, with the boxes on the selected lines</source>
+        <target>~Bloc nou cu casetele rândurilor selectate</target>
+      </trans-unit>
+      <trans-unit id="qil5zau" resname="Groups the boxes of the cursor line or the selection">
+        <source>Groups the boxes of the cursor line or the selection</source>
+        <target>~Grupează casetele rândului cursorului sau ale selecției</target>
+      </trans-unit>
+      <trans-unit id="afwmb0n" resname="Put into a new block">
+        <source>Put into a new block</source>
+        <target>~Pune într-un bloc nou</target>
+      </trans-unit>
+      <trans-unit id="raxhsr5" resname="Move to “{b}”">
+        <source>Move to “{b}”</source>
+        <target>~Mută în „{b}”</target>
+      </trans-unit>
+      <trans-unit id="rf3jpf8" resname="Take out of “{b}”">
+        <source>Take out of “{b}”</source>
+        <target>~Scoate din „{b}”</target>
+      </trans-unit>
+      <trans-unit id="uveapj8" resname="Write the title">
+        <source>Write the title</source>
+        <target>~Scrie titlul</target>
+      </trans-unit>
+      <trans-unit id="4vcmx8f" resname="Dissolve the block (the boxes stay)">
+        <source>Dissolve the block (the boxes stay)</source>
+        <target>~Desface blocul (casetele rămân)</target>
+      </trans-unit>
+      <trans-unit id="0awlpt0" resname="The diagram’s">
+        <source>The diagram’s</source>
+        <target>~Cea a diagramei</target>
+      </trans-unit>
+      <trans-unit id="e8729pp" resname="Add a link">
+        <source>Add a link</source>
+        <target>~Adaugă un link</target>
+      </trans-unit>
+      <trans-unit id="ilrmmer" resname="Change the link">
+        <source>Change the link</source>
+        <target>~Schimbă linkul</target>
+      </trans-unit>
+      <trans-unit id="6qv4ry7" resname="Box link">
+        <source>Box link</source>
+        <target>~Linkul casetei</target>
+      </trans-unit>
+      <trans-unit id="np7bmv1" resname="Clicking the box opens this address in a new tab. In the editor it opens with Ctrl and click, so a plain click still moves and edits.">
+        <source>Clicking the box opens this address in a new tab. In the editor it opens with Ctrl and click, so a plain click still moves and edits.</source>
+        <target>~Un clic pe casetă deschide această adresă într-o filă nouă. În editor se deschide cu Ctrl și clic, astfel încât un clic simplu să mute și să editeze în continuare.</target>
+      </trans-unit>
+      <trans-unit id="v0o3q3e" resname="Address">
+        <source>Address</source>
+        <target>~Adresă</target>
+      </trans-unit>
+      <trans-unit id="qa6vjh5" resname="Tooltip text (optional)">
+        <source>Tooltip text (optional)</source>
+        <target>~Textul indicației (opțional)</target>
+      </trans-unit>
+      <trans-unit id="jdo28pc" resname="Remove the link">
+        <source>Remove the link</source>
+        <target>~Elimină linkul</target>
+      </trans-unit>
+      <trans-unit id="et1edsp" resname="Ctrl and click opens the link.">
+        <source>Ctrl and click opens the link.</source>
+        <target>~Ctrl și clic deschide linkul.</target>
+      </trans-unit>
+      <trans-unit id="26oo6xn" resname="Delete the arrow">
+        <source>Delete the arrow</source>
+        <target>~Șterge săgeata</target>
+      </trans-unit>
+      <trans-unit id="j8fj9qk" resname="Drag to draw an arrow">
+        <source>Drag to draw an arrow</source>
+        <target>~Trage pentru a desena o săgeată</target>
+      </trans-unit>
+      <trans-unit id="igy4z97" resname="Add a box">
+        <source>Add a box</source>
+        <target>~Adaugă o casetă</target>
+      </trans-unit>
+      <trans-unit id="cjx9nk3" resname="Add a connected box">
+        <source>Add a connected box</source>
+        <target>~Adaugă o casetă conectată</target>
+      </trans-unit>
+      <trans-unit id="v5ruuce" resname="The formula was placed in a new box.">
+        <source>The formula was placed in a new box.</source>
+        <target>~Formula a fost pusă într-o casetă nouă.</target>
+      </trans-unit>
+      <trans-unit id="xmfbca2" resname="Maths formula (opens the Edicuatex editor)">
+        <source>Maths formula (opens the Edicuatex editor)</source>
+        <target>~Formulă matematică (deschide editorul Edicuatex)</target>
+      </trans-unit>
+      <trans-unit id="3so85ob" resname="The browser blocked the formula editor window.">
+        <source>The browser blocked the formula editor window.</source>
+        <target>~Browserul a blocat fereastra editorului de formule.</target>
+      </trans-unit>
+      <trans-unit id="atmcisk" resname="Diagram type">
+        <source>Diagram type</source>
+        <target>~Tipul diagramei</target>
+      </trans-unit>
+      <trans-unit id="22cqcww" resname="Colour of the element at the cursor">
+        <source>Colour of the element at the cursor</source>
+        <target>~Culoarea elementului de la cursor</target>
+      </trans-unit>
+      <trans-unit id="qpvsc17" resname="Place the cursor on the line of an element (a box, a state…) and press the button again.">
+        <source>Place the cursor on the line of an element (a box, a state…) and press the button again.</source>
+        <target>~Pune cursorul pe rândul unui element (o casetă, o stare…) și apasă din nou butonul.</target>
+      </trans-unit>
+      <trans-unit id="sv7b1nk" resname="Colour the element">
+        <source>Colour the element</source>
+        <target>~Colorează elementul</target>
+      </trans-unit>
+      <trans-unit id="exoxg50" resname="Colour the elements">
+        <source>Colour the elements</source>
+        <target>~Colorează elementele</target>
+      </trans-unit>
+      <trans-unit id="oclwx9k" resname="Another colour…">
+        <source>Another colour…</source>
+        <target>~Altă culoare…</target>
+      </trans-unit>
+      <trans-unit id="pbdeods" resname="Remove the colour">
+        <source>Remove the colour</source>
+        <target>~Elimină culoarea</target>
+      </trans-unit>
+      <trans-unit id="taxs8e7" resname="Clear formatting">
+        <source>Clear formatting</source>
+        <target>~Șterge formatarea</target>
+      </trans-unit>
+      <trans-unit id="mhdxtkr" resname="Clear formatting: remove colours, styles, stroke, typography and widths (bold and italic text are kept)">
+        <source>Clear formatting: remove colours, styles, stroke, typography and widths (bold and italic text are kept)</source>
+        <target>~Șterge formatarea: elimină culorile, stilurile, linia, tipografia și lățimile (textul aldin și cursiv se păstrează)</target>
+      </trans-unit>
+      <trans-unit id="tfp6nb6" resname="Direction">
+        <source>Direction</source>
+        <target>~Direcție</target>
+      </trans-unit>
+      <trans-unit id="pod8jtv" resname="Top to bottom">
+        <source>Top to bottom</source>
+        <target>~De sus în jos</target>
+      </trans-unit>
+      <trans-unit id="6pycc49" resname="Bottom to top">
+        <source>Bottom to top</source>
+        <target>~De jos în sus</target>
+      </trans-unit>
+      <trans-unit id="c2h1994" resname="Left to right">
+        <source>Left to right</source>
+        <target>~De la stânga la dreapta</target>
+      </trans-unit>
+      <trans-unit id="eobo7bs" resname="Right to left">
+        <source>Right to left</source>
+        <target>~De la dreapta la stânga</target>
+      </trans-unit>
+      <trans-unit id="yg7c9ju" resname="Number the messages">
+        <source>Number the messages</source>
+        <target>~Numerotează mesajele</target>
+      </trans-unit>
+      <trans-unit id="uwqmhct" resname="Sequence">
+        <source>Sequence</source>
+        <target>~Secvență</target>
+      </trans-unit>
+      <trans-unit id="18iqxqj" resname="Repeat the participants below">
+        <source>Repeat the participants below</source>
+        <target>~Repetă participanții jos</target>
+      </trans-unit>
+      <trans-unit id="bg8d8x6" resname="Wrap long messages">
+        <source>Wrap long messages</source>
+        <target>~Împarte mesajele lungi pe rânduri</target>
+      </trans-unit>
+      <trans-unit id="lmq4b0h" resname="Chart">
+        <source>Chart</source>
+        <target>~Grafic</target>
+      </trans-unit>
+      <trans-unit id="68b9j8j" resname="Orientation">
+        <source>Orientation</source>
+        <target>~Orientare</target>
+      </trans-unit>
+      <trans-unit id="lfrs8sz" resname="Vertical">
+        <source>Vertical</source>
+        <target>~Vertical</target>
+      </trans-unit>
+      <trans-unit id="68r1j4c" resname="Horizontal">
+        <source>Horizontal</source>
+        <target>~Orizontal</target>
+      </trans-unit>
+      <trans-unit id="gdim0ot" resname="Show the values">
+        <source>Show the values</source>
+        <target>~Afișează valorile</target>
+      </trans-unit>
+      <trans-unit id="8ml6s78" resname="Sectors">
+        <source>Sectors</source>
+        <target>~Sectoare</target>
+      </trans-unit>
+      <trans-unit id="9ah736n" resname="Ring">
+        <source>Ring</source>
+        <target>~Inel</target>
+      </trans-unit>
+      <trans-unit id="ycqm373" resname="No ring">
+        <source>No ring</source>
+        <target>~Fără inel</target>
+      </trans-unit>
+      <trans-unit id="soil062" resname="Legend">
+        <source>Legend</source>
+        <target>~Legendă</target>
+      </trans-unit>
+      <trans-unit id="egpo0xg" resname="On the right">
+        <source>On the right</source>
+        <target>~În dreapta</target>
+      </trans-unit>
+      <trans-unit id="t8cwepf" resname="On the left">
+        <source>On the left</source>
+        <target>~În stânga</target>
+      </trans-unit>
+      <trans-unit id="v2p8fld" resname="Above">
+        <source>Above</source>
+        <target>~Sus</target>
+      </trans-unit>
+      <trans-unit id="ubiyi9t" resname="Below">
+        <source>Below</source>
+        <target>~Jos</target>
+      </trans-unit>
+      <trans-unit id="xry3ely" resname="Colour of each sector">
+        <source>Colour of each sector</source>
+        <target>~Culoarea fiecărui sector</target>
+      </trans-unit>
+      <trans-unit id="4orjwdb" resname="Back to the default colours">
+        <source>Back to the default colours</source>
+        <target>~Revino la culorile implicite</target>
+      </trans-unit>
+      <trans-unit id="bjlopzp" resname="Calendar">
+        <source>Calendar</source>
+        <target>~Calendar</target>
+      </trans-unit>
+      <trans-unit id="01442f3" resname="Axis dates">
+        <source>Axis dates</source>
+        <target>~Datele axei</target>
+      </trans-unit>
+      <trans-unit id="jogsth7" resname="Other format">
+        <source>Other format</source>
+        <target>~Alt format</target>
+      </trans-unit>
+      <trans-unit id="qx8bd3i" resname="%d day, %m month, %Y four-digit year, %y two-digit.">
+        <source>%d day, %m month, %Y four-digit year, %y two-digit.</source>
+        <target>~%d zi, %m lună, %Y an cu patru cifre, %y cu două.</target>
+      </trans-unit>
+      <trans-unit id="1ghx4iz" resname="As Mermaid (2026-01-07)">
+        <source>As Mermaid (2026-01-07)</source>
+        <target>~Ca Mermaid (2026-01-07)</target>
+      </trans-unit>
+      <trans-unit id="7wqni2r" resname="Day/month (07/01)">
+        <source>Day/month (07/01)</source>
+        <target>~Zi/lună (07/01)</target>
+      </trans-unit>
+      <trans-unit id="f08xkrk" resname="Day/month/year (07/01/2026)">
+        <source>Day/month/year (07/01/2026)</source>
+        <target>~Zi/lună/an (07/01/2026)</target>
+      </trans-unit>
+      <trans-unit id="ivcv6dr" resname="Short day/month/year (07/01/26)">
+        <source>Short day/month/year (07/01/26)</source>
+        <target>~Zi/lună/an scurt (07/01/26)</target>
+      </trans-unit>
+      <trans-unit id="rl0suhd" resname="Axis ticks">
+        <source>Axis ticks</source>
+        <target>~Gradațiile axei</target>
+      </trans-unit>
+      <trans-unit id="2exmmag" resname="Automatic">
+        <source>Automatic</source>
+        <target>~Automat</target>
+      </trans-unit>
+      <trans-unit id="ldjcyq0" resname="Every day">
+        <source>Every day</source>
+        <target>~În fiecare zi</target>
+      </trans-unit>
+      <trans-unit id="dej32gn" resname="Every week">
+        <source>Every week</source>
+        <target>~În fiecare săptămână</target>
+      </trans-unit>
+      <trans-unit id="zc783i7" resname="Every two weeks">
+        <source>Every two weeks</source>
+        <target>~La fiecare două săptămâni</target>
+      </trans-unit>
+      <trans-unit id="t1mxg5b" resname="Every month">
+        <source>Every month</source>
+        <target>~În fiecare lună</target>
+      </trans-unit>
+      <trans-unit id="0nm55js" resname="The week starts on">
+        <source>The week starts on</source>
+        <target>~Săptămâna începe</target>
+      </trans-unit>
+      <trans-unit id="aa83hpc" resname="Sunday (as Mermaid)">
+        <source>Sunday (as Mermaid)</source>
+        <target>~Duminică (ca Mermaid)</target>
+      </trans-unit>
+      <trans-unit id="oggqyqv" resname="Monday">
+        <source>Monday</source>
+        <target>~Luni</target>
+      </trans-unit>
+      <trans-unit id="iy2vy9w" resname="Skip the weekends">
+        <source>Skip the weekends</source>
+        <target>~Sari peste weekenduri</target>
+      </trans-unit>
+      <trans-unit id="14dpgyd" resname="My saved diagrams">
+        <source>My saved diagrams</source>
+        <target>~Diagramele mele salvate</target>
+      </trans-unit>
+      <trans-unit id="wdaacfe" resname="My diagrams">
+        <source>My diagrams</source>
+        <target>~Diagramele mele</target>
+      </trans-unit>
+      <trans-unit id="ydjzoq6" resname="They are kept in this browser, on this computer. They never leave it or reach any server.">
+        <source>They are kept in this browser, on this computer. They never leave it or reach any server.</source>
+        <target>~Se păstrează în acest browser, pe acest computer. Nu ies niciodată de aici și nu ajung la niciun server.</target>
+      </trans-unit>
+      <trans-unit id="4gp7sl2" resname="No diagrams saved yet.">
+        <source>No diagrams saved yet.</source>
+        <target>~Încă nu există diagrame salvate.</target>
+      </trans-unit>
+      <trans-unit id="lhsk0uf" resname="Maximum saved diagrams">
+        <source>Maximum saved diagrams</source>
+        <target>~Numărul maxim de diagrame salvate</target>
+      </trans-unit>
+      <trans-unit id="taumwke" resname="On reaching the maximum, the oldest ones are deleted, counting from when they were last modified.">
+        <source>On reaching the maximum, the oldest ones are deleted, counting from when they were last modified.</source>
+        <target>~La atingerea maximului se șterg cele mai vechi, socotind de la ultima lor modificare.</target>
+      </trans-unit>
+      <trans-unit id="h9lyl20" resname="The oldest diagrams were deleted to stay within the maximum.">
+        <source>The oldest diagrams were deleted to stay within the maximum.</source>
+        <target>~Cele mai vechi diagrame au fost șterse pentru a rămâne în limita maximă.</target>
+      </trans-unit>
+      <trans-unit id="nathqis" resname="The oldest diagrams will be deleted, leaving {n}. Continue?">
+        <source>The oldest diagrams will be deleted, leaving {n}. Continue?</source>
+        <target>~Cele mai vechi diagrame vor fi șterse și vor rămâne {n}. Continui?</target>
+      </trans-unit>
+      <trans-unit id="d6re1lk" resname="The backup is a file with every saved diagram. It serves to move them to another browser or to recover them if this browser data is cleared.">
+        <source>The backup is a file with every saved diagram. It serves to move them to another browser or to recover them if this browser data is cleared.</source>
+        <target>~Copia de siguranță este un fișier cu toate diagramele salvate. Servește la mutarea lor în alt browser sau la recuperarea lor dacă datele acestui browser sunt șterse.</target>
+      </trans-unit>
+      <trans-unit id="nlqdoll" resname="Export backup">
+        <source>Export backup</source>
+        <target>~Exportă copia de siguranță</target>
+      </trans-unit>
+      <trans-unit id="wrejo4i" resname="Import backup">
+        <source>Import backup</source>
+        <target>~Importă copia de siguranță</target>
+      </trans-unit>
+      <trans-unit id="0yv9xhe" resname="There is no diagram to export.">
+        <source>There is no diagram to export.</source>
+        <target>~Nu există nicio diagramă de exportat.</target>
+      </trans-unit>
+      <trans-unit id="lllnaxw" resname="The file is not a Sirena backup.">
+        <source>The file is not a Sirena backup.</source>
+        <target>~Fișierul nu este o copie de siguranță Sirena.</target>
+      </trans-unit>
+      <trans-unit id="r7i7jpx" resname="Diagrams added: {n}">
+        <source>Diagrams added: {n}</source>
+        <target>~Diagrame adăugate: {n}</target>
+      </trans-unit>
+      <trans-unit id="cd9yuwd" resname="Only text files (.mmd, .md, .txt) and .json backups can be opened.">
+        <source>Only text files (.mmd, .md, .txt) and .json backups can be opened.</source>
+        <target>~Se pot deschide doar fișiere text (.mmd, .md, .txt) și copii de siguranță .json.</target>
+      </trans-unit>
+      <trans-unit id="y6440z2" resname="Could not save in this browser.">
+        <source>Could not save in this browser.</source>
+        <target>~Nu s-a putut salva în acest browser.</target>
+      </trans-unit>
+      <trans-unit id="iw25xse" resname="Rename the diagram">
+        <source>Rename the diagram</source>
+        <target>~Redenumește diagrama</target>
+      </trans-unit>
+      <trans-unit id="s17ujwf" resname="Mark this diagram">
+        <source>Mark this diagram</source>
+        <target>~Marchează această diagramă</target>
+      </trans-unit>
+      <trans-unit id="mjykp8q" resname="Delete the marked ones">
+        <source>Delete the marked ones</source>
+        <target>~Șterge diagramele marcate</target>
+      </trans-unit>
+      <trans-unit id="3d2v5nb" resname="Delete the {n} marked diagrams? This cannot be undone.">
+        <source>Delete the {n} marked diagrams? This cannot be undone.</source>
+        <target>~Șterge cele {n} diagrame marcate? Operațiunea nu poate fi anulată.</target>
+      </trans-unit>
+      <trans-unit id="6724xe7" resname="Delete “{nombre}”? This cannot be undone.">
+        <source>Delete “{nombre}”? This cannot be undone.</source>
+        <target>~Șterge „{nombre}”? Operațiunea nu poate fi anulată.</target>
+      </trans-unit>
+      <trans-unit id="y3z82ut" resname="New diagram">
+        <source>New diagram</source>
+        <target>~Diagramă nouă</target>
+      </trans-unit>
+      <trans-unit id="ee3pu1s" resname="Line shape">
+        <source>Line shape</source>
+        <target>~Forma liniilor</target>
+      </trans-unit>
+      <trans-unit id="zjt14b5" resname="Curved">
+        <source>Curved</source>
+        <target>~Curbe</target>
+      </trans-unit>
+      <trans-unit id="2d4dlv1" resname="Straight">
+        <source>Straight</source>
+        <target>~Drepte</target>
+      </trans-unit>
+      <trans-unit id="0wkd3ua" resname="Stepped">
+        <source>Stepped</source>
+        <target>~În trepte</target>
+      </trans-unit>
+      <trans-unit id="1xu7iwd" resname="Spacing">
+        <source>Spacing</source>
+        <target>~Spațiere</target>
+      </trans-unit>
+      <trans-unit id="jx6q1lx" resname="Compact">
+        <source>Compact</source>
+        <target>~Compactă</target>
+      </trans-unit>
+      <trans-unit id="bpqbu33" resname="Drawing margins">
+        <source>Drawing margins</source>
+        <target>~Marginile desenului</target>
+      </trans-unit>
+      <trans-unit id="bua8ehh" resname="Tight">
+        <source>Tight</source>
+        <target>~Strânse</target>
+      </trans-unit>
+      <trans-unit id="wgn90i7" resname="Diagram appearance">
+        <source>Diagram appearance</source>
+        <target>~Aspectul diagramei</target>
+      </trans-unit>
+      <trans-unit id="02evq4t" resname="Light or dark mode">
+        <source>Light or dark mode</source>
+        <target>~Mod luminos sau întunecat</target>
+      </trans-unit>
+      <trans-unit id="8dqbjuw" resname="Zoom in">
+        <source>Zoom in</source>
+        <target>~Mărește</target>
+      </trans-unit>
+      <trans-unit id="a27cech" resname="Fit to the available space">
+        <source>Fit to the available space</source>
+        <target>~Potrivește în spațiul disponibil</target>
+      </trans-unit>
+      <trans-unit id="j94eugx" resname="Zoom out">
+        <source>Zoom out</source>
+        <target>~Micșorează</target>
+      </trans-unit>
+      <trans-unit id="jjl8tj1" resname="Back to 100 %">
+        <source>Back to 100 %</source>
+        <target>~Revino la 100 %</target>
+      </trans-unit>
+      <trans-unit id="htkapt2" resname="Diagram code">
+        <source>Diagram code</source>
+        <target>~Codul diagramei</target>
+      </trans-unit>
+      <trans-unit id="59b438z" resname="Copied">
+        <source>Copied</source>
+        <target>~Copiat</target>
+      </trans-unit>
+      <trans-unit id="s0jqvh8" resname="Link copied to the clipboard">
+        <source>Link copied to the clipboard</source>
+        <target>~Linkul a fost copiat în clipboard</target>
+      </trans-unit>
+      <trans-unit id="rvj1q0z" resname="Image copied to the clipboard">
+        <source>Image copied to the clipboard</source>
+        <target>~Imaginea a fost copiată în clipboard</target>
+      </trans-unit>
+      <trans-unit id="8ovv1xi" resname="Copying was not possible">
+        <source>Copying was not possible</source>
+        <target>~Copierea nu a fost posibilă</target>
+      </trans-unit>
+      <trans-unit id="9sfic8o" resname="The diagram has an error">
+        <source>The diagram has an error</source>
+        <target>~Diagrama are o eroare</target>
+      </trans-unit>
+      <trans-unit id="ix2akyy" resname="Write the diagram code or choose an example.">
+        <source>Write the diagram code or choose an example.</source>
+        <target>~Scrie codul diagramei sau alege un exemplu.</target>
+      </trans-unit>
+      <trans-unit id="59e9mnk" resname="Rendering…">
+        <source>Rendering…</source>
+        <target>~Se desenează…</target>
+      </trans-unit>
+      <trans-unit id="o3yel7v" resname="Neutral">
+        <source>Neutral</source>
+        <target>~Neutru</target>
+      </trans-unit>
+      <trans-unit id="fvft8ny" resname="Forest">
+        <source>Forest</source>
+        <target>~Pădure</target>
+      </trans-unit>
+      <trans-unit id="dsygfll" resname="Base">
+        <source>Base</source>
+        <target>~Bază</target>
+      </trans-unit>
+      <trans-unit id="ps24mof" resname="Diagrams generated with">
+        <source>Diagrams generated with</source>
+        <target>~Diagrame generate cu</target>
+      </trans-unit>
+      <trans-unit id="fcbktvg" resname="How it works">
+        <source>How it works</source>
+        <target>~Cum funcționează</target>
+      </trans-unit>
+      <trans-unit id="4llxibe" resname="The diagram is written as text in the left panel and the drawing appears on the right. Everything runs in the browser itself: the diagram is not sent to any server.">
+        <source>The diagram is written as text in the left panel and the drawing appears on the right. Everything runs in the browser itself: the diagram is not sent to any server.</source>
+        <target>~Diagrama se scrie ca text în panoul din stânga, iar desenul apare în dreapta. Totul se petrece în browser: diagrama nu este trimisă la niciun server.</target>
+      </trans-unit>
+      <trans-unit id="aegn5nt" resname="The share button builds an address that carries the compressed diagram inside, so it can be shared without uploading it anywhere. The link can open in the editor or full screen, with the diagram alone, and the code to embed it in another page is available too.">
+        <source>The share button builds an address that carries the compressed diagram inside, so it can be shared without uploading it anywhere. The link can open in the editor or full screen, with the diagram alone, and the code to embed it in another page is available too.</source>
+        <target>~Butonul de partajare construiește o adresă care conține diagrama comprimată, astfel încât poate fi partajată fără a fi încărcată nicăieri. Linkul se poate deschide în editor sau pe tot ecranul, doar cu diagrama, și este disponibil și codul pentru a o încorpora în altă pagină.</target>
+      </trans-unit>
+      <trans-unit id="cyl0bp3" resname="Mermaid syntax reference">
+        <source>Mermaid syntax reference</source>
+        <target>~Referința sintaxei Mermaid</target>
+      </trans-unit>
+      <trans-unit id="2bso8vh" resname="Credits and licences">
+        <source>Credits and licences</source>
+        <target>~Mulțumiri și licențe</target>
+      </trans-unit>
+      <trans-unit id="69xog0d" resname="Credits, licences and AI use">
+        <source>Credits, licences and AI use</source>
+        <target>~Mulțumiri, licențe și folosirea IA</target>
+      </trans-unit>
+      <trans-unit id="u3rizbk" resname="Sirena is by Juan José de Haro, with the code under AGPL v3 and the content under CC BY-SA 4.0. It draws the diagrams with Mermaid, by Knut Sveidqvist and contributors (MIT), which bundles other free libraries, among them D3 (ISC), ELK (EPL 2.0 or GPL 3.0), KaTeX (MIT), Cytoscape (MIT) and DOMPurify (MPL 2.0 or Apache 2.0). The icons are from Lucide (ISC).">
+        <source>Sirena is by Juan José de Haro, with the code under AGPL v3 and the content under CC BY-SA 4.0. It draws the diagrams with Mermaid, by Knut Sveidqvist and contributors (MIT), which bundles other free libraries, among them D3 (ISC), ELK (EPL 2.0 or GPL 3.0), KaTeX (MIT), Cytoscape (MIT) and DOMPurify (MPL 2.0 or Apache 2.0). The icons are from Lucide (ISC).</source>
+        <target>~Sirena este creată de Juan José de Haro, cu codul sub AGPL v3 și conținutul sub CC BY-SA 4.0. Desenează diagramele cu Mermaid, de Knut Sveidqvist și colaboratorii (MIT), care include alte biblioteci libere, printre care D3 (ISC), ELK (EPL 2.0 sau GPL 3.0), KaTeX (MIT), Cytoscape (MIT) și DOMPurify (MPL 2.0 sau Apache 2.0). Pictogramele sunt de la Lucide (ISC).</target>
+      </trans-unit>
+      <trans-unit id="gn7t6v4" resname="All libraries and their licences">
+        <source>All libraries and their licences</source>
+        <target>~Toate bibliotecile și licențele lor</target>
+      </trans-unit>
+      <trans-unit id="k50xphx" resname="Sirena was programmed with the help of AI (Claude), in ">
+        <source>Sirena was programmed with the help of AI (Claude), in </source>
+        <target>~Sirena a fost programată cu ajutorul IA (Claude), în </target>
+      </trans-unit>
+      <trans-unit id="m4z8cuj" resname="co-creation, level 4 of MIAE">
+        <source>co-creation, level 4 of MIAE</source>
+        <target>~cocreație, nivelul 4 al MIAE</target>
+      </trans-unit>
+      <trans-unit id="mlcyzzh" resname=": the author decided the design and the features, and tested the program many times, in different situations, to find errors and things to improve.">
+        <source>: the author decided the design and the features, and tested the program many times, in different situations, to find errors and things to improve.</source>
+        <target>~: autorul a decis designul și funcțiile și a testat programul de multe ori, în situații diferite, pentru a găsi erori și aspecte de îmbunătățit.</target>
+      </trans-unit>
+      <trans-unit id="2ab58n7" resname="The link contains a diagram that could not be read.">
+        <source>The link contains a diagram that could not be read.</source>
+        <target>~Linkul conține o diagramă care nu a putut fi citită.</target>
+      </trans-unit>
+      <trans-unit id="vrjxk7k" resname="Limits the size of the diagram on the page. Left empty, the diagram takes the available width.">
+        <source>Limits the size of the diagram on the page. Left empty, the diagram takes the available width.</source>
+        <target>~Limitează mărimea diagramei în pagină. Dacă rămâne gol, diagrama ocupă lățimea disponibilă.</target>
+      </trans-unit>
+      <trans-unit id="g2kdv89" resname="There is nothing to insert: the code is empty.">
+        <source>There is nothing to insert: the code is empty.</source>
+        <target>~Nu este nimic de inserat: codul este gol.</target>
+      </trans-unit>
+      <trans-unit id="ktnxiaj" resname="The theme&apos;s">
+        <source>The theme's</source>
+        <target>~Cea a temei</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

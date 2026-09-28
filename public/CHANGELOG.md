@@ -2,6 +2,11 @@
 
 ## v4.0.6 – Unreleased
 
+### Added
+
+- Mermaid diagrams: the Mermaid button of the text editor now opens Sirena, a diagram editor that shows the code next to the drawing, with examples, syntax help and visual formatting tools (colours, shapes, arrows, typography). Existing diagrams open in it with their maximum width and height, and "Insert" writes them back in the same format as before
+- Sirena is translated into every language of eXeLearning; Catalan (CA), Basque (EU), Galician (GL) and Spanish (ES) use its own translations, and the rest are automatic placeholder translations pending review
+
 ### Fixed
 
 - Preview: the first preview after opening a project no longer waits about 5 seconds, and the preview now recovers by itself when its worker stops responding during a session
