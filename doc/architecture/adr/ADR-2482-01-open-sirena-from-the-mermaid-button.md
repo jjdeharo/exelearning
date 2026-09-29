@@ -77,7 +77,7 @@ bypasses eXe's rendering and export pipeline.
 - EdiCuaTeX integration: `scripts/vendor-edicuatex.ts`,
   `public/libs/tinymce_5/js/tinymce/plugins/edicuatex/plugin.min.js`, #2359.
 - Sirena's eXe mode and its decisions: `sirenaapp/sirenaapp.github.io`,
-  `docs/adr/0029-…`, published as `sirenaapp` 2.0.0 on npm with provenance.
+  `docs/adr/0029-…`, published as `sirenaapp` 2.1.3 on npm with provenance.
   Since 2.0.0 the package ships without Mermaid (19 files, 687 kB unpacked,
   instead of 127 files and 6.1 MB) and `sirena.js` imports its own Mermaid only
   when the host has none: inside eXe, opening Sirena requests no Mermaid file of
