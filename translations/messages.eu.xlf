@@ -16857,6 +16857,14 @@
         <source>Black and white</source>
         <target>Zuri-beltza</target>
       </trans-unit>
+      <trans-unit id="jphylla" resname="Remove colours set by hand">
+        <source>Remove colours set by hand</source>
+        <target>Eskuz jarritako koloreak kendu</target>
+      </trans-unit>
+      <trans-unit id="ux1biqt" resname="The diagram has colours given to boxes, arrows, labels or slices, which show on top of the theme. If this box is ticked, they are removed when a theme is chosen; otherwise, they are kept.">
+        <source>The diagram has colours given to boxes, arrows, labels or slices, which show on top of the theme. If this box is ticked, they are removed when a theme is chosen; otherwise, they are kept.</source>
+        <target>Diagramak kutxei, geziei, etiketei edo sektoreei emandako koloreak ditu, eta gaiaren gainetik ikusten dira. Lauki hau markatzen bada, gai bat aukeratzean kentzen dira; bestela, mantendu egiten dira.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

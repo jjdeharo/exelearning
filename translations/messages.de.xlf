@@ -16857,6 +16857,14 @@
         <source>Black and white</source>
         <target>~Schwarz-Weiß</target>
       </trans-unit>
+      <trans-unit id="ybmq7yv" resname="Remove colours set by hand">
+        <source>Remove colours set by hand</source>
+        <target>~Von Hand gesetzte Farben entfernen</target>
+      </trans-unit>
+      <trans-unit id="xahe4m3" resname="The diagram has colours given to boxes, arrows, labels or slices, which show on top of the theme. If this box is ticked, they are removed when a theme is chosen; otherwise, they are kept.">
+        <source>The diagram has colours given to boxes, arrows, labels or slices, which show on top of the theme. If this box is ticked, they are removed when a theme is chosen; otherwise, they are kept.</source>
+        <target>~Das Diagramm hat Farben, die Kästen, Pfeilen, Beschriftungen oder Sektoren gegeben wurden und über dem Thema angezeigt werden. Ist dieses Kästchen angekreuzt, werden sie beim Wählen eines Themas entfernt; andernfalls bleiben sie erhalten.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

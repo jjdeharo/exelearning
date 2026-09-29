@@ -16857,6 +16857,14 @@
         <source>Black and white</source>
         <target>~Alb-negru</target>
       </trans-unit>
+      <trans-unit id="tlokl08" resname="Remove colours set by hand">
+        <source>Remove colours set by hand</source>
+        <target>~Elimină culorile puse manual</target>
+      </trans-unit>
+      <trans-unit id="y87kwz3" resname="The diagram has colours given to boxes, arrows, labels or slices, which show on top of the theme. If this box is ticked, they are removed when a theme is chosen; otherwise, they are kept.">
+        <source>The diagram has colours given to boxes, arrows, labels or slices, which show on top of the theme. If this box is ticked, they are removed when a theme is chosen; otherwise, they are kept.</source>
+        <target>~Diagrama are culori date casetelor, săgeților, etichetelor sau sectoarelor, care se văd peste temă. Dacă această casetă este bifată, ele sunt eliminate la alegerea unei teme; altfel, sunt păstrate.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

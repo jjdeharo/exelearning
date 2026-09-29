@@ -16857,6 +16857,14 @@
         <source>Black and white</source>
         <target>~Nigra-blanka</target>
       </trans-unit>
+      <trans-unit id="diinpxc" resname="Remove colours set by hand">
+        <source>Remove colours set by hand</source>
+        <target>~Forigi mane metitajn kolorojn</target>
+      </trans-unit>
+      <trans-unit id="43pffww" resname="The diagram has colours given to boxes, arrows, labels or slices, which show on top of the theme. If this box is ticked, they are removed when a theme is chosen; otherwise, they are kept.">
+        <source>The diagram has colours given to boxes, arrows, labels or slices, which show on top of the theme. If this box is ticked, they are removed when a theme is chosen; otherwise, they are kept.</source>
+        <target>~La diagramo havas kolorojn donitajn al skatoloj, sagoj, etikedoj aŭ sektoroj, kiuj montriĝas super la temo. Se ĉi tiu markobutono estas markita, ili foriĝas kiam oni elektas temon; alie, ili restas.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
