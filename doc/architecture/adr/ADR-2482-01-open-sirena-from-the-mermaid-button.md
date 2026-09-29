@@ -77,7 +77,11 @@ bypasses eXe's rendering and export pipeline.
 - EdiCuaTeX integration: `scripts/vendor-edicuatex.ts`,
   `public/libs/tinymce_5/js/tinymce/plugins/edicuatex/plugin.min.js`, #2359.
 - Sirena's eXe mode and its decisions: `sirenaapp/sirenaapp.github.io`,
-  `docs/adr/0029-…`, published as `sirenaapp` 1.0.10 on npm with provenance.
+  `docs/adr/0029-…`, published as `sirenaapp` 2.0.0 on npm with provenance.
+  Since 2.0.0 the package ships without Mermaid (19 files, 687 kB unpacked,
+  instead of 127 files and 6.1 MB) and `sirena.js` imports its own Mermaid only
+  when the host has none: inside eXe, opening Sirena requests no Mermaid file of
+  its own (checked in Chromium and Firefox; `docs/adr/0030-…`).
 - While the TinyMCE URL dialog loads, `editor.selection.getNode()` returns `P`
   instead of the `PRE` under the cursor (measured in Chromium 149 and
   Firefox 151): the button has to record the context when it is pressed.
@@ -107,6 +111,8 @@ We will use option 3:
 - The `exemermaid` button opens Sirena (`sirena_url`, relative in static and
   offline modes) and records the Mermaid block, the selected text and a bookmark,
   offered as `editor.plugins.exemermaid.getContext()`.
+- Sirena brings no Mermaid of its own: it draws with eXe's, so editing, preview
+  and export use a single Mermaid version, managed by eXe.
 - Inside eXe, Sirena draws with eXe's Mermaid and configuration, without its own
   retouches, writes back `<pre class="mermaid">` with the same max-size rules
   (`eXeLearning.mermaidMaxSize`), and writes the default layout engine of eXe's
@@ -128,8 +134,8 @@ We will use option 3:
 
 ### Negative
 
-- The build carries a second Mermaid (Sirena's, about 5.5 MB unpacked, loaded
-  only by diagram type) that is not used inside eXe except as a fallback.
+- If eXe's Mermaid fails to load, Sirena has no Mermaid to fall back on and
+  shows an error instead of the diagram (eXe could not render it either).
 - 293 new strings per locale; DE, EO, FR, IT, PT, RO and VA are `~` placeholders
   pending review.
 

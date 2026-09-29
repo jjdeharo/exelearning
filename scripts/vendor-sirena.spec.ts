@@ -25,7 +25,7 @@ describe('vendor-sirena', () => {
 
     describe('buildVendorPlan', () => {
         it('vendors what the editor loads at runtime', () => {
-            const plan = buildVendorPlan(packageRoot).map((entry) => entry.relativePath);
+            const plan = buildVendorPlan(packageRoot).map(entry => entry.relativePath);
 
             expect(plan).toContain('index.html');
             expect(plan).toContain('js/sirena.js');
@@ -34,23 +34,22 @@ describe('vendor-sirena', () => {
             expect(plan).toContain('lang/en.js');
         });
 
-        it('vendors the Mermaid build the editor draws with, so it works offline', () => {
-            const plan = buildVendorPlan(packageRoot).map((entry) => entry.relativePath);
+        it("brings no second Mermaid: inside eXe, the editor draws with eXe's", () => {
+            const plan = buildVendorPlan(packageRoot).map(entry => entry.relativePath);
 
-            expect(plan).toContain('vendor/mermaid/mermaid.esm.min.mjs');
-            expect(plan.some((relativePath) => relativePath.startsWith('vendor/mermaid/chunks/'))).toBe(true);
+            expect(plan.some(relativePath => relativePath.startsWith('vendor/mermaid/'))).toBe(false);
         });
 
         it('keeps both licences, for the code and for the contents', () => {
-            const plan = buildVendorPlan(packageRoot).map((entry) => entry.relativePath);
+            const plan = buildVendorPlan(packageRoot).map(entry => entry.relativePath);
 
             expect(plan).toContain('LICENSE.txt');
             expect(plan).toContain('LICENSE-CONTENIDOS');
-            expect(plan).toContain('vendor/mermaid/LICENSE.txt');
+            expect(plan).toContain('vendor/lucide/LICENSE.txt');
         });
 
         it('leaves out what only describes the standalone project', () => {
-            const plan = buildVendorPlan(packageRoot).map((entry) => entry.relativePath);
+            const plan = buildVendorPlan(packageRoot).map(entry => entry.relativePath);
 
             expect(plan).not.toContain('package.json');
             expect(plan).not.toContain('README.md');
@@ -95,7 +94,7 @@ describe('vendor-sirena', () => {
             css: 'sirena.css',
             js: 'sirena.js',
             lang: 'en.js',
-            'vendor/mermaid': 'mermaid.esm.min.mjs',
+            'vendor/lucide': 'LICENSE.txt',
         };
         for (const [directory, file] of Object.entries(directoryFiles)) {
             fs.mkdirSync(path.join(installed, ...directory.split('/')), { recursive: true });
@@ -106,7 +105,7 @@ describe('vendor-sirena', () => {
 
     function recordingIo(): { io: { log: (m: string) => void; error: (m: string) => void }; output: string[] } {
         const output: string[] = [];
-        return { io: { log: (m) => output.push(m), error: (m) => output.push(m) }, output };
+        return { io: { log: m => output.push(m), error: m => output.push(m) }, output };
     }
 
     describe('run', () => {
@@ -128,7 +127,7 @@ describe('vendor-sirena', () => {
             expect(output.join('\n')).toContain('sirenaapp@9.8.7');
             expect(output.join('\n')).toContain('public/app/common/sirena');
             const target = resolvePaths(root).targetRoot;
-            expect(fs.existsSync(path.join(target, 'vendor', 'mermaid', 'mermaid.esm.min.mjs'))).toBe(true);
+            expect(fs.existsSync(path.join(target, 'vendor', 'lucide', 'LICENSE.txt'))).toBe(true);
             expect(fs.existsSync(path.join(target, 'README.md'))).toBe(false);
         });
 

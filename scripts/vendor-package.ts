@@ -85,7 +85,7 @@ export interface VendorDrift {
 
 /** Compares the vendored tree against the plan without writing anything. */
 export function detectDrift(plan: VendorPlanEntry[], targetRoot: string): VendorDrift {
-    const expected = new Map(plan.map((entry) => [entry.relativePath, entry.sourcePath]));
+    const expected = new Map(plan.map(entry => [entry.relativePath, entry.sourcePath]));
     const actual = fs.existsSync(targetRoot) ? new Set(listFilesRecursively(targetRoot)) : new Set<string>();
 
     const missing: string[] = [];
@@ -97,7 +97,7 @@ export function detectDrift(plan: VendorPlanEntry[], targetRoot: string): Vendor
             changed.push(relativePath);
         }
     }
-    const extra = [...actual].filter((relativePath) => !expected.has(relativePath)).sort();
+    const extra = [...actual].filter(relativePath => !expected.has(relativePath)).sort();
 
     return { missing: missing.sort(), extra, changed: changed.sort() };
 }
@@ -128,7 +128,10 @@ export function resolvePaths(vendored: VendoredPackage, repoRoot: string): { pac
  * to compare against, and the non-destructive commands must not start depending on
  * node_modules.
  */
-export function inspectVendoredTree(vendored: VendoredPackage, cwd: string): { complete: boolean; detail: string } | null {
+export function inspectVendoredTree(
+    vendored: VendoredPackage,
+    cwd: string,
+): { complete: boolean; detail: string } | null {
     const { packageRoot, targetRoot } = resolvePaths(vendored, cwd);
     if (!fs.existsSync(packageRoot)) {
         return null;
@@ -168,7 +171,7 @@ export interface CliIo {
     error: (message: string) => void;
 }
 
-const consoleIo: CliIo = { log: (m) => console.log(m), error: (m) => console.error(m) };
+const consoleIo: CliIo = { log: m => console.log(m), error: m => console.error(m) };
 
 /** Runs the vendoring command for one package and returns the process exit code. */
 export function run(vendored: VendoredPackage, argv: string[], repoRoot: string, io: CliIo = consoleIo): number {

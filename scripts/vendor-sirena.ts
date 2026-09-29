@@ -33,8 +33,9 @@ import {
 /**
  * Directories copied wholesale from the package.
  *
- * `vendor/` holds the Mermaid build Sirena draws with, loaded as ES modules one
- * diagram type at a time, and the Lucide icon licence. `lang/en.js` carries the
+ * `vendor/` holds the Lucide icon licence. The package brings no Mermaid (since
+ * `sirenaapp` 2.0.0): inside eXe, Sirena draws with eXe's own, so there is a
+ * single Mermaid version for editing, preview and export. `lang/en.js` carries the
  * interface strings wrapped in `_()`, which is what the translation extraction
  * picks up; inside eXe, Sirena asks `_()` for every string before using its own.
  */
