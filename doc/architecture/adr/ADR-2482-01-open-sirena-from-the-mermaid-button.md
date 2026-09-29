@@ -77,7 +77,7 @@ bypasses eXe's rendering and export pipeline.
 - EdiCuaTeX integration: `scripts/vendor-edicuatex.ts`,
   `public/libs/tinymce_5/js/tinymce/plugins/edicuatex/plugin.min.js`, #2359.
 - Sirena's eXe mode and its decisions: `sirenaapp/sirenaapp.github.io`,
-  `docs/adr/0029-…`, published as `sirenaapp` 2.1.3 on npm with provenance.
+  `docs/adr/0029-…`, published as `sirenaapp` 2.2.0 on npm with provenance.
   Since 2.0.0 the package ships without Mermaid (19 files, 687 kB unpacked,
   instead of 127 files and 6.1 MB) and `sirena.js` imports its own Mermaid only
   when the host has none: inside eXe, opening Sirena requests no Mermaid file of
@@ -115,11 +115,13 @@ We will use option 3:
   and export use a single Mermaid version, managed by eXe.
 - Inside eXe, Sirena draws with eXe's Mermaid and configuration, without its own
   retouches, writes back `<pre class="mermaid">` with the same max-size rules
-  (`eXeLearning.mermaidMaxSize`), and writes the default layout engine of eXe's
-  Mermaid in the diagram header (`%%{init: {"layout":"dagre"}}%%` with Mermaid
-  11). It is written as soon as the code enters the editor (opening the window,
-  choosing an example), so it is visible before inserting, and Cancel leaves the
-  block untouched; code typed from scratch gets it on insert (sirenaapp 2.1.0).
+  (`eXeLearning.mermaidMaxSize`), and adds no header of its own: the layout
+  engine is left to eXe's Mermaid configuration, as for every other diagram.
+  Sirena only writes it if the user picks another engine, and keeps it if the
+  code already had it (sirenaapp 2.2.0). Up to 2.1.3 it wrote eXe's default
+  engine into every diagram so that it kept its look on Mermaid 12; the review
+  proposed instead to set `layout: 'dagre'` and `look: 'classic'` in eXe's own
+  configuration (#2449), which also covers diagrams never opened in Sirena.
 - Inside eXe, Sirena only offers the examples and diagram types that eXe's
   Mermaid can parse (`mermaid.parse` with `suppressErrors`), retrying with
   the accessibility lines (`accTitle`, `accDescr`) as comments, as Sirena
@@ -146,29 +148,26 @@ We will use option 3:
 ### Neutral
 
 - The textarea dialog is removed; its strings become obsolete.
-- A flowchart, state, class or ER diagram opened in Sirena and inserted again gains
-  that header, including those made with the old dialog. It only makes explicit
-  the engine they were already drawn with, so they look the same now and keep
-  their look when eXe moves to Mermaid 12, whose default engine is ELK.
 
 ## Risks
 
 - A Sirena release could break the integration; the pinned version and the E2E
   tests of the Mermaid button guard against it.
-- If eXe's Mermaid cannot load, Sirena uses its own, configured like eXe's, and
-  the preview could differ slightly.
+- If eXe's Mermaid cannot load, Sirena has none of its own and shows an error
+  instead of the diagram.
 
 ## Validation
 
 - `make test-unit` and `bun run test:frontend` green; the four Mermaid E2E tests
   pass in chromium, firefox and static.
-- The E2E test checks that the inserted diagram carries its layout engine.
+- The E2E test checks that Sirena inserts the code without a header of its own.
 
 ## Follow-up work
 
 - Review the `~` translations of Sirena's strings.
 - When #2449 (Mermaid 12) is merged, the ELK engines appear in Sirena on their
-  own; nothing to change here.
+  own. To keep the look of existing diagrams, #2449 should set `layout: 'dagre'`
+  and `look: 'classic'` in eXe's Mermaid configuration; Sirena follows it.
 - #2475: `$$…$$` formulas in iDevice content are reduced to `$` on save.
 
 ## References

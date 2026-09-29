@@ -5,7 +5,6 @@
 ### Added
 
 - Mermaid diagrams: the Mermaid button of the text editor now opens Sirena, a diagram editor that shows the code next to the drawing, with examples, syntax help and visual formatting tools (colours, shapes, arrows, typography). Existing diagrams open in it with their maximum width and height, and "Insert" writes them back in the same format as before
-- Mermaid diagrams: a diagram opened in Sirena gets a first line that fixes its layout engine (`%%{init: {"layout":"dagre"}}%%`), visible in the code before inserting, so it keeps its look when eXeLearning updates Mermaid
 
 ### Fixed
 
