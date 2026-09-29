@@ -142,7 +142,8 @@ describe('exemermaid plugin - Path Handling', () => {
 
             expect(plugin.opened).toHaveLength(1);
             expect(plugin.opened[0].url).toBe('./app/common/sirena/index.html');
-            expect(plugin.opened[0].title).toBe('Sirena');
+            // The title says what the window is, and which editor it is
+            expect(plugin.opened[0].title).toBe('Mermaid diagram (Sirena)');
             // Sirena has its own Insert and Cancel: the window adds no buttons
             expect(plugin.opened[0].buttons).toEqual([]);
         });

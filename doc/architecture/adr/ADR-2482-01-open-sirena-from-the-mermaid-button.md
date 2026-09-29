@@ -8,7 +8,7 @@ deciders:
   - "@jjdeharo"
 reviewers: []
 related:
-  prs: [2482, 2359]
+  prs: [2482, 2487, 2359]
   changes: []
   adrs: []
 supersedes: []
@@ -116,13 +116,17 @@ We will use option 3:
 - Inside eXe, Sirena draws with eXe's Mermaid and configuration, without its own
   retouches, writes back `<pre class="mermaid">` with the same max-size rules
   (`eXeLearning.mermaidMaxSize`), and writes the default layout engine of eXe's
-  Mermaid in the diagram header on insert.
+  Mermaid in the diagram header (`%%{init: {"layout":"dagre"}}%%` with Mermaid
+  11). It is written as soon as the code enters the editor (opening the window,
+  choosing an example), so it is visible before inserting, and Cancel leaves the
+  block untouched; code typed from scratch gets it on insert (sirenaapp 2.1.0).
 - Inside eXe, Sirena only offers the examples and diagram types that eXe's
   Mermaid can parse (`mermaid.parse` with `suppressErrors`), retrying with
   the accessibility lines (`accTitle`, `accDescr`) as comments, as Sirena
   already writes them for the types that do not support them, before leaving
   one out.
-- Its strings go into every locale through the usual extraction.
+- Its strings go into every locale through the usual extraction, in a separate
+  translations PR (#2487), as the guidelines ask for code PRs.
 
 ## Consequences
 
@@ -136,12 +140,16 @@ We will use option 3:
 
 - If eXe's Mermaid fails to load, Sirena has no Mermaid to fall back on and
   shows an error instead of the diagram (eXe could not render it either).
-- 293 new strings per locale; DE, EO, FR, IT, PT, RO and VA are `~` placeholders
+- 295 new strings per locale (#2487); DE, EO, FR, IT, PT, RO and VA are `~` placeholders
   pending review.
 
 ### Neutral
 
 - The textarea dialog is removed; its strings become obsolete.
+- A flowchart, state, class or ER diagram opened in Sirena and inserted again gains
+  that header, including those made with the old dialog. It only makes explicit
+  the engine they were already drawn with, so they look the same now and keep
+  their look when eXe moves to Mermaid 12, whose default engine is ELK.
 
 ## Risks
 
