@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target>~Estas nenio por enmeti: la kodo estas malplena.</target>
       </trans-unit>
+      <trans-unit id="rwivu67" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target>~Dikeco de la branĉoj</target>
+      </trans-unit>
+      <trans-unit id="fwt8lbj" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target>~Ŝanĝas la formon de ĉiuj {n} skatoloj de la mapo.</target>
+      </trans-unit>
+      <trans-unit id="1tayhmu" resname="Branch colour">
+        <source>Branch colour</source>
+        <target>~Koloro de la branĉo</target>
+      </trans-unit>
+      <trans-unit id="a5az3zw" resname="Add a branch">
+        <source>Add a branch</source>
+        <target>~Aldoni branĉon</target>
+      </trans-unit>
+      <trans-unit id="mmnmmug" resname="New idea">
+        <source>New idea</source>
+        <target>~Nova ideo</target>
+      </trans-unit>
+      <trans-unit id="factzme" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target>~La defaŭlta formo ne permesas krampojn: la skatolo fariĝas kvadrato.</target>
+      </trans-unit>
+      <trans-unit id="osi8toi" resname="Centre colour">
+        <source>Centre colour</source>
+        <target>~Koloro de la centro</target>
+      </trans-unit>
+      <trans-unit id="612ebld" resname="Branch">
+        <source>Branch</source>
+        <target>~Branĉo</target>
+      </trans-unit>
+      <trans-unit id="39u5hbw" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target>~La defaŭlta formo ne permesas krampojn en la teksto</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target>No hay nada que insertar: el código está vacío.</target>
       </trans-unit>
+      <trans-unit id="fyg90n6" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target>Grosor de las ramas</target>
+      </trans-unit>
+      <trans-unit id="w0j280i" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target>Cambia la forma de las {n} cajas del mapa.</target>
+      </trans-unit>
+      <trans-unit id="39c6i0g" resname="Branch colour">
+        <source>Branch colour</source>
+        <target>Color de la rama</target>
+      </trans-unit>
+      <trans-unit id="dv68lqt" resname="Add a branch">
+        <source>Add a branch</source>
+        <target>Añadir una rama</target>
+      </trans-unit>
+      <trans-unit id="e4h41a2" resname="New idea">
+        <source>New idea</source>
+        <target>Nueva idea</target>
+      </trans-unit>
+      <trans-unit id="altpy13" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target>La forma por defecto no admite paréntesis, corchetes ni llaves: la caja pasa a cuadrado.</target>
+      </trans-unit>
+      <trans-unit id="frywu3v" resname="Centre colour">
+        <source>Centre colour</source>
+        <target>Color del centro</target>
+      </trans-unit>
+      <trans-unit id="22ht12m" resname="Branch">
+        <source>Branch</source>
+        <target>Rama</target>
+      </trans-unit>
+      <trans-unit id="rqib7vf" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target>La forma por defecto no admite paréntesis, corchetes ni llaves en el texto</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

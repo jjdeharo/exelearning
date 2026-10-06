@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target>~No hi ha res per inserir: el codi és buit.</target>
       </trans-unit>
+      <trans-unit id="leisp10" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target>~Gruix de les branques</target>
+      </trans-unit>
+      <trans-unit id="jwjqrnc" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target>~Canvia la forma de les {n} caixes del mapa.</target>
+      </trans-unit>
+      <trans-unit id="yk3vh17" resname="Branch colour">
+        <source>Branch colour</source>
+        <target>~Color de la branca</target>
+      </trans-unit>
+      <trans-unit id="mhh4732" resname="Add a branch">
+        <source>Add a branch</source>
+        <target>~Afegir una branca</target>
+      </trans-unit>
+      <trans-unit id="si7oqij" resname="New idea">
+        <source>New idea</source>
+        <target>~Idea nova</target>
+      </trans-unit>
+      <trans-unit id="d5jin0s" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target>~La forma per defecte no admet parèntesis, claudàtors ni claus: la caixa passa a quadrat.</target>
+      </trans-unit>
+      <trans-unit id="0nt8t8v" resname="Centre colour">
+        <source>Centre colour</source>
+        <target>~Color del centre</target>
+      </trans-unit>
+      <trans-unit id="ep519rc" resname="Branch">
+        <source>Branch</source>
+        <target>~Branca</target>
+      </trans-unit>
+      <trans-unit id="fb352dc" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target>~La forma per defecte no admet parèntesis, claudàtors ni claus al text</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

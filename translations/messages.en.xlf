@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target></target>
       </trans-unit>
+      <trans-unit id="b37j9fn" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="mw5c19r" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="ye4jhex" resname="Branch colour">
+        <source>Branch colour</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="gs9s1u4" resname="Add a branch">
+        <source>Add a branch</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="0u6jnzw" resname="New idea">
+        <source>New idea</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="nivrcvy" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="u3hk8eq" resname="Centre colour">
+        <source>Centre colour</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="ec6tg75" resname="Branch">
+        <source>Branch</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="5qphcqy" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target></target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

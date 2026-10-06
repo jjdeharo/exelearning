@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target>Ez dago ezer txertatzeko: kodea hutsik dago.</target>
       </trans-unit>
+      <trans-unit id="oubr6v5" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target>Adarren lodiera</target>
+      </trans-unit>
+      <trans-unit id="i5jpgwu" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target>Maparen {n} kutxen forma aldatzen du.</target>
+      </trans-unit>
+      <trans-unit id="6c2krvj" resname="Branch colour">
+        <source>Branch colour</source>
+        <target>Adarraren kolorea</target>
+      </trans-unit>
+      <trans-unit id="gvtw5r3" resname="Add a branch">
+        <source>Add a branch</source>
+        <target>Adar bat gehitu</target>
+      </trans-unit>
+      <trans-unit id="9fhu34y" resname="New idea">
+        <source>New idea</source>
+        <target>Ideia berria</target>
+      </trans-unit>
+      <trans-unit id="63ndp4x" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target>Forma lehenetsiak ez du parentesirik, kortxeterik edo giltzarik onartzen: kutxa karratu bihurtzen da.</target>
+      </trans-unit>
+      <trans-unit id="2wagxku" resname="Centre colour">
+        <source>Centre colour</source>
+        <target>Erdiaren kolorea</target>
+      </trans-unit>
+      <trans-unit id="1orowkx" resname="Branch">
+        <source>Branch</source>
+        <target>Adarra</target>
+      </trans-unit>
+      <trans-unit id="eiraolu" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target>Forma lehenetsiak ez du onartzen parentesirik, kortxeterik edo giltzarik testuan</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

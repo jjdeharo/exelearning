@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target>~Il n'y a rien à insérer : le code est vide.</target>
       </trans-unit>
+      <trans-unit id="tl4cx7b" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target>~Épaisseur des branches</target>
+      </trans-unit>
+      <trans-unit id="nrv99us" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target>~Change la forme des {n} boîtes de la carte.</target>
+      </trans-unit>
+      <trans-unit id="tg3sbcq" resname="Branch colour">
+        <source>Branch colour</source>
+        <target>~Couleur de la branche</target>
+      </trans-unit>
+      <trans-unit id="ach9lv6" resname="Add a branch">
+        <source>Add a branch</source>
+        <target>~Ajouter une branche</target>
+      </trans-unit>
+      <trans-unit id="5g4njzp" resname="New idea">
+        <source>New idea</source>
+        <target>~Nouvelle idée</target>
+      </trans-unit>
+      <trans-unit id="ea2pi4j" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target>~La forme par défaut n’accepte ni parenthèses, ni crochets, ni accolades : la boîte devient carrée.</target>
+      </trans-unit>
+      <trans-unit id="eluzdtv" resname="Centre colour">
+        <source>Centre colour</source>
+        <target>~Couleur du centre</target>
+      </trans-unit>
+      <trans-unit id="vnen0pv" resname="Branch">
+        <source>Branch</source>
+        <target>~Branche</target>
+      </trans-unit>
+      <trans-unit id="vutjd3t" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target>~La forme par défaut n’accepte ni parenthèses, ni crochets, ni accolades dans le texte</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

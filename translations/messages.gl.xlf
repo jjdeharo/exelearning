@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target>Non hai nada que inserir: o código está baleiro.</target>
       </trans-unit>
+      <trans-unit id="rf5tf8h" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target>Grosor das ramas</target>
+      </trans-unit>
+      <trans-unit id="99kn4w2" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target>Cambia a forma das {n} caixas do mapa.</target>
+      </trans-unit>
+      <trans-unit id="o3a8z6b" resname="Branch colour">
+        <source>Branch colour</source>
+        <target>Cor da rama</target>
+      </trans-unit>
+      <trans-unit id="72xei74" resname="Add a branch">
+        <source>Add a branch</source>
+        <target>Engadir unha rama</target>
+      </trans-unit>
+      <trans-unit id="r2a4q5b" resname="New idea">
+        <source>New idea</source>
+        <target>Nova idea</target>
+      </trans-unit>
+      <trans-unit id="749s97u" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target>A forma predeterminada non admite parénteses, corchetes nin chaves: a caixa pasa a cadrado.</target>
+      </trans-unit>
+      <trans-unit id="ger8ifd" resname="Centre colour">
+        <source>Centre colour</source>
+        <target>Cor do centro</target>
+      </trans-unit>
+      <trans-unit id="jgd1hei" resname="Branch">
+        <source>Branch</source>
+        <target>Rama</target>
+      </trans-unit>
+      <trans-unit id="b8zmuk6" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target>A forma predeterminada non admite parénteses, corchetes nin chaves no texto</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target>~Não há nada para inserir: o código está vazio.</target>
       </trans-unit>
+      <trans-unit id="ju5hk2t" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target>~Espessura dos ramos</target>
+      </trans-unit>
+      <trans-unit id="33uhs9x" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target>~Altera a forma das {n} caixas do mapa.</target>
+      </trans-unit>
+      <trans-unit id="85nd01z" resname="Branch colour">
+        <source>Branch colour</source>
+        <target>~Cor do ramo</target>
+      </trans-unit>
+      <trans-unit id="lvcwdb5" resname="Add a branch">
+        <source>Add a branch</source>
+        <target>~Adicionar um ramo</target>
+      </trans-unit>
+      <trans-unit id="c6j0u0c" resname="New idea">
+        <source>New idea</source>
+        <target>~Nova ideia</target>
+      </trans-unit>
+      <trans-unit id="t027pni" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target>~A forma predefinida não admite parênteses, parênteses retos nem chavetas: a caixa passa a quadrado.</target>
+      </trans-unit>
+      <trans-unit id="ckjsdly" resname="Centre colour">
+        <source>Centre colour</source>
+        <target>~Cor do centro</target>
+      </trans-unit>
+      <trans-unit id="z9kmpev" resname="Branch">
+        <source>Branch</source>
+        <target>~Ramo</target>
+      </trans-unit>
+      <trans-unit id="9s93nbj" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target>~A forma predefinida não admite parênteses, parênteses retos nem chavetas no texto</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

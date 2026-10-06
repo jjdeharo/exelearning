@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target>~Nu este nimic de inserat: codul este gol.</target>
       </trans-unit>
+      <trans-unit id="01m1p2d" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target>~Grosimea ramurilor</target>
+      </trans-unit>
+      <trans-unit id="kzgx9v2" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target>~Schimbă forma tuturor celor {n} casete din hartă.</target>
+      </trans-unit>
+      <trans-unit id="nte1xrk" resname="Branch colour">
+        <source>Branch colour</source>
+        <target>~Culoarea ramurii</target>
+      </trans-unit>
+      <trans-unit id="8nsz6tq" resname="Add a branch">
+        <source>Add a branch</source>
+        <target>~Adaugă o ramură</target>
+      </trans-unit>
+      <trans-unit id="5tmrned" resname="New idea">
+        <source>New idea</source>
+        <target>~Idee nouă</target>
+      </trans-unit>
+      <trans-unit id="jga7trg" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target>~Forma implicită nu acceptă paranteze: caseta devine pătrat.</target>
+      </trans-unit>
+      <trans-unit id="90re2e1" resname="Centre colour">
+        <source>Centre colour</source>
+        <target>~Culoarea centrului</target>
+      </trans-unit>
+      <trans-unit id="p1nn3xp" resname="Branch">
+        <source>Branch</source>
+        <target>~Ramură</target>
+      </trans-unit>
+      <trans-unit id="7verx79" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target>~Forma implicită nu acceptă paranteze în text</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

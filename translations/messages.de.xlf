@@ -16873,6 +16873,42 @@
         <source>There is nothing to insert: the code is empty.</source>
         <target>~Es gibt nichts einzufügen: Der Code ist leer.</target>
       </trans-unit>
+      <trans-unit id="ygyqa4e" resname="Branch thickness">
+        <source>Branch thickness</source>
+        <target>~Astdicke</target>
+      </trans-unit>
+      <trans-unit id="y8i26ww" resname="Changes the shape of all {n} boxes in the map.">
+        <source>Changes the shape of all {n} boxes in the map.</source>
+        <target>~Ändert die Form aller {n} Kästen der Karte.</target>
+      </trans-unit>
+      <trans-unit id="cjf4tbi" resname="Branch colour">
+        <source>Branch colour</source>
+        <target>~Astfarbe</target>
+      </trans-unit>
+      <trans-unit id="f7a51q3" resname="Add a branch">
+        <source>Add a branch</source>
+        <target>~Einen Ast hinzufügen</target>
+      </trans-unit>
+      <trans-unit id="tbwecy8" resname="New idea">
+        <source>New idea</source>
+        <target>~Neue Idee</target>
+      </trans-unit>
+      <trans-unit id="o5emxt2" resname="The default shape does not allow brackets or braces: the box becomes a square.">
+        <source>The default shape does not allow brackets or braces: the box becomes a square.</source>
+        <target>~Die Standardform erlaubt keine Klammern: Der Kasten wird quadratisch.</target>
+      </trans-unit>
+      <trans-unit id="ggd489b" resname="Centre colour">
+        <source>Centre colour</source>
+        <target>~Farbe der Mitte</target>
+      </trans-unit>
+      <trans-unit id="a9qa0gc" resname="Branch">
+        <source>Branch</source>
+        <target>~Ast</target>
+      </trans-unit>
+      <trans-unit id="i3iycyj" resname="The default shape does not allow brackets or braces in the text">
+        <source>The default shape does not allow brackets or braces in the text</source>
+        <target>~Die Standardform erlaubt keine Klammern im Text</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
