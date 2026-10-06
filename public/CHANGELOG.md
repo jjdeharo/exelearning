@@ -4,7 +4,7 @@
 
 ### Added
 
-- Mermaid diagrams: the Mermaid button of the text editor now opens Sirena, a diagram editor that shows the code next to the drawing, with examples, syntax help and visual formatting tools (colours, shapes, arrows, typography). Existing diagrams open in it with their maximum width and height, and "Insert" writes them back in the same format as before
+- Mermaid diagrams: the Mermaid button of the text editor now opens Sirena, a diagram editor that shows the code next to the drawing, with examples, syntax help and visual formatting tools (colours, shapes, arrows, typography); in mind maps, the shape of each box, the colour of each branch, editing the text in place and adding branches from the drawing. Existing diagrams open in it with their maximum width and height, and "Insert" writes them back in the same format as before
 
 ### Fixed
 

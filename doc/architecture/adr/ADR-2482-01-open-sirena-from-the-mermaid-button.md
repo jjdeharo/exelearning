@@ -77,7 +77,7 @@ bypasses eXe's rendering and export pipeline.
 - EdiCuaTeX integration: `scripts/vendor-edicuatex.ts`,
   `public/libs/tinymce_5/js/tinymce/plugins/edicuatex/plugin.min.js`, #2359.
 - Sirena's eXe mode and its decisions: `sirenaapp/sirenaapp.github.io`,
-  `docs/adr/0029-…`, published as `sirenaapp` 2.2.0 on npm with provenance.
+  `docs/adr/0029-…`, published as `sirenaapp` 2.4.1 on npm with provenance.
   Since 2.0.0 the package ships without Mermaid (19 files, 687 kB unpacked,
   instead of 127 files and 6.1 MB) and `sirena.js` imports its own Mermaid only
   when the host has none: inside eXe, opening Sirena requests no Mermaid file of
@@ -96,6 +96,15 @@ bypasses eXe's rendering and export pipeline.
   out and loads the treemap with those lines as comments: 23 examples and 20 diagram
   types are offered, and all 23 render without error in Chromium and Firefox.
   All 135 example codes (27 × 5 languages) render with Mermaid 12.
+- eXe's Mermaid 11.12.0 does not know five of Sirena's 52 flowchart box shapes,
+  which arrived later (browser, console, folder, bucket, person): `parse`
+  rejects them and choosing one broke the diagram. The seven mind map shapes
+  exist in both versions.
+- Mind map editing (box shape, branch colour, branch thickness, in-place
+  text editing and new branches) was checked inside a TinyMCE dialog with eXe's
+  Mermaid 11.12.0, in Chromium and Firefox. That version ignores the branch text
+  colour (`cScaleLabel…`) with HTML labels, so Sirena also writes a white text
+  colour as a `themeCSS` rule when a branch is dark (sirenaapp 2.4.0).
 - The catalogue keeps keys as written in the source (`Don\'t show again`,
   literal `\n`), so `_()` with the real string misses them; checked through
   `/api/translations/fr`.
@@ -126,7 +135,9 @@ We will use option 3:
   Mermaid can parse (`mermaid.parse` with `suppressErrors`), retrying with
   the accessibility lines (`accTitle`, `accDescr`) as comments, as Sirena
   already writes them for the types that do not support them, before leaving
-  one out.
+  one out. Likewise, its shape picker only offers the flowchart shapes that
+  eXe's Mermaid can parse (sirenaapp 2.4.1); they come back on their own when
+  eXe updates Mermaid.
 - Its strings go into every locale through the usual extraction, in a separate
   translations PR (#2487), as the guidelines ask for code PRs.
 
